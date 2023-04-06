@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../../core/style/app_color.dart';
+import '../../../../core/style/app_color.dart';
 
 class AppTextFormFiledWidget extends StatefulWidget {
   final TextEditingController controller;

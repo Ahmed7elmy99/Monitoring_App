@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../../core/utils/screen_config.dart';
+import '../../../../core/utils/screen_config.dart';
 
 class SaveChangesBottom extends StatelessWidget {
   final Function() onPressed;

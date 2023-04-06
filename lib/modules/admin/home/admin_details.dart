@@ -3,12 +3,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
 import 'package:teatcher_app/models/admin_models.dart';
-import 'package:teatcher_app/modules/screens/layout/admin/home/update_admin_screen.dart';
+import 'package:teatcher_app/modules/admin/home/update_admin_screen.dart';
 
-import '../../../../../core/routes/app_routes.dart';
-import '../../../../../core/style/icon_broken.dart';
-import '../../../../../core/utils/app_size.dart';
-import '../../../../../core/utils/screen_config.dart';
+import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 
 class AdminDetailsScreen extends StatelessWidget {
   const AdminDetailsScreen({super.key});

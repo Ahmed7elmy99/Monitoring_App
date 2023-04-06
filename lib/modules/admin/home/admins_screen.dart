@@ -1,13 +1,13 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/core/routes/app_routes.dart';
-import 'package:teatcher_app/core/style/app_color.dart';
 import 'package:teatcher_app/models/admin_models.dart';
-import 'package:animate_do/animate_do.dart';
-import '../../../../../controller/layout/layout_cubit.dart';
-import '../../../../../core/utils/app_size.dart';
-import '../../../../../core/utils/screen_config.dart';
+
+import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 
 class AdminsScreen extends StatelessWidget {
   const AdminsScreen({super.key});

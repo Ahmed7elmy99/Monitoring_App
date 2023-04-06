@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:teatcher_app/modules/screens/layout/admin/home/admin_details.dart';
-import 'package:teatcher_app/modules/screens/layout/admin/home/schools_screen.dart';
-import 'package:teatcher_app/modules/screens/layout/admin/settings/add_admin_screen.dart';
+import 'package:teatcher_app/modules/admin/home/admin_details.dart';
+import 'package:teatcher_app/modules/admin/home/schools_screen.dart';
+import 'package:teatcher_app/modules/admin/settings/add_admin_screen.dart';
 
-import '../../modules/screens/auth/login_screen.dart';
-import '../../modules/screens/layout/admin/admin_layout_screen.dart';
-import '../../modules/screens/layout/admin/home/admins_screen.dart';
-import '../../modules/screens/layout/admin/home/teachers_screen.dart';
-import '../../modules/screens/layout/admin/settings/edit_profile_admin.dart';
+import '../../modules/admin/admin_layout_screen.dart';
+import '../../modules/admin/home/admins_screen.dart';
+import '../../modules/admin/home/teachers_screen.dart';
+import '../../modules/admin/settings/edit_profile_admin.dart';
+import '../../modules/auth/login_screen.dart';
 
 class Routers {
   static const String INITIAL = '/';

@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/modules/screens/layout/admin/widgets/app_textformfiled_widget.dart';
-import 'package:teatcher_app/modules/screens/layout/admin/widgets/save_changes_bottom.dart';
+import 'package:teatcher_app/modules/admin/widgets/app_textformfiled_widget.dart';
+import 'package:teatcher_app/modules/admin/widgets/save_changes_bottom.dart';
 
-import '../../../../../controller/layout/layout_cubit.dart';
-import '../../../../../core/style/icon_broken.dart';
-import '../../../../../core/utils/app_size.dart';
-import '../../../../../core/utils/screen_config.dart';
-import '../../../../widgets/const_widget.dart';
+import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
+import '../../widgets/const_widget.dart';
 
 class EditAdminProfileScreen extends StatefulWidget {
   const EditAdminProfileScreen({super.key});

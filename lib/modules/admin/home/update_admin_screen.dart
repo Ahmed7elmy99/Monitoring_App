@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:teatcher_app/controller/layout/layout_cubit.dart';
 
-import '../../../../../core/style/icon_broken.dart';
-import '../../../../../core/utils/app_images.dart';
-import '../../../../../core/utils/app_size.dart';
-import '../../../../../core/utils/screen_config.dart';
-import '../../../../../models/admin_models.dart';
-import '../../../../widgets/const_widget.dart';
+import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_images.dart';
+import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
+import '../../../models/admin_models.dart';
+import '../../widgets/const_widget.dart';
 import '../widgets/app_textformfiled_widget.dart';
 import '../widgets/save_changes_bottom.dart';
 

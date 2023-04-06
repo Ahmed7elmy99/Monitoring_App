@@ -4,12 +4,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:teatcher_app/core/routes/app_routes.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/screens/auth/widgets/build_auth_bottom.dart';
-import 'package:teatcher_app/modules/screens/auth/widgets/build_text_form_filed.dart';
+import 'package:teatcher_app/modules/auth/widgets/build_auth_bottom.dart';
+import 'package:teatcher_app/modules/auth/widgets/build_text_form_filed.dart';
 
-import '../../../controller/auth/auth_cubit.dart';
-import '../../../core/utils/app_size.dart';
-import '../../widgets/const_widget.dart';
+import '../../controller/auth/auth_cubit.dart';
+import '../../core/utils/app_size.dart';
+import '../widgets/const_widget.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});

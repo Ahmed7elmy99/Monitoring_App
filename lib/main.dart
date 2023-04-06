@@ -2,13 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/controller/auth/auth_cubit.dart';
-import 'package:teatcher_app/controller/layout/layout_cubit.dart';
 import 'package:teatcher_app/core/style/theme.dart';
 
+import 'controller/layout/admins/layout_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/cache_helper.dart';
-import 'modules/screens/auth/login_screen.dart';
-import 'modules/screens/layout/admin/admin_layout_screen.dart';
+import 'modules/admin/admin_layout_screen.dart';
+import 'modules/auth/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

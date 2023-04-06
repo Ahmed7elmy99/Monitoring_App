@@ -9,10 +9,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:teatcher_app/core/services/cache_helper.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 
-import '../../core/utils/const_data.dart';
-import '../../models/admin_models.dart';
-import '../../modules/screens/layout/admin/home/admin_home_screen.dart';
-import '../../modules/screens/layout/admin/settings/admin_settings_screen.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../models/admin_models.dart';
+import '../../../modules/admin/home/admin_home_screen.dart';
+import '../../../modules/admin/settings/admin_settings_screen.dart';
 
 part 'layout_state.dart';
 
