@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "743373156234",
+    "project_id": "teatcher-f4b3a",
+    "storage_bucket": "teatcher-f4b3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743373156234:android:4daf73287ae72c178d6273",
+        "android_client_info": {
+          "package_name": "com.example.teatcher_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "743373156234-6qvf0u42k7504m2mvmmahgq4fj563jtg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.teatcher_app",
+            "certificate_hash": "7d5132a2365a16c23b1de97e02934f394a5a348d"
+          }
+        },
+        {
+          "client_id": "743373156234-sedgokflc4a7jcfeupqmrpcgbc6bbjma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLnRhcH8Zou8I3eKN4ou9gT1lS-huZEDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "743373156234-sedgokflc4a7jcfeupqmrpcgbc6bbjma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
