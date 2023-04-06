@@ -85,7 +85,18 @@ class LoginScreen extends StatelessWidget {
                         AppSize.sv_20,
                         BlocConsumer<AuthCubit, AuthState>(
                           listener: (context, state) {
-                            if (state is AuthUserLoginSuccessState) {
+                            if (state is AuthUserLoginErrorState) {
+                              Fluttertoast.showToast(
+                                msg: state.error,
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                            }
+                            if (state is AuthGetUserAfterLoginSuccessState) {
                               Fluttertoast.showToast(
                                 msg: 'Login Success',
                                 toastLength: Toast.LENGTH_SHORT,
@@ -100,7 +111,7 @@ class LoginScreen extends StatelessWidget {
                                 Routers.ADMIN_LAYOUT,
                               );
                             }
-                            if (state is AuthUserLoginErrorState) {
+                            if (state is AuthGetUserAfterLoginErrorState) {
                               Fluttertoast.showToast(
                                 msg: state.error,
                                 toastLength: Toast.LENGTH_SHORT,

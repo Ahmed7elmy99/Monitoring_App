@@ -61,9 +61,21 @@ class AuthCubit extends Cubit<AuthState> {
         .get()
         .then((value) {
       print('value: $value');
-      print('Success get user👋');
-      ADMIN_MODEL = AdminModels.fromJson(value.data()!);
+      print('value.data(): ${value.data()}');
+      //check if user is banned
+      if (value.data()!['ban'] == 'true') {
+        print('User is banned 😥');
+        FirebaseAuth.instance.signOut();
+        CacheHelper.saveData(key: 'uid', value: '');
+        emit(AuthGetUserAfterLoginErrorState('Your account is banned 😥'));
+        return;
+      } else {
+        ADMIN_MODEL = AdminModels.fromJson(value.data()!);
+        emit(AuthGetUserAfterLoginSuccessState());
+      }
       //emit(AuthGetUserAfterLoginSuccessState());
-    }).catchError((error) {});
+    }).catchError((error) {
+      emit(AuthGetUserAfterLoginErrorState(error.toString()));
+    });
   }
 }

@@ -22,3 +22,10 @@ class AuthUserLoginErrorState extends AuthState {
   final String error;
   AuthUserLoginErrorState(this.error);
 }
+
+class AuthGetUserAfterLoginSuccessState extends AuthState {}
+
+class AuthGetUserAfterLoginErrorState extends AuthState {
+  final String error;
+  AuthGetUserAfterLoginErrorState(this.error);
+}
