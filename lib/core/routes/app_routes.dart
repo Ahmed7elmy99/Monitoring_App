@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:teatcher_app/modules/admin/home/admin_details.dart';
-import 'package:teatcher_app/modules/admin/home/schools_screen.dart';
 import 'package:teatcher_app/modules/admin/settings/add_admin_screen.dart';
+import 'package:teatcher_app/modules/admin/settings/add_supervisor_screen.dart';
 
 import '../../modules/admin/admin_layout_screen.dart';
-import '../../modules/admin/home/admins_screen.dart';
-import '../../modules/admin/home/teachers_screen.dart';
+import '../../modules/admin/home/admins/admins_screen.dart';
+import '../../modules/admin/home/schools/schools_screen.dart';
+import '../../modules/admin/home/schools/teachers_screen.dart';
+import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
 
@@ -18,8 +19,9 @@ class Routers {
   static const String ADMIN_EDIT_PROFILE = '/Admin_Edit_Profile_Screen';
   static const String ADD_ADMIN = '/Add_Admin_Screen';
   static const String ADMINS_SCREEN = '/Admins_Screen';
-  static const String ADMIN_DETAILS_SCREEN = '/Admin_Details_Screen';
   static const String SCHOOL = '/School_Screen';
+  static const String ADD_SCHOOL = '/Add_School_Screen';
+  static const String ADD_SUPERVISOR = '/Add_Supervisor_Screen';
   static const String TEACHER = '/Teacher_Screen';
 }
 
@@ -43,14 +45,18 @@ class RoutersGenerated {
           builder: (_) => const AdminsScreen(),
           settings: settings,
         );
-      case Routers.ADMIN_DETAILS_SCREEN:
-        return MaterialPageRoute(
-          builder: (_) => const AdminDetailsScreen(),
-          settings: settings,
-        );
       case Routers.SCHOOL:
         return MaterialPageRoute(
           builder: (_) => const SchoolsScreen(),
+        );
+      case Routers.ADD_SCHOOL:
+        return MaterialPageRoute(
+          builder: (_) => AddSchoolScreen(),
+        );
+      case Routers.ADD_SUPERVISOR:
+        return _buildPageRoute(
+          child: AddSchoolSupervisorScreen(),
+          settings: settings,
         );
       case Routers.TEACHER:
         return MaterialPageRoute(
@@ -63,5 +69,38 @@ class RoutersGenerated {
       default:
         return MaterialPageRoute(builder: (_) => const AdminLayoutScreen());
     }
+  }
+
+  static Route _buildPageRoute(
+      {required Widget child, required RouteSettings settings}) {
+    return PageRouteBuilder(
+      settings: settings,
+      pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) =>
+          child,
+      transitionDuration: const Duration(milliseconds: 300),
+      transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+      ) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOutExpo,
+            ),
+          ),
+          child: child,
+        );
+      },
+    );
   }
 }

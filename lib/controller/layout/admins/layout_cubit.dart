@@ -8,9 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:teatcher_app/core/services/cache_helper.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
+import 'package:teatcher_app/models/school_model.dart';
 
 import '../../../core/utils/const_data.dart';
 import '../../../models/admin_models.dart';
+import '../../../models/supervisors_model.dart';
 import '../../../modules/admin/home/admin_home_screen.dart';
 import '../../../modules/admin/settings/admin_settings_screen.dart';
 
@@ -139,19 +141,19 @@ class LayoutCubit extends Cubit<LayoutState> {
   }) async {
     emit(LayoutUpdateUserDataLoadingState());
     AdminModels updateModel = AdminModels(
-      id: adminId == null ? ADMIN_MODEL!.id : adminId,
-      name: adminName == null ? ADMIN_MODEL!.name : adminName,
+      id: adminId ?? ADMIN_MODEL!.id,
+      name: adminName ?? ADMIN_MODEL!.name,
       email: adminEmail ?? ADMIN_MODEL!.email,
       password: ADMIN_MODEL!.password,
       createdAt: ADMIN_MODEL!.createdAt,
-      image: adminImage == null ? ADMIN_MODEL!.image : adminImage,
-      phone: adminPhone == null ? ADMIN_MODEL!.phone : adminPhone,
-      gender: adminGen == null ? ADMIN_MODEL!.gender : adminGen,
+      image: adminImage ?? ADMIN_MODEL!.image,
+      phone: adminPhone ?? ADMIN_MODEL!.phone,
+      gender: adminGen ?? ADMIN_MODEL!.gender,
       ban: ADMIN_MODEL!.ban,
     );
     await FirebaseFirestore.instance
         .collection('admins')
-        .doc(adminId == null ? ADMIN_MODEL!.id : adminId)
+        .doc(adminId ?? ADMIN_MODEL!.id)
         .update(updateModel.toMap())
         .then((value) {
       print('Success update user data✨');
@@ -201,63 +203,236 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  void updateAdminsData(AdminModels adminModels) {
-    emit(LayoutUpdateAdminsDataLoadingState());
-    FirebaseFirestore.instance
-        .collection('admins')
-        .doc(adminModels.id)
-        .update(adminModels.toMap())
-        .then((value) {
-      getAllAdmins();
-      emit(LayoutUpdateAdminsDataSuccessState());
+  void updateAdminsBan({required String adminId, required String adminBan}) {
+    emit(LayoutUpdateAdminsBanLoadingState());
+    FirebaseFirestore.instance.collection('admins').doc(adminId).update({
+      'ban': adminBan,
+    }).then((value) {
+      print('Success update admins ban🎉');
+      emit(LayoutUpdateAdminsBanSuccessState());
     }).catchError((error) {
-      emit(LayoutUpdateAdminsDataErrorState(error.toString()));
+      print('Error update admins ban: $error');
+      emit(LayoutUpdateAdminsBanErrorState(error.toString()));
     });
-  }
-
-  void updateAdminsImages({required AdminModels userModel}) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 50,
-    );
-    if (image != null) {
-      profileImage = image;
-      uploadImageFile = File(image.path);
-      profileImageUrl = image.path;
-      firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child('images/${userModel.id}')
-          .putFile(uploadImageFile!)
-          .then((p0) => {
-                p0.ref.getDownloadURL().then((value) {
-                  profileImageUrl = value;
-                  uploadImageFile = null;
-                  userModel.image = value;
-                  updateAdminsData(userModel);
-                }).catchError((error) {
-                  print('Error get image url: $error');
-                  emit(LayoutUpdateUserImageErrorState(error.toString()));
-                }),
-              });
-    }
   }
 
   List<AdminModels> adminModelsList = [];
   void getAllAdmins() {
-    emit(LayoutGetAllAdminsLoadingState());
-    FirebaseFirestore.instance.collection('admins').get().then((value) {
-      adminModelsList = [];
-      for (var element in value.docs) {
-        if (element.data()['id'] != ADMIN_MODEL!.id) {
-          adminModelsList.add(AdminModels.fromJson(element.data()));
+    try {
+      emit(LayoutGetAllAdminsLoadingState());
+      FirebaseFirestore.instance
+          .collection('admins')
+          .snapshots()
+          .listen((value) {
+        adminModelsList = [];
+        for (var element in value.docs) {
+          if (element.data()['id'] != ADMIN_MODEL!.id) {
+            adminModelsList.add(AdminModels.fromJson(element.data()));
+          }
         }
-      }
-      print('Success get all admins🎉');
-      emit(LayoutGetAllAdminsSuccessState());
-    }).catchError((error) {
+        print('Success get all admins🎉');
+        emit(LayoutGetAllAdminsSuccessState());
+      });
+    } catch (error) {
       print('Error get all admins: $error');
       emit(LayoutGetAllAdminsErrorState(error.toString()));
+    }
+  }
+
+  String? schoolId;
+  void addSchoolInFirebase({
+    required String schoolName,
+    required String schoolDescription,
+    required String schoolPhone,
+    required String schoolLocation,
+    required String establishmentDate,
+    required String establishmentType,
+    required String schoolWebsite,
+  }) {
+    emit(LayoutAddSchoolLoadingState());
+    SchoolModel schoolModel = SchoolModel(
+      id: ADMIN_MODEL!.id,
+      description: schoolDescription,
+      name: schoolName,
+      location: schoolLocation,
+      phone: schoolPhone,
+      establishedBy: establishmentType,
+      establishedIn: establishmentDate,
+      website: schoolWebsite,
+      image: AppImages.defaultSchool,
+      ban: 'false',
+      createdAt: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .add(schoolModel.toMap())
+        .then((value) {
+      schoolId = value.id;
+      FirebaseFirestore.instance.collection('schools').doc(value.id).update({
+        'id': value.id,
+      }).then((event) {
+        print('Success add school🎉');
+
+        emit(LayoutAddSchoolSuccessState());
+      });
+    }).catchError((error) {
+      print('Error add school: $error');
+      emit(LayoutAddSchoolErrorState(error.toString()));
+    });
+  }
+
+  void addSchoolSupervisor({
+    required String supervisorId,
+    required String supervisorName,
+    required String supervisorEmail,
+    required String supervisorPassword,
+    required String supervisorPhone,
+  }) {
+    emit(LayoutAddSchoolSupervisorLoadingState());
+    SupervisorsModel supervisorsModel = SupervisorsModel(
+      id: ADMIN_MODEL!.id,
+      schoolsId: schoolId!,
+      name: supervisorName,
+      phone: supervisorPhone,
+      email: supervisorEmail,
+      password: supervisorPassword,
+      gender: 'male',
+      age: '0',
+      ban: 'false',
+      image: AppImages.defaultImage,
+      createdAt: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('supervisors')
+        .add(supervisorsModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(schoolId)
+          .collection('supervisors')
+          .doc(value.id)
+          .update({
+        'id': value.id,
+      }).then((event) {
+        print('Success add school supervisor🎉');
+        emit(LayoutAddSchoolSupervisorSuccessState());
+      });
+    }).catchError((error) {
+      print('Error add school supervisor: $error');
+      emit(LayoutAddSchoolSupervisorErrorState(error.toString()));
+    });
+  }
+
+  void createSuperVisorAccount({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+  }) {
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    )
+        .then((value) {
+      print('Success Create supervisor 🎉');
+      print('value: $value');
+      if (value.user?.uid != null) {
+        addSchoolSupervisor(
+          supervisorId: value.user!.uid,
+          supervisorName: name,
+          supervisorEmail: email,
+          supervisorPassword: password,
+          supervisorPhone: phone,
+        );
+      }
+    }).catchError((error) {
+      print('Error create supervisor account: $error');
+      emit(LayoutCreateSuperVisorAccountErrorState(error.toString()));
+    });
+  }
+
+  List<SchoolModel> schoolModelsList = [];
+  void getAllSchools() {
+    try {
+      emit(LayoutGetAllSchoolsLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .snapshots()
+          .listen((value) {
+        schoolModelsList = [];
+        for (var element in value.docs) {
+          schoolModelsList.add(SchoolModel.fromJson(element.data()));
+        }
+        print('Success get all schools🎉');
+        emit(LayoutGetAllSchoolsSuccessState());
+      });
+    } catch (error) {
+      print('Error get all schools: $error');
+      emit(LayoutGetAllSchoolsErrorState(error.toString()));
+    }
+  }
+
+  List<SupervisorsModel> supervisorsModelsList = [];
+  void getAllSupervisors({required String schoolId}) {
+    try {
+      emit(LayoutGetAllSupervisorsLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(schoolId)
+          .collection('supervisors')
+          .snapshots()
+          .listen((value) {
+        supervisorsModelsList = [];
+        for (var element in value.docs) {
+          supervisorsModelsList.add(SupervisorsModel.fromJson(element.data()));
+        }
+        print('Success get all supervisors🎉');
+        emit(LayoutGetAllSupervisorsSuccessState());
+      });
+    } catch (error) {
+      print('Error get all supervisors: $error');
+      emit(LayoutGetAllSupervisorsErrorState(error.toString()));
+    }
+  }
+
+  void changeSchoolBan({
+    required String schoolId,
+    required String schoolBan,
+  }) {
+    emit(LayoutChangeSchoolBanLoadingState());
+    FirebaseFirestore.instance.collection('schools').doc(schoolId).update({
+      'ban': schoolBan,
+    }).then((value) {
+      print('Success update school ban🎉');
+      emit(LayoutChangeSchoolBanSuccessState());
+    }).catchError((error) {
+      print('Error update school ban: $error');
+      emit(LayoutChangeSchoolBanErrorState(error.toString()));
+    });
+  }
+
+  void changeSupervisorBan({
+    required String schoolId,
+    required String supervisorId,
+    required String supervisorBan,
+  }) {
+    emit(LayoutChangeSupervisorBanLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('supervisors')
+        .doc(supervisorId)
+        .update({
+      'ban': supervisorBan,
+    }).then((value) {
+      print('Success update supervisor ban🎉');
+      emit(LayoutChangeSupervisorBanSuccessState());
+    }).catchError((error) {
+      print('Error update supervisor ban: $error');
+      emit(LayoutChangeSupervisorBanErrorState(error.toString()));
     });
   }
 

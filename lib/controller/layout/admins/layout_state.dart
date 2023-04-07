@@ -64,11 +64,70 @@ class LayoutGetAllAdminsErrorState extends LayoutState {
   LayoutGetAllAdminsErrorState(this.error);
 }
 
-class LayoutUpdateAdminsDataLoadingState extends LayoutState {}
+class LayoutAddSchoolLoadingState extends LayoutState {}
 
-class LayoutUpdateAdminsDataSuccessState extends LayoutState {}
+class LayoutAddSchoolSuccessState extends LayoutState {}
 
-class LayoutUpdateAdminsDataErrorState extends LayoutState {
+class LayoutUpdateAdminsBanLoadingState extends LayoutState {}
+
+class LayoutUpdateAdminsBanSuccessState extends LayoutState {}
+
+class LayoutUpdateAdminsBanErrorState extends LayoutState {
   final String error;
-  LayoutUpdateAdminsDataErrorState(this.error);
+  LayoutUpdateAdminsBanErrorState(this.error);
+}
+
+class LayoutAddSchoolErrorState extends LayoutState {
+  final String error;
+  LayoutAddSchoolErrorState(this.error);
+}
+
+class LayoutAddSchoolSupervisorLoadingState extends LayoutState {}
+
+class LayoutAddSchoolSupervisorSuccessState extends LayoutState {}
+
+class LayoutAddSchoolSupervisorErrorState extends LayoutState {
+  final String error;
+  LayoutAddSchoolSupervisorErrorState(this.error);
+}
+
+class LayoutCreateSuperVisorAccountErrorState extends LayoutState {
+  final String error;
+  LayoutCreateSuperVisorAccountErrorState(this.error);
+}
+
+class LayoutGetAllSchoolsLoadingState extends LayoutState {}
+
+class LayoutGetAllSchoolsSuccessState extends LayoutState {}
+
+class LayoutGetAllSchoolsErrorState extends LayoutState {
+  final String error;
+  LayoutGetAllSchoolsErrorState(this.error);
+}
+
+class LayoutChangeSchoolBanLoadingState extends LayoutState {}
+
+class LayoutChangeSchoolBanSuccessState extends LayoutState {}
+
+class LayoutChangeSchoolBanErrorState extends LayoutState {
+  final String error;
+  LayoutChangeSchoolBanErrorState(this.error);
+}
+
+class LayoutGetAllSupervisorsLoadingState extends LayoutState {}
+
+class LayoutGetAllSupervisorsSuccessState extends LayoutState {}
+
+class LayoutGetAllSupervisorsErrorState extends LayoutState {
+  final String error;
+  LayoutGetAllSupervisorsErrorState(this.error);
+}
+
+class LayoutChangeSupervisorBanLoadingState extends LayoutState {}
+
+class LayoutChangeSupervisorBanSuccessState extends LayoutState {}
+
+class LayoutChangeSupervisorBanErrorState extends LayoutState {
+  final String error;
+  LayoutChangeSupervisorBanErrorState(this.error);
 }
