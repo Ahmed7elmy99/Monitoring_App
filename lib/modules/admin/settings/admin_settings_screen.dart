@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:teatcher_app/controller/layout/layout_cubit.dart';
 import 'package:teatcher_app/core/routes/app_routes.dart';
+import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
 import 'package:teatcher_app/core/utils/screen_config.dart';
 
-import '../../../../../core/style/app_color.dart';
-import '../../../../../core/style/icon_broken.dart';
-import '../../../../../core/utils/app_size.dart';
-import '../../../auth/widgets/build_auth_bottom.dart';
+import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/style/app_color.dart';
+import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_size.dart';
+import '../../auth/widgets/build_auth_bottom.dart';
 
 class AdminSettingsScreen extends StatelessWidget {
   const AdminSettingsScreen({super.key});
@@ -52,7 +53,7 @@ class AdminSettingsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Container(
+              SizedBox(
                 width: SizeConfig.screenWidth,
                 height: SizeConfig.screenHeight * 0.2,
                 child: Stack(
@@ -76,10 +77,8 @@ class AdminSettingsScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.0),
                               image: DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(
-                                  ADMIN_MODEL?.image ??
-                                      'https://www.w3schools.com/howto/img_avatar.png',
-                                ),
+                                image: NetworkImage(ADMIN_MODEL?.image ??
+                                    AppImages.defaultImage),
                               ),
                             ),
                           ),
@@ -90,12 +89,13 @@ class AdminSettingsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 ADMIN_MODEL?.name ?? 'Paige Turner',
-                                style: Theme.of(context).textTheme.headline2,
+                                style:
+                                    Theme.of(context).textTheme.displayMedium,
                               ),
                               AppSize.sv_5,
                               Text(
                                 ADMIN_MODEL?.email ?? '',
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -138,14 +138,17 @@ class AdminSettingsScreen extends StatelessWidget {
                 title: 'New school supervisor',
                 leadingIcon: IconBroken.Profile,
                 subtitle: 'Create new school supervisor account',
+                onTap: () {
+                  Navigator.pushNamed(context, Routers.ADD_SCHOOL);
+                },
               ),
-              Spacer(),
+              const Spacer(),
               BottomComponent(
                 child: Text(
                   'Sign Out',
                   style: Theme.of(context)
                       .textTheme
-                      .headline5!
+                      .headlineSmall!
                       .copyWith(fontSize: 20.0),
                 ),
                 onPressed: () {
@@ -179,7 +182,7 @@ class AdminSettingsScreen extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(subtitle ?? ''),
       trailing: Icon(tailIcon),

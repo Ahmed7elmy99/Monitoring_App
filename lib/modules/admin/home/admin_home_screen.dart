@@ -4,11 +4,11 @@ import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/dummy_data.dart';
 import 'package:teatcher_app/core/utils/screen_config.dart';
 
-import '../../../../../controller/layout/layout_cubit.dart';
-import '../../../../../core/routes/app_routes.dart';
-import '../../../../../core/style/icon_broken.dart';
-import '../../../../../core/utils/app_size.dart';
-import '../../../../../core/utils/const_data.dart';
+import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/routes/app_routes.dart';
+import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});

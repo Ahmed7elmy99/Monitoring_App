@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../../core/style/app_color.dart';
+import '../../../../core/style/app_color.dart';
 
 class AppTextFormFiledWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -10,6 +10,7 @@ class AppTextFormFiledWidget extends StatefulWidget {
   final IconData? suffix;
   final TextInputType? keyboardType;
   bool isPassword = false;
+  bool isEnable = true;
   final FormFieldValidator<String>? validate;
   AppTextFormFiledWidget({
     super.key,
@@ -19,6 +20,7 @@ class AppTextFormFiledWidget extends StatefulWidget {
     this.prefix,
     this.suffix,
     this.isPassword = false,
+    this.isEnable = true,
     this.validate,
   });
 
@@ -30,6 +32,7 @@ class _AppTextFormFiledWidgetState extends State<AppTextFormFiledWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: widget.isEnable,
       controller: widget.controller,
       keyboardType: widget.keyboardType ?? TextInputType.text,
       validator: widget.validate,
