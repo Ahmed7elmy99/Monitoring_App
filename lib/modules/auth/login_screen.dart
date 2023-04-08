@@ -124,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                                     ),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  cubit.getUserAfterLoginOrRegister(
+                                  cubit.userLogin(
                                     email: emailController.text,
                                     password: passwordController.text,
                                   );

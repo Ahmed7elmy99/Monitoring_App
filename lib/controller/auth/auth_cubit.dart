@@ -33,8 +33,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   var userDoc;
   dynamic supervisorsDoc;
-  void getUserAfterLoginOrRegister(
-      {required String email, required String password}) async {
+  void userLogin({required String email, required String password}) async {
     emit(AuthGetUserAfterLoginLoadingState());
     final auth = FirebaseAuth.instance;
     final userCredential = await auth
@@ -59,7 +58,6 @@ class AuthCubit extends Cubit<AuthState> {
           .doc(schoolDoc.id)
           .collection('supervisors')
           .doc(userId);
-
       // Check if the user belongs to the admins or supervisors collection
       final isAdmin = await adminsDoc.get().then((doc) => doc.exists);
       final isSupervisor = await supervisorsDoc.get().then((doc) => doc.exists);
@@ -70,28 +68,32 @@ class AuthCubit extends Cubit<AuthState> {
         if (userDoc.data()!['ban'] == 'true') {
           print('User is banned 😥');
           FirebaseAuth.instance.signOut();
-          CacheHelper.saveData(key: 'uid', value: '');
+
           emit(AuthGetUserAfterLoginErrorState('You are banned 😥'));
           return;
         }
+        CacheHelper.saveData(key: 'user', value: 'admin');
         ADMIN_MODEL = AdminModels.fromJson(userDoc.data()!);
         emit(AuthGetUserAfterLoginSuccessState('admin'));
         break;
       } else if (isSupervisor) {
+        print('schoolDoc.id: ${schoolDoc.id}😅😥');
+        CacheHelper.saveData(key: 'schoolId', value: '${schoolDoc.id}');
         userDoc = await supervisorsDoc.get();
         if (userDoc.data()!['ban'] == 'true') {
           print('User is banned 😥');
           FirebaseAuth.instance.signOut();
           CacheHelper.saveData(key: 'uid', value: '');
+          CacheHelper.saveData(key: 'user', value: '');
           emit(AuthGetUserAfterLoginErrorState('You are banned 😥'));
           return;
         }
+        CacheHelper.saveData(key: 'user', value: 'supervisor');
         SUPERVISOR_MODEL = SupervisorsModel.fromJson(userDoc.data()!);
+        print('SUPERVISOR_MODEL: $SUPERVISOR_MODEL');
+        print('SUPERVISOR_MODEL: ${SUPERVISOR_MODEL?.schoolsId} 🎉');
         emit(AuthGetUserAfterLoginSuccessState('supervisor'));
         break;
-      } else {
-        print('no user found');
-        emit(AuthGetUserAfterLoginErrorState('no user found'));
       }
     }
   }

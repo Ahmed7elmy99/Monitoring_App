@@ -10,6 +10,7 @@ import 'core/routes/app_routes.dart';
 import 'core/services/cache_helper.dart';
 import 'modules/admin/admin_layout_screen.dart';
 import 'modules/auth/login_screen.dart';
+import 'modules/schools/supervisors_layout_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,11 +20,13 @@ void main() async {
 }
 
 Widget checkUser() {
-  String user = CacheHelper.getData(key: 'uid') ?? '';
-  if (user == '') {
-    return LoginScreen();
-  } else {
+  String user = CacheHelper.getData(key: 'user') ?? '';
+  if (user == 'supervisor') {
+    return SupervisorLayoutScreen();
+  } else if (user == 'admin') {
     return const AdminLayoutScreen();
+  } else {
+    return LoginScreen();
   }
 }
 
@@ -40,12 +43,14 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => LayoutCubit()
-            ..getUserAfterLoginOrRegister()
+            ..getCurrentAdmin()
             ..getAllAdmins()
             ..getAllSchools(),
         ),
         BlocProvider(
-          create: (context) => SchoolsCubit(),
+          create: (context) => SchoolsCubit()
+            ..getCurrentSupervisor()
+            ..getCurrentSchool(),
         ),
         BlocProvider(
           create: (context) => AuthCubit(),
