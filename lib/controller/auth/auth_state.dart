@@ -14,16 +14,12 @@ class AuthCreateAccountErrorState extends AuthState {
   AuthCreateAccountErrorState(this.error);
 }
 
-class AuthUserLoginLoadingState extends AuthState {}
+class AuthGetUserAfterLoginLoadingState extends AuthState {}
 
-class AuthUserLoginSuccessState extends AuthState {}
-
-class AuthUserLoginErrorState extends AuthState {
-  final String error;
-  AuthUserLoginErrorState(this.error);
+class AuthGetUserAfterLoginSuccessState extends AuthState {
+  final String message;
+  AuthGetUserAfterLoginSuccessState(this.message);
 }
-
-class AuthGetUserAfterLoginSuccessState extends AuthState {}
 
 class AuthGetUserAfterLoginErrorState extends AuthState {
   final String error;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:teatcher_app/core/routes/app_routes.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/screen_config.dart';
 import 'package:teatcher_app/modules/auth/widgets/build_auth_bottom.dart';
 import 'package:teatcher_app/modules/auth/widgets/build_text_form_filed.dart';
+import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../controller/auth/auth_cubit.dart';
 import '../../core/utils/app_size.dart';
@@ -85,48 +85,35 @@ class LoginScreen extends StatelessWidget {
                         AppSize.sv_20,
                         BlocConsumer<AuthCubit, AuthState>(
                           listener: (context, state) {
-                            if (state is AuthUserLoginErrorState) {
-                              Fluttertoast.showToast(
-                                msg: state.error,
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                            }
                             if (state is AuthGetUserAfterLoginSuccessState) {
-                              Fluttertoast.showToast(
-                                msg: 'Login Success',
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
+                              showFlutterToast(
+                                message: 'Login Success ${state.message}',
+                                toastColor: Colors.green,
                               );
-                              Navigator.pushReplacementNamed(
-                                context,
-                                Routers.ADMIN_LAYOUT,
-                              );
+                              if (state.message == 'admin') {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  Routers.ADMIN_LAYOUT,
+                                );
+                              }
+                              if (state.message == 'supervisor') {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  Routers.SUPERVISORS_LAYOUT_SCREEN,
+                                );
+                              }
                             }
                             if (state is AuthGetUserAfterLoginErrorState) {
-                              Fluttertoast.showToast(
-                                msg: state.error,
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
+                              showFlutterToast(
+                                message: state.error,
+                                toastColor: Colors.red,
                               );
                             }
                           },
                           builder: (context, state) {
                             AuthCubit cubit = AuthCubit.get(context);
                             return BottomComponent(
-                              child: state is AuthUserLoginLoadingState
+                              child: state is AuthGetUserAfterLoginLoadingState
                                   ? const CircularProgressComponent()
                                   : const Text(
                                       'Login',
@@ -137,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                                     ),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  cubit.userLogin(
+                                  cubit.getUserAfterLoginOrRegister(
                                     email: emailController.text,
                                     password: passwordController.text,
                                   );

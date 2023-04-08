@@ -290,7 +290,7 @@ class LayoutCubit extends Cubit<LayoutState> {
   }) {
     emit(LayoutAddSchoolSupervisorLoadingState());
     SupervisorsModel supervisorsModel = SupervisorsModel(
-      id: ADMIN_MODEL!.id,
+      id: supervisorId,
       schoolsId: schoolId!,
       name: supervisorName,
       phone: supervisorPhone,
@@ -306,19 +306,11 @@ class LayoutCubit extends Cubit<LayoutState> {
         .collection('schools')
         .doc(schoolId)
         .collection('supervisors')
-        .add(supervisorsModel.toMap())
+        .doc(supervisorId)
+        .set(supervisorsModel.toMap())
         .then((value) {
-      FirebaseFirestore.instance
-          .collection('schools')
-          .doc(schoolId)
-          .collection('supervisors')
-          .doc(value.id)
-          .update({
-        'id': value.id,
-      }).then((event) {
-        print('Success add school supervisor🎉');
-        emit(LayoutAddSchoolSupervisorSuccessState());
-      });
+      print('Success add school supervisor🎉');
+      emit(LayoutAddSchoolSupervisorSuccessState());
     }).catchError((error) {
       print('Error add school supervisor: $error');
       emit(LayoutAddSchoolSupervisorErrorState(error.toString()));
