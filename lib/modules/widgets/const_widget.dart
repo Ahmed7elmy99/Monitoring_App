@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teatcher_app/core/style/app_color.dart';
 
 class CircularProgressComponent extends StatelessWidget {
   const CircularProgressComponent({super.key});
@@ -7,7 +8,7 @@ class CircularProgressComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: CircularProgressIndicator(
-        color: Colors.grey[400],
+        color: AppColor.primerColor,
         strokeWidth: 2,
       ),
     );

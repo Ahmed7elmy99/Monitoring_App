@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:teatcher_app/core/services/cache_helper.dart';
+import 'package:teatcher_app/core/utils/app_images.dart';
+import 'package:teatcher_app/models/parent_model.dart';
 import 'package:teatcher_app/models/supervisors_model.dart';
 
 import '../../core/utils/const_data.dart';
@@ -13,28 +15,9 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
   static AuthCubit get(context) => BlocProvider.of(context);
-
-  void userRegister() {
-    emit(AuthCreateAccountLoadingState());
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-      email: 'Admin911@gmail.com',
-      password: 'Admin911',
-    )
-        .then((value) {
-      print('User Register Success');
-      print('value: $value');
-      print('value.user: ${value.user?.uid}');
-      emit(AuthCreateAccountSuccessState());
-    }).catchError((error) {
-      emit(AuthCreateAccountErrorState(error.toString()));
-    });
-  }
-
   var userDoc;
   dynamic supervisorsDoc;
-  void getUserAfterLoginOrRegister(
-      {required String email, required String password}) async {
+  void userLogin({required String email, required String password}) async {
     emit(AuthGetUserAfterLoginLoadingState());
     final auth = FirebaseAuth.instance;
     final userCredential = await auth
@@ -59,7 +42,6 @@ class AuthCubit extends Cubit<AuthState> {
           .doc(schoolDoc.id)
           .collection('supervisors')
           .doc(userId);
-
       // Check if the user belongs to the admins or supervisors collection
       final isAdmin = await adminsDoc.get().then((doc) => doc.exists);
       final isSupervisor = await supervisorsDoc.get().then((doc) => doc.exists);
@@ -70,88 +52,77 @@ class AuthCubit extends Cubit<AuthState> {
         if (userDoc.data()!['ban'] == 'true') {
           print('User is banned 😥');
           FirebaseAuth.instance.signOut();
-          CacheHelper.saveData(key: 'uid', value: '');
+
           emit(AuthGetUserAfterLoginErrorState('You are banned 😥'));
           return;
         }
+        CacheHelper.saveData(key: 'user', value: 'admin');
         ADMIN_MODEL = AdminModels.fromJson(userDoc.data()!);
         emit(AuthGetUserAfterLoginSuccessState('admin'));
         break;
       } else if (isSupervisor) {
+        print('schoolDoc.id: ${schoolDoc.id}😅😥');
+        CacheHelper.saveData(key: 'schoolId', value: '${schoolDoc.id}');
         userDoc = await supervisorsDoc.get();
         if (userDoc.data()!['ban'] == 'true') {
           print('User is banned 😥');
           FirebaseAuth.instance.signOut();
           CacheHelper.saveData(key: 'uid', value: '');
+          CacheHelper.saveData(key: 'user', value: '');
           emit(AuthGetUserAfterLoginErrorState('You are banned 😥'));
           return;
         }
+        CacheHelper.saveData(key: 'user', value: 'supervisor');
         SUPERVISOR_MODEL = SupervisorsModel.fromJson(userDoc.data()!);
+        print('SUPERVISOR_MODEL: $SUPERVISOR_MODEL');
+        print('SUPERVISOR_MODEL: ${SUPERVISOR_MODEL?.schoolsId} 🎉');
         emit(AuthGetUserAfterLoginSuccessState('supervisor'));
         break;
-      } else {
-        print('no user found');
-        emit(AuthGetUserAfterLoginErrorState('no user found'));
       }
     }
   }
 
-  // var userDoc;
-  // dynamic supervisorsDoc;
-  // void _getUserAfterLoginOrRegister({required String? userId}) async {
-  //   emit(AuthGetUserAfterLoginLoadingState());
-  //   // Query the admins and supervisors collections in Firebase
-  //   final adminsDoc =
-  //       FirebaseFirestore.instance.collection('admins').doc(userId);
-  //   final schoolDocs =
-  //       FirebaseFirestore.instance.collection('school').get().then((value) {
-  //     value.docs.forEach((element) {
-  //       supervisorsDoc = FirebaseFirestore.instance
-  //           .collection('school')
-  //           .doc(element.id)
-  //           .collection('supervisors')
-  //           .doc(userId);
-  //     });
-  //   });
-  //   final isAdmin = await adminsDoc.get().then((doc) => doc.exists);
-  //   final isSupervisor = await supervisorsDoc.get().then((doc) => doc.exists);
-  //   if (isAdmin) {
-  //     userDoc = await adminsDoc.get();
-  //     print('userDoc: $userDoc  isAdmin: $isAdmin  🎉');
-  //   } else if (isSupervisor) {
-  //     userDoc = await supervisorsDoc.get();
-  //     print('userDoc: $userDoc  isSupervisor: $isSupervisor  🎉');
-  //   }
-  // await FirebaseFirestore.instance
-  //     .collection('admins')
-  //     .doc(CacheHelper.getData(key: 'uid'))
-  //     .get()
-  //     .then((value) {
-  //   print('value: $value');
-  //   print('value.data(): ${value.data()}');
-  //   // chack if user is admin
-  //   if (value.data()!['isAdmin'] == 'false') {
-  //     print('User is not admin 😥');
-  //     FirebaseAuth.instance.signOut();
-  //     CacheHelper.saveData(key: 'uid', value: '');
-  //     emit(AuthGetUserAfterLoginErrorState('You are not admin 😥'));
-  //     return;
-  //   }
-
-  //check if user is banned
-  //   if (value.data()!['ban'] == 'true') {
-  //     print('User is banned 😥');
-  //     FirebaseAuth.instance.signOut();
-  //     CacheHelper.saveData(key: 'uid', value: '');
-  //     emit(AuthGetUserAfterLoginErrorState('Your account is banned 😥'));
-  //     return;
-  //   } else {
-  //     ADMIN_MODEL = AdminModels.fromJson(value.data()!);
-  //     emit(AuthGetUserAfterLoginSuccessState());
-  //   }
-  //   //emit(AuthGetUserAfterLoginSuccessState());
-  // }).catchError((error) {
-  //   emit(AuthGetUserAfterLoginErrorState(error.toString()));
-  // });
-  //}
+  void registerUser({
+    required String email,
+    required String password,
+    required String name,
+    required String phone,
+    required String gender,
+  }) {
+    emit(AuthRegisterUserLoadingState());
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    )
+        .then((value) {
+      CacheHelper.saveData(key: 'uid', value: value.user!.uid);
+      CacheHelper.saveData(key: 'user', value: 'parent');
+      ParentModel parentModel = ParentModel(
+        id: value.user!.uid,
+        name: name,
+        email: email,
+        password: password,
+        gender: gender,
+        age: '',
+        phone: phone,
+        image: AppImages.defaultImage2,
+        ban: 'false',
+        createdAt: DateTime.now().toString(),
+      );
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(value.user?.uid)
+          .set(parentModel.toMap())
+          .then((value) {
+        print('User Register Success 😎');
+        emit(AuthRegisterUserSuccessState());
+      }).catchError((error) {
+        print('Error: $error');
+        emit(AuthRegisterUserErrorState(error.toString()));
+      });
+    }).catchError((error) {
+      emit(AuthRegisterUserErrorState(error.toString()));
+    });
+  }
 }

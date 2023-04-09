@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
+import 'package:teatcher_app/core/utils/const_data.dart';
+import 'package:teatcher_app/modules/admin/widgets/app_textformfiled_widget.dart';
+import 'package:teatcher_app/modules/admin/widgets/save_changes_bottom.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
-import '../../../controller/layout/admins/layout_cubit.dart';
-import '../../../core/routes/app_routes.dart';
+import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/app_color.dart';
+import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../widgets/const_widget.dart';
-import '../widgets/app_textformfiled_widget.dart';
-import '../widgets/save_changes_bottom.dart';
 
-class AddSchoolScreen extends StatelessWidget {
-  AddSchoolScreen({super.key});
+class EditSchoolInformation extends StatefulWidget {
+  const EditSchoolInformation({super.key});
+
+  @override
+  State<EditSchoolInformation> createState() => _EditSchoolInformationState();
+}
+
+class _EditSchoolInformationState extends State<EditSchoolInformation> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -24,34 +30,42 @@ class AddSchoolScreen extends StatelessWidget {
   TextEditingController websiteController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
+  void initState() {
+    super.initState();
+    fullNameController.text = SCHOOL_MODEL!.name;
+    descriptionController.text = SCHOOL_MODEL!.description;
+    phoneController.text = SCHOOL_MODEL!.phone;
+    locationController.text = SCHOOL_MODEL!.location;
+    establishedInController.text = SCHOOL_MODEL!.establishedIn;
+    establishedByController.text = SCHOOL_MODEL!.establishedBy;
+    websiteController.text = SCHOOL_MODEL!.website;
+  }
+
+  @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add school'),
+        title: const Text("Edit School Information"),
       ),
-      body: BlocConsumer<LayoutCubit, LayoutState>(
+      body: BlocConsumer<SchoolsCubit, SchoolsState>(
         listener: (context, state) {
-          if (state is LayoutAddSchoolSuccessState) {
+          if (state is SchoolsUpdateProfileSuccessState) {
             showFlutterToast(
-              message: "School added successfully",
+              message: "School information updated successfully",
               toastColor: Colors.green,
             );
-
-            Navigator.pushNamed(
-              context,
-              Routers.ADD_SUPERVISOR,
-            );
+            Navigator.pop(context);
           }
-          if (state is LayoutAddSchoolErrorState) {
+          if (state is SchoolsUpdateProfileErrorState) {
             showFlutterToast(
-              message: state.error,
+              message: "Error updating school information",
               toastColor: Colors.red,
             );
           }
         },
         builder: (context, state) {
-          LayoutCubit layoutCubit = LayoutCubit.get(context);
+          SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: SingleChildScrollView(
@@ -61,17 +75,46 @@ class AddSchoolScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        width: SizeConfig.screenWidth * 0.6,
-                        height: SizeConfig.screenHeight * 0.3,
-                        decoration: const BoxDecoration(
-                          //color: Colors.grey,
-                          image: DecorationImage(
-                            image: AssetImage(AppImages.schoolLogo),
-                            fit: BoxFit.cover,
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          Container(
+                            width: SizeConfig.screenWidth * 0.25,
+                            height: SizeConfig.screenHeight * 0.12,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: schoolsCubit.uploadImageFile == null
+                                    ? NetworkImage(
+                                        SCHOOL_MODEL!.image,
+                                      )
+                                    : FileImage(schoolsCubit.uploadImageFile!)
+                                        as ImageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          InkWell(
+                            onTap: () {
+                              schoolsCubit.getImageFromGallery(
+                                  uid: SCHOOL_MODEL!.id);
+                            },
+                            child: Container(
+                              width: SizeConfig.screenWidth * 0.08,
+                              height: SizeConfig.screenHeight * 0.04,
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                IconBroken.Camera,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const Text(
@@ -231,22 +274,21 @@ class AddSchoolScreen extends StatelessWidget {
                       },
                     ),
                     AppSize.sv_20,
-                    state is LayoutAddSchoolLoadingState
+                    state is SchoolsUpdateProfileLoadingState
                         ? const CircularProgressComponent()
                         : SaveChangesBottom(
-                            textBottom: "Next Step",
+                            textBottom: "Save Changes",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                layoutCubit.addSchoolInFirebase(
-                                  schoolName: fullNameController.text,
-                                  schoolDescription: descriptionController.text,
-                                  schoolPhone: phoneController.text,
-                                  schoolLocation: locationController.text,
+                                schoolsCubit.updateSchoolProfile(
+                                  name: fullNameController.text,
+                                  description: descriptionController.text,
+                                  phone: phoneController.text,
+                                  address: locationController.text,
                                   establishmentDate:
                                       establishedInController.text,
-                                  establishmentType:
-                                      establishedByController.text,
-                                  schoolWebsite: websiteController.text,
+                                  establishmentBy: establishedByController.text,
+                                  website: websiteController.text,
                                 );
                               }
                             },

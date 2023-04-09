@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
 
-import '../../../controller/layout/admins/layout_cubit.dart';
-import '../../../core/routes/app_routes.dart';
+import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
+import '../../admin/widgets/app_textformfiled_widget.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
-import '../widgets/app_textformfiled_widget.dart';
-import '../widgets/save_changes_bottom.dart';
 
-class AddSupervisorScreen extends StatelessWidget {
-  AddSupervisorScreen({super.key});
+class AddSchoolSupervisorScreen extends StatelessWidget {
+  AddSchoolSupervisorScreen({super.key});
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -23,34 +22,32 @@ class AddSupervisorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
-        appBar: AppBar(title: const Text('Add school supervisor')),
-        body: BlocConsumer<LayoutCubit, LayoutState>(
+        appBar: AppBar(
+          title: const Text('Add school supervisor'),
+        ),
+        body: BlocConsumer<SchoolsCubit, SchoolsState>(
           listener: (context, state) {
-            if (state is LayoutAddSchoolSupervisorSuccessState) {
+            if (state is SchoolsAddSupervisorSuccessState) {
               showFlutterToast(
                 message: "School supervisor added successfully",
                 toastColor: Colors.green,
               );
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                Routers.ADMIN_LAYOUT,
-                (route) => false,
-              );
+              Navigator.pop(context);
             }
-            if (state is LayoutAddSchoolSupervisorErrorState) {
+            if (state is SchoolsAddSupervisorErrorState) {
               showFlutterToast(message: state.error, toastColor: Colors.red);
             }
-            if (state is LayoutCreateSuperVisorAccountErrorState) {
+            if (state is SchoolsCreateSupervisorAccountErrorState) {
               showFlutterToast(message: state.error, toastColor: Colors.red);
             }
           },
           builder: (context, state) {
-            LayoutCubit layoutCubit = LayoutCubit.get(context);
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
+            SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
+            return SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -153,13 +150,13 @@ class AddSupervisorScreen extends StatelessWidget {
                         },
                       ),
                       AppSize.sv_20,
-                      state is LayoutAddSchoolSupervisorLoadingState
+                      state is SchoolsAddSupervisorLoadingState
                           ? const CircularProgressComponent()
                           : SaveChangesBottom(
                               textBottom: "Add School Supervisor",
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  layoutCubit.createSuperVisorAccount(
+                                  schoolsCubit.createSuperVisorAccount(
                                     name: fullNameController.text,
                                     email: emailController.text,
                                     password: passwordController.text,

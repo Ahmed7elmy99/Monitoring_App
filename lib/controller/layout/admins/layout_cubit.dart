@@ -157,7 +157,7 @@ class LayoutCubit extends Cubit<LayoutState> {
         .update(updateModel.toMap())
         .then((value) {
       print('Success update user data✨');
-      getUserAfterLoginOrRegister();
+      getCurrentAdmin();
       emit(LayoutUpdateUserDataSuccessState());
     }).catchError((error) {
       emit(LayoutUpdateUserDataErrorState(error.toString()));
@@ -428,10 +428,12 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  Future<void> getUserAfterLoginOrRegister() async {
+  Future<void> getCurrentAdmin() async {
     await FirebaseFirestore.instance
         .collection('admins')
-        .doc(CacheHelper.getData(key: 'uid'))
+        .doc(CacheHelper.getData(key: 'uid') == null
+            ? ''
+            : CacheHelper.getData(key: 'uid'))
         .get()
         .then((value) {
       print('value: ${value.data()}');
