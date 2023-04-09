@@ -12,10 +12,11 @@ import 'package:teatcher_app/models/teacher_model.dart';
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../models/class_model.dart';
+import '../../../models/school_activities_model.dart';
 import '../../../models/school_model.dart';
 import '../../../models/supervisors_model.dart';
+import '../../../modules/schools/home/shcools_home_screens.dart';
 import '../../../modules/schools/setting/super_setting_screen.dart';
-import '../../../modules/schools/shcools_home_screens.dart';
 
 part 'schools_state.dart';
 
@@ -323,6 +324,232 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       emit(SchoolsAddClassSuccessState());
     }).catchError((error) {
       emit(SchoolsAddClassErrorState(error.toString()));
+    });
+  }
+
+  void createActivityInSchool({
+    required String activityName,
+    required String activityDescription,
+    required String activityDate,
+    required String activityPrice,
+    required String activityDiscount,
+  }) {
+    emit(SchoolsAddActivityLoadingState());
+    SchoolActivitiesModel schoolActivitiesModel = SchoolActivitiesModel(
+      id: SCHOOL_MODEL!.id,
+      schoolId: SCHOOL_MODEL!.id,
+      name: activityName,
+      description: activityDescription,
+      date: activityDate,
+      price: activityPrice,
+      discount: activityDiscount,
+      activityType: 'pending',
+      createdAt: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SCHOOL_MODEL?.id)
+        .collection('activities')
+        .add(schoolActivitiesModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SCHOOL_MODEL?.id)
+          .collection('activities')
+          .doc(value.id)
+          .update({
+        'id': value.id,
+      }).then((value) {
+        emit(SchoolsAddActivitySuccessState());
+      }).catchError((error) {
+        emit(SchoolsAddActivityErrorState(error.toString()));
+      });
+    }).catchError((error) {
+      emit(SchoolsAddActivityErrorState(error.toString()));
+    });
+  }
+
+  List<SupervisorsModel> schoolsSupervisorsList = [];
+  void getAllSupervisors() {
+    try {
+      emit(SchoolsGetAllSupervisorsLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(CacheHelper.getData(key: 'schoolId') == null
+              ? ''
+              : CacheHelper.getData(key: 'schoolId'))
+          .collection('supervisors')
+          .snapshots()
+          .listen((value) {
+        schoolsSupervisorsList = [];
+        for (var element in value.docs) {
+          if (element.data()['id'] == CacheHelper.getData(key: 'uid')) {
+            print('this is me🙄');
+          } else {
+            print('get all supervisors🎉');
+            print(element.data());
+            schoolsSupervisorsList
+                .add(SupervisorsModel.fromJson(element.data()));
+          }
+        }
+        print('Success get all supervisors🎉');
+        emit(SchoolsGetAllSupervisorsSuccessState());
+      });
+    } catch (error) {
+      print('Error get all supervisors: $error');
+      emit(SchoolsGetAllSupervisorsErrorState(error.toString()));
+    }
+  }
+
+  void addSchoolSupervisor({
+    required String supervisorId,
+    required String supervisorName,
+    required String supervisorEmail,
+    required String supervisorPassword,
+    required String supervisorPhone,
+  }) {
+    emit(SchoolsAddSupervisorLoadingState());
+    SupervisorsModel supervisorsModel = SupervisorsModel(
+      id: supervisorId,
+      schoolsId: SCHOOL_MODEL!.id,
+      name: supervisorName,
+      phone: supervisorPhone,
+      email: supervisorEmail,
+      password: supervisorPassword,
+      gender: 'male',
+      age: '0',
+      ban: 'false',
+      image: AppImages.defaultImage,
+      createdAt: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SCHOOL_MODEL?.id)
+        .collection('supervisors')
+        .doc(supervisorId)
+        .set(supervisorsModel.toMap())
+        .then((value) {
+      print('Success add school supervisor🎉');
+      emit(SchoolsAddSupervisorSuccessState());
+    }).catchError((error) {
+      print('Error add school supervisor: $error');
+      emit(SchoolsAddSupervisorErrorState(error.toString()));
+    });
+  }
+
+  void createSuperVisorAccount({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+  }) {
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    )
+        .then((value) {
+      print('Success Create supervisor 🎉');
+      print('value: $value');
+      if (value.user?.uid != null) {
+        addSchoolSupervisor(
+          supervisorId: value.user!.uid,
+          supervisorName: name,
+          supervisorEmail: email,
+          supervisorPassword: password,
+          supervisorPhone: phone,
+        );
+      }
+    }).catchError((error) {
+      print('Error create supervisor account: $error');
+      emit(SchoolsCreateSupervisorAccountErrorState(error.toString()));
+    });
+  }
+
+  List<TeacherModel> schoolsTeachersList = [];
+  void getAllTeacher() {
+    try {
+      emit(SchoolsGetAllTeachersLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(CacheHelper.getData(key: 'schoolId') == null
+              ? ''
+              : CacheHelper.getData(key: 'schoolId'))
+          .collection('teachers')
+          .snapshots()
+          .listen((value) {
+        schoolsTeachersList = [];
+        for (var element in value.docs) {
+          print('get all teachers🎉');
+          schoolsTeachersList.add(TeacherModel.fromJson(element.data()));
+        }
+        print('Success get all teachers🎉');
+        emit(SchoolsGetAllTeachersSuccessState());
+      });
+    } catch (error) {
+      print('Error get all teachers: $error');
+      emit(SchoolsGetAllTeachersErrorState(error.toString()));
+    }
+  }
+
+  void banSchoolTeacher(
+      {required String teacherId, required String teacherBan}) {
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SCHOOL_MODEL?.id)
+        .collection('teachers')
+        .doc(teacherId)
+        .update({
+      'ban': teacherBan,
+    }).then((value) {
+      print('Success ban school teacher🎉');
+      emit(SchoolsBanTeacherSuccessState());
+    }).catchError((error) {
+      print('Error ban school teacher: $error');
+      emit(SchoolsBanTeacherErrorState(error.toString()));
+    });
+  }
+
+  List<ClassModel> schoolsClassesList = [];
+  void getAllSchoolClasses() {
+    try {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SCHOOL_MODEL?.id)
+          .collection('classes')
+          .snapshots()
+          .listen((value) {
+        schoolsClassesList = [];
+        for (var element in value.docs) {
+          print('get all classes🎉');
+          schoolsClassesList.add(ClassModel.fromJson(element.data()));
+        }
+        print('Success get all classes🎉');
+        emit(SchoolsGetAllClassesSuccessState());
+      });
+    } catch (error) {
+      print('Error get all classes: $error');
+      emit(SchoolsGetAllClassesErrorState(error.toString()));
+    }
+  }
+
+  void banSupervisor({
+    required String supervisorId,
+    required String supervisorBan,
+  }) {
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SCHOOL_MODEL?.id)
+        .collection('supervisors')
+        .doc(supervisorId)
+        .update({
+      'ban': supervisorBan,
+    }).then((value) {
+      print('Success ban school supervisor🎉');
+      emit(SchoolsBanSupervisorSuccessState());
+    }).catchError((error) {
+      print('Error ban school supervisor: $error');
+      emit(SchoolsBanSupervisorErrorState(error.toString()));
     });
   }
 }

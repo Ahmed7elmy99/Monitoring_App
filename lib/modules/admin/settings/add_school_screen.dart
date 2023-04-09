@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/screen_config.dart';
+import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/routes/app_routes.dart';
@@ -33,29 +33,20 @@ class AddSchoolScreen extends StatelessWidget {
       body: BlocConsumer<LayoutCubit, LayoutState>(
         listener: (context, state) {
           if (state is LayoutAddSchoolSuccessState) {
-            Fluttertoast.showToast(
-              msg: "School added successfully",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-              fontSize: 16.0,
+            showFlutterToast(
+              message: "School added successfully",
+              toastColor: Colors.green,
             );
+
             Navigator.pushNamed(
               context,
               Routers.ADD_SUPERVISOR,
             );
           }
           if (state is LayoutAddSchoolErrorState) {
-            Fluttertoast.showToast(
-              msg: "Error adding school",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0,
+            showFlutterToast(
+              message: state.error,
+              toastColor: Colors.red,
             );
           }
         },

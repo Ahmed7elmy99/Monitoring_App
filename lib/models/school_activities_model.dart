@@ -1,4 +1,4 @@
-class schoolActivities {
+class SchoolActivitiesModel {
   final String id;
   final String schoolId;
   final String name;
@@ -9,7 +9,7 @@ class schoolActivities {
   final String activityType;
   final String createdAt;
 
-  schoolActivities({
+  SchoolActivitiesModel({
     required this.id,
     required this.schoolId,
     required this.name,
@@ -21,8 +21,8 @@ class schoolActivities {
     required this.createdAt,
   });
 
-  factory schoolActivities.fromJson(Map<String, dynamic> json) {
-    return schoolActivities(
+  factory SchoolActivitiesModel.fromJson(Map<String, dynamic> json) {
+    return SchoolActivitiesModel(
       id: json['id'],
       schoolId: json['schoolId'],
       name: json['name'],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
 import 'package:teatcher_app/core/routes/app_routes.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
@@ -18,7 +19,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return BlocConsumer<LayoutCubit, LayoutState>(
+    return BlocConsumer<SchoolsCubit, SchoolsState>(
       listener: (context, state) {
         if (state is AuthAdminSignOutSuccessState) {
           showFlutterToast(
@@ -38,7 +39,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        LayoutCubit cubit = LayoutCubit.get(context);
+        SchoolsCubit cubit = SchoolsCubit.get(context);
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -114,12 +115,25 @@ class SupervisorSettingsScreen extends StatelessWidget {
               _buildListItem(
                 context,
                 title: 'Edit school',
-                leadingIcon: IconBroken.Profile,
+                leadingIcon: Icons.school,
                 subtitle: 'Edit school profile information',
                 onTap: () {
                   Navigator.pushNamed(
                     context,
                     Routers.SCHOOL_EDIT_PROFILE,
+                  );
+                },
+              ),
+              _buildListItem(
+                context,
+                title: 'School Supervisor',
+                leadingIcon: IconBroken.Profile,
+                subtitle: 'Edit supervisor profile information',
+                onTap: () {
+                  cubit.getAllSupervisors();
+                  Navigator.pushNamed(
+                    context,
+                    Routers.SCHOOL_SUPERVISOR,
                   );
                 },
               ),
@@ -138,8 +152,8 @@ class SupervisorSettingsScreen extends StatelessWidget {
               _buildListItem(
                 context,
                 title: 'Add Activity',
-                leadingIcon: IconBroken.Edit,
                 subtitle: 'Create new school activity',
+                leadingIcon: IconBroken.Edit_Square,
                 onTap: () {
                   Navigator.pushNamed(
                     context,
@@ -150,7 +164,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
               _buildListItem(
                 context,
                 title: 'Add Class',
-                leadingIcon: IconBroken.User1,
+                leadingIcon: IconBroken.Edit_Square,
                 subtitle: 'Create new school class',
                 onTap: () {
                   Navigator.pushNamed(
@@ -169,7 +183,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
                       .copyWith(fontSize: 20.0),
                 ),
                 onPressed: () {
-                  cubit.signOut();
+                  BlocProvider.of<LayoutCubit>(context).signOut();
                 },
               ),
             ],

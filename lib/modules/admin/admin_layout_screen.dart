@@ -29,7 +29,7 @@ class AdminLayoutScreen extends StatelessWidget {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(IconBroken.Profile),
+                icon: Icon(IconBroken.Setting),
                 label: 'Settings',
               ),
             ],

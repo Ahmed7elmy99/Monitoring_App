@@ -29,3 +29,38 @@ class HomeModel {
     ),
   ];
 }
+
+class SchoolHomeModel {
+  final String title;
+  final String route;
+  final String image;
+
+  SchoolHomeModel({
+    required this.title,
+    required this.image,
+    required this.route,
+  });
+
+  static List<SchoolHomeModel> schoolHomeList = [
+    SchoolHomeModel(
+      title: 'Teachers',
+      image: AppImages.teacherIcon,
+      route: Routers.SCHOOL_TEACHERS,
+    ),
+    SchoolHomeModel(
+      title: 'Supervisors',
+      image: AppImages.adminIcon,
+      route: Routers.SCHOOL_SUPERVISOR,
+    ),
+    SchoolHomeModel(
+      title: 'Classes',
+      image: AppImages.classroomIcon,
+      route: Routers.SCHOOL_CLASSES,
+    ),
+    SchoolHomeModel(
+      title: 'Children',
+      image: AppImages.childrenIcon,
+      route: Routers.ADMINS_SCREEN,
+    ),
+  ];
+}

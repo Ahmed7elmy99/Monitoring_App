@@ -59,3 +59,65 @@ class SchoolsAddClassErrorState extends SchoolsState {
   final String error;
   SchoolsAddClassErrorState(this.error);
 }
+
+class SchoolsAddActivityLoadingState extends SchoolsState {}
+
+class SchoolsAddActivitySuccessState extends SchoolsState {}
+
+class SchoolsAddActivityErrorState extends SchoolsState {
+  final String error;
+  SchoolsAddActivityErrorState(this.error);
+}
+
+class SchoolsGetAllSupervisorsLoadingState extends SchoolsState {}
+
+class SchoolsGetAllSupervisorsSuccessState extends SchoolsState {}
+
+class SchoolsGetAllSupervisorsErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllSupervisorsErrorState(this.error);
+}
+
+class SchoolsCreateSupervisorAccountErrorState extends SchoolsState {
+  final String error;
+  SchoolsCreateSupervisorAccountErrorState(this.error);
+}
+
+class SchoolsAddSupervisorLoadingState extends SchoolsState {}
+
+class SchoolsAddSupervisorSuccessState extends SchoolsState {}
+
+class SchoolsAddSupervisorErrorState extends SchoolsState {
+  final String error;
+  SchoolsAddSupervisorErrorState(this.error);
+}
+
+class SchoolsGetAllTeachersLoadingState extends SchoolsState {}
+
+class SchoolsGetAllTeachersSuccessState extends SchoolsState {}
+
+class SchoolsGetAllTeachersErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllTeachersErrorState(this.error);
+}
+
+class SchoolsBanTeacherSuccessState extends SchoolsState {}
+
+class SchoolsBanTeacherErrorState extends SchoolsState {
+  final String error;
+  SchoolsBanTeacherErrorState(this.error);
+}
+
+class SchoolsGetAllClassesSuccessState extends SchoolsState {}
+
+class SchoolsGetAllClassesErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllClassesErrorState(this.error);
+}
+
+class SchoolsBanSupervisorSuccessState extends SchoolsState {}
+
+class SchoolsBanSupervisorErrorState extends SchoolsState {
+  final String error;
+  SchoolsBanSupervisorErrorState(this.error);
+}

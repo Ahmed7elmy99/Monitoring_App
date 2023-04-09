@@ -8,6 +8,10 @@ import '../../modules/admin/home/schools/schools_screen.dart';
 import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
+import '../../modules/schools/home/add_school_supervisor.dart';
+import '../../modules/schools/home/school_supervisor_screen.dart';
+import '../../modules/schools/home/school_teachers_screen.dart';
+import '../../modules/schools/home/show_school_classe_screen.dart';
 import '../../modules/schools/setting/create_class_screen.dart';
 import '../../modules/schools/setting/create_school_activities_screen.dart';
 import '../../modules/schools/setting/create_teacher_screen.dart';
@@ -31,6 +35,10 @@ class Routers {
   static const String SUPERVISORS_EDIT_PROFILE =
       '/Supervisors_Edit_Profile_Screen';
   static const String SCHOOL_EDIT_PROFILE = '/School_Edit_Profile_Screen';
+  static const String SCHOOL_SUPERVISOR = '/School_Supervisors_Screen';
+  static const String SCHOOL_TEACHERS = '/School_Teachers_Screen';
+  static const String SCHOOL_CLASSES = '/School_Classes_Screen';
+  static const String ADD_SCHOOL_SUPERVISOR = '/Add_School_Supervisor_Screen';
   static const String CREATE_TEACHER = '/Create_Teacher_Screen';
   static const String CREATE_CLASS = '/Create_Class_Screen';
   static const String CREATE_SCHOOL_ACTIVITIES =
@@ -67,7 +75,7 @@ class RoutersGenerated {
         );
       case Routers.ADD_SUPERVISOR:
         return _buildPageRoute(
-          child: AddSchoolSupervisorScreen(),
+          child: AddSupervisorScreen(),
           settings: settings,
         );
       case Routers.SUPERVISORS_LAYOUT_SCREEN:
@@ -77,6 +85,22 @@ class RoutersGenerated {
       case Routers.SUPERVISORS_EDIT_PROFILE:
         return MaterialPageRoute(
           builder: (_) => const EditSupervisorScreen(),
+        );
+      case Routers.SCHOOL_SUPERVISOR:
+        return MaterialPageRoute(
+          builder: (_) => const SchoolSupervisorScreen(),
+        );
+      case Routers.SCHOOL_TEACHERS:
+        return MaterialPageRoute(
+          builder: (_) => const SchoolTeachersScreen(),
+        );
+      case Routers.SCHOOL_CLASSES:
+        return MaterialPageRoute(
+          builder: (_) => const ShowSchoolClassScreen(),
+        );
+      case Routers.ADD_SCHOOL_SUPERVISOR:
+        return MaterialPageRoute(
+          builder: (_) => AddSchoolSupervisorScreen(),
         );
       case Routers.SCHOOL_EDIT_PROFILE:
         return MaterialPageRoute(
