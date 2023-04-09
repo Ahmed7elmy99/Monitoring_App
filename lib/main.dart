@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/controller/auth/auth_cubit.dart';
 import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
@@ -10,12 +11,17 @@ import 'core/routes/app_routes.dart';
 import 'core/services/cache_helper.dart';
 import 'modules/admin/admin_layout_screen.dart';
 import 'modules/auth/login_screen.dart';
+import 'modules/parents/parents_layout_screen.dart';
 import 'modules/schools/supervisors_layout_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await CacheHelper.init();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(MyApp(startWidget: checkUser()));
 }
 
@@ -25,6 +31,8 @@ Widget checkUser() {
     return SupervisorLayoutScreen();
   } else if (user == 'admin') {
     return const AdminLayoutScreen();
+  } else if (user == 'parent') {
+    return ParentsLayoutScreen();
   } else {
     return LoginScreen();
   }

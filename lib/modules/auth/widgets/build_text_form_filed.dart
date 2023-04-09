@@ -4,23 +4,19 @@ import 'package:teatcher_app/core/style/app_color.dart';
 class TextFormFiledComponent extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
-  final String? hintText;
+  final String hintText;
   final IconData? prefixIcon;
   final bool obscureText;
-  final Function(String)? validator;
-  final Function(String)? onChanged;
-  final Function(String)? onFieldSubmitted;
+  final FormFieldValidator<String>? validate;
 
   const TextFormFiledComponent({
     super.key,
     this.controller,
     this.keyboardType,
-    this.hintText,
+    required this.hintText,
     this.prefixIcon,
     this.obscureText = false,
-    this.onChanged,
-    this.validator,
-    this.onFieldSubmitted,
+    required this.validate,
   });
 
   @override
@@ -29,13 +25,12 @@ class TextFormFiledComponent extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
-      onChanged: onChanged,
-      onFieldSubmitted: onFieldSubmitted,
+      validator: validate,
       cursorColor: Theme.of(context).primaryColor,
       style: Theme.of(context).textTheme.bodyLarge,
       decoration: InputDecoration(
         isDense: true,
-        hintText: hintText ?? '',
+        hintText: hintText,
         hintStyle:
             TextStyle(color: Colors.grey[400], fontSize: 16.0, height: 1.0),
         prefixIcon: prefixIcon != null
@@ -59,7 +54,6 @@ class TextFormFiledComponent extends StatelessWidget {
           ),
         ),
       ),
-      validator: validator as String? Function(String?)?,
     );
   }
 }

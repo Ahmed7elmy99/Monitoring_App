@@ -7,7 +7,6 @@ import 'package:teatcher_app/core/utils/const_data.dart';
 import 'package:teatcher_app/core/utils/screen_config.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
-import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
@@ -21,9 +20,9 @@ class SupervisorSettingsScreen extends StatelessWidget {
     SizeConfig.init(context);
     return BlocConsumer<SchoolsCubit, SchoolsState>(
       listener: (context, state) {
-        if (state is AuthAdminSignOutSuccessState) {
+        if (state is SchoolSignOutSuccessState) {
           showFlutterToast(
-            message: 'Sign out successfully',
+            message: 'SuperVisor Sign out successfully',
             toastColor: Colors.green,
           );
           Navigator.pushReplacementNamed(
@@ -31,11 +30,8 @@ class SupervisorSettingsScreen extends StatelessWidget {
             Routers.LOGIN,
           );
         }
-        if (state is AuthAdminSignOutErrorState) {
-          showFlutterToast(
-            message: 'Sign out error',
-            toastColor: Colors.red,
-          );
+        if (state is SchoolSignOutErrorState) {
+          showFlutterToast(message: state.error, toastColor: Colors.red);
         }
       },
       builder: (context, state) {
@@ -175,17 +171,16 @@ class SupervisorSettingsScreen extends StatelessWidget {
               ),
               const Spacer(),
               BottomComponent(
-                child: Text(
-                  'Sign Out',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(fontSize: 20.0),
-                ),
-                onPressed: () {
-                  BlocProvider.of<LayoutCubit>(context).signOut();
-                },
-              ),
+                  child: Text(
+                    'Sign Out',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(fontSize: 20.0),
+                  ),
+                  onPressed: () {
+                    cubit.signOutSupervisor();
+                  }),
             ],
           ),
         );

@@ -42,7 +42,7 @@ class LoginScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       // color: Colors.amber,
                       image: DecorationImage(
-                        image: AssetImage("assets/images/appLogo.png"),
+                        image: AssetImage("${AppImages.authLogo}"),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -57,8 +57,8 @@ class LoginScreen extends StatelessWidget {
                           keyboardType: TextInputType.emailAddress,
                           hintText: 'Email',
                           prefixIcon: Icons.email,
-                          validator: (value) {
-                            if (value.isEmpty) {
+                          validate: (value) {
+                            if (value!.isEmpty) {
                               return 'Please enter your email';
                             }
                             if (!value.contains('@')) {
@@ -75,8 +75,8 @@ class LoginScreen extends StatelessWidget {
                           hintText: 'Password',
                           prefixIcon: Icons.lock,
                           obscureText: true,
-                          validator: (value) {
-                            if (value.isEmpty) {
+                          validate: (value) {
+                            if (value!.isEmpty) {
                               return 'Please enter your password';
                             }
                             return null;
@@ -112,25 +112,26 @@ class LoginScreen extends StatelessWidget {
                           },
                           builder: (context, state) {
                             AuthCubit cubit = AuthCubit.get(context);
-                            return BottomComponent(
-                              child: state is AuthGetUserAfterLoginLoadingState
-                                  ? const CircularProgressComponent()
-                                  : const Text(
+                            return state is AuthGetUserAfterLoginLoadingState
+                                ? CircularProgressComponent()
+                                : BottomComponent(
+                                    child: const Text(
                                       'Login',
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  cubit.userLogin(
-                                    email: emailController.text,
-                                    password: passwordController.text,
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        cubit.userLogin(
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        );
+                                      }
+                                    },
                                   );
-                                }
-                              },
-                            );
                           },
                         ),
                       ],

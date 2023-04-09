@@ -12,7 +12,7 @@ class AppImages {
   static const String classroomIcon2 = "assets/images/icons/classroom02.png";
   static const String adminIcon = "assets/images/icons/admin01.png";
   static const String backgroundImage = "assets/images/register.png";
-  static const String appLogo = "assets/images/appLogo.png";
+  static const String authLogo = "assets/images/logoWithoutBackground.png";
   static const String schoolLogo = "assets/images/school_paint.png";
   static const String teacherLogo = "assets/images/teacher_paint.png";
   static const String educationLogo = "assets/images/education.png";

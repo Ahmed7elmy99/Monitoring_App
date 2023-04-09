@@ -77,7 +77,7 @@ class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
                   ),
                 ),
                 Text(
-                  widget.model.ban == 'false' ? 'Active' : 'Banned',
+                  widget.model.ban == 'false' ? '' : 'Banned',
                   style: TextStyle(
                     fontSize: 14,
                     color: '${widget.model.ban}' == 'false'

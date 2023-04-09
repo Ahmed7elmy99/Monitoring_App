@@ -472,9 +472,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       emit(SchoolsGetAllTeachersLoadingState());
       FirebaseFirestore.instance
           .collection('schools')
-          .doc(CacheHelper.getData(key: 'schoolId') == null
-              ? ''
-              : CacheHelper.getData(key: 'schoolId'))
+          .doc(SCHOOL_MODEL?.id)
           .collection('teachers')
           .snapshots()
           .listen((value) {
@@ -550,6 +548,19 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }).catchError((error) {
       print('Error ban school supervisor: $error');
       emit(SchoolsBanSupervisorErrorState(error.toString()));
+    });
+  }
+
+  Future signOutSupervisor() async {
+    await FirebaseAuth.instance.signOut().then((value) {
+      CacheHelper.saveData(key: 'uid', value: '');
+      CacheHelper.saveData(key: 'schoolId', value: '');
+      CacheHelper.saveData(key: 'user', value: '');
+      print('Sign Out Success🎉');
+      emit(SchoolSignOutSuccessState());
+    }).catchError((error) {
+      print('Sign Out Error: $error');
+      emit(SchoolSignOutErrorState(error.toString()));
     });
   }
 }

@@ -121,3 +121,10 @@ class SchoolsBanSupervisorErrorState extends SchoolsState {
   final String error;
   SchoolsBanSupervisorErrorState(this.error);
 }
+
+class SchoolSignOutSuccessState extends SchoolsState {}
+
+class SchoolSignOutErrorState extends SchoolsState {
+  final String error;
+  SchoolSignOutErrorState(this.error);
+}

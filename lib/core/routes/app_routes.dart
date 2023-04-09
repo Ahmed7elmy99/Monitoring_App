@@ -8,6 +8,7 @@ import '../../modules/admin/home/schools/schools_screen.dart';
 import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
+import '../../modules/parents/parents_layout_screen.dart';
 import '../../modules/schools/home/add_school_supervisor.dart';
 import '../../modules/schools/home/school_supervisor_screen.dart';
 import '../../modules/schools/home/school_teachers_screen.dart';
@@ -43,6 +44,7 @@ class Routers {
   static const String CREATE_CLASS = '/Create_Class_Screen';
   static const String CREATE_SCHOOL_ACTIVITIES =
       '/Create_School_Activities_Screen';
+  static const String PARENTS_LAYOUT_SCREEN = '/Parents_Layout_Screen';
 }
 
 class RoutersGenerated {
@@ -121,6 +123,10 @@ class RoutersGenerated {
       case Routers.LOGIN:
         return MaterialPageRoute(
           builder: (_) => LoginScreen(),
+        );
+      case Routers.PARENTS_LAYOUT_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const ParentsLayoutScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => const AdminLayoutScreen());

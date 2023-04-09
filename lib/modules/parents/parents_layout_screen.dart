@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ParentLayoutScreen extends StatelessWidget {
-  const ParentLayoutScreen({super.key});
+class ParentsLayoutScreen extends StatelessWidget {
+  const ParentsLayoutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
