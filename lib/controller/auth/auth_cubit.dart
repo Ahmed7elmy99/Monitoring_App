@@ -115,6 +115,7 @@ class AuthCubit extends Cubit<AuthState> {
           .doc(value.user?.uid)
           .set(parentModel.toMap())
           .then((value) {
+        PARENT_MODEL = ParentModel.fromJson(parentModel.toMap());
         print('User Register Success 😎');
         emit(AuthRegisterUserSuccessState());
       }).catchError((error) {

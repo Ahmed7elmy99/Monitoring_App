@@ -5,6 +5,8 @@ class AppImages {
       'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
   static const String defaultSchool =
       "https://media.istockphoto.com/id/1319938106/vector/school-building-facade-with-green-grass-and-trees-public-educational-institution-exterior.jpg?s=612x612&w=0&k=20&c=DwOHvs1pe1DemAymxwS6qg7nrgTw0CwLum_sqfB-H3U=";
+  static const String defaultChildren =
+      "https://png.pngitem.com/pimgs/s/272-2726853_child-medium-light-skin-tone-icon-nio-emoji.png";
   static const String schoolIcon = "assets/images/icons/school.png";
   static const String teacherIcon = "assets/images/icons/teacher02.png";
   static const String childrenIcon = "assets/images/icons/children.png";
@@ -16,4 +18,5 @@ class AppImages {
   static const String schoolLogo = "assets/images/school_paint.png";
   static const String teacherLogo = "assets/images/teacher_paint.png";
   static const String educationLogo = "assets/images/education.png";
+  static const String childrenLogo = "assets/images/childreen.png";
 }

@@ -8,7 +8,10 @@ import '../../modules/admin/home/schools/schools_screen.dart';
 import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
+import '../../modules/auth/register_screen.dart';
 import '../../modules/parents/parents_layout_screen.dart';
+import '../../modules/parents/setting/add_children_screen.dart';
+import '../../modules/parents/setting/edit_parent_profile.dart';
 import '../../modules/schools/home/add_school_supervisor.dart';
 import '../../modules/schools/home/school_supervisor_screen.dart';
 import '../../modules/schools/home/school_teachers_screen.dart';
@@ -24,7 +27,7 @@ class Routers {
   static const String INITIAL = '/';
   static const String SPLASH_SCREEN = '/splash_screen';
   static const String LOGIN = '/Login_Screen';
-  static const String REGISTER = '/Register_Screen';
+  static const String REGISTER_SCREEN = '/Register_Screen';
   static const String ADMIN_LAYOUT = '/Admin_Layout_Screen';
   static const String ADMIN_EDIT_PROFILE = '/Admin_Edit_Profile_Screen';
   static const String ADD_ADMIN = '/Add_Admin_Screen';
@@ -45,6 +48,8 @@ class Routers {
   static const String CREATE_SCHOOL_ACTIVITIES =
       '/Create_School_Activities_Screen';
   static const String PARENTS_LAYOUT_SCREEN = '/Parents_Layout_Screen';
+  static const String PARENTS_EDIT_PROFILE = '/Parents_Edit_Profile_Screen';
+  static const String ADD_CHILDREN_SCREEN = '/Add_Children_Screen';
 }
 
 class RoutersGenerated {
@@ -54,6 +59,7 @@ class RoutersGenerated {
         return MaterialPageRoute(
           builder: (_) => const AdminLayoutScreen(),
         );
+
       case Routers.ADMIN_EDIT_PROFILE:
         return MaterialPageRoute(
           builder: (_) => const EditAdminProfileScreen(),
@@ -124,9 +130,22 @@ class RoutersGenerated {
         return MaterialPageRoute(
           builder: (_) => LoginScreen(),
         );
+      case Routers.REGISTER_SCREEN:
+        return _buildPageRoute(
+          child: RegisterScreen(),
+          settings: settings,
+        );
       case Routers.PARENTS_LAYOUT_SCREEN:
         return MaterialPageRoute(
           builder: (_) => const ParentsLayoutScreen(),
+        );
+      case Routers.PARENTS_EDIT_PROFILE:
+        return MaterialPageRoute(
+          builder: (_) => const EditParentProfileScreen(),
+        );
+      case Routers.ADD_CHILDREN_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => AddChildrenScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => const AdminLayoutScreen());

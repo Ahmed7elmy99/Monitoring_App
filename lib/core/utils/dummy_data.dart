@@ -64,3 +64,33 @@ class SchoolHomeModel {
     ),
   ];
 }
+
+class ParentHomeModel {
+  final String title;
+  final String route;
+  final String image;
+
+  ParentHomeModel({
+    required this.title,
+    required this.image,
+    required this.route,
+  });
+
+  static List<ParentHomeModel> parentHomeList = [
+    ParentHomeModel(
+      title: 'Children',
+      image: AppImages.childrenIcon,
+      route: Routers.SCHOOL_CLASSES,
+    ),
+    ParentHomeModel(
+      title: 'Teachers',
+      image: AppImages.teacherIcon,
+      route: Routers.SCHOOL_CLASSES,
+    ),
+    ParentHomeModel(
+      title: 'Classes',
+      image: AppImages.classroomIcon,
+      route: Routers.SCHOOL_CLASSES,
+    ),
+  ];
+}

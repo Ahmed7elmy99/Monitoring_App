@@ -62,7 +62,9 @@ class MyApp extends StatelessWidget {
             ..getCurrentSchool()
             ..getAllSupervisors(),
         ),
-        BlocProvider(create: (context) => ParentCubit()),
+        BlocProvider(
+          create: (context) => ParentCubit()..getCurrentParentData(),
+        ),
         BlocProvider(
           create: (context) => AuthCubit(),
         ),

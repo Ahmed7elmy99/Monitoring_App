@@ -151,7 +151,6 @@ class RegisterScreen extends StatelessWidget {
                                     return null;
                                   },
                                 ),
-                                AppSize.sv_20,
                               ],
                             ),
                           ),
@@ -180,7 +179,6 @@ class RegisterScreen extends StatelessWidget {
                                     return null;
                                   },
                                 ),
-                                AppSize.sv_20,
                               ],
                             ),
                           )
@@ -226,7 +224,38 @@ class RegisterScreen extends StatelessWidget {
                                   },
                                 );
                         },
-                      )
+                      ),
+                      AppSize.sv_10,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black45,
+                            ),
+                          ),
+                          AppSize.sh_10,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                Routers.LOGIN,
+                              );
+                            },
+                            child: const Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
