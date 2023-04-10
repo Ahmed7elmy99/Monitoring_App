@@ -9,6 +9,7 @@ import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
 import '../../modules/auth/register_screen.dart';
+import '../../modules/parents/home/parent_schools_screen.dart';
 import '../../modules/parents/parents_layout_screen.dart';
 import '../../modules/parents/setting/add_children_screen.dart';
 import '../../modules/parents/setting/edit_parent_profile.dart';
@@ -50,6 +51,7 @@ class Routers {
   static const String PARENTS_LAYOUT_SCREEN = '/Parents_Layout_Screen';
   static const String PARENTS_EDIT_PROFILE = '/Parents_Edit_Profile_Screen';
   static const String ADD_CHILDREN_SCREEN = '/Add_Children_Screen';
+  static const String PARENTS_SCHOOLS_SCREEN = '/Parents_Schools_Screen';
 }
 
 class RoutersGenerated {
@@ -146,6 +148,10 @@ class RoutersGenerated {
       case Routers.ADD_CHILDREN_SCREEN:
         return MaterialPageRoute(
           builder: (_) => AddChildrenScreen(),
+        );
+      case Routers.PARENTS_SCHOOLS_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const ParentSchoolsScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => const AdminLayoutScreen());

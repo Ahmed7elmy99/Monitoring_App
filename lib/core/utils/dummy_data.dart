@@ -78,13 +78,13 @@ class ParentHomeModel {
 
   static List<ParentHomeModel> parentHomeList = [
     ParentHomeModel(
-      title: 'Children',
-      image: AppImages.childrenIcon,
-      route: Routers.SCHOOL_CLASSES,
+      title: 'Schools',
+      image: AppImages.schoolIcon,
+      route: Routers.PARENTS_SCHOOLS_SCREEN,
     ),
     ParentHomeModel(
-      title: 'Teachers',
-      image: AppImages.teacherIcon,
+      title: 'Children',
+      image: AppImages.childrenIcon,
       route: Routers.SCHOOL_CLASSES,
     ),
     ParentHomeModel(

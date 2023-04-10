@@ -29,3 +29,17 @@ class ParentAddChildrenErrorState extends ParentState {
   final String error;
   ParentAddChildrenErrorState({required this.error});
 }
+
+class ParentGetAllSchoolsLoadingState extends ParentState {}
+
+class ParentGetAllSchoolsSuccessState extends ParentState {}
+
+class ParentGetAllSchoolsTeachersLoadingState extends ParentState {}
+
+class ParentGetAllSchoolsTeachersSuccessState extends ParentState {}
+
+class ParentGetAllSchoolsTeachersErrorState extends ParentState {}
+
+class ParentGetAllSchoolsActivityLoadingState extends ParentState {}
+
+class ParentGetAllSchoolsActivitySuccessState extends ParentState {}

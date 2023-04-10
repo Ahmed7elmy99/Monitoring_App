@@ -13,6 +13,8 @@ class AppImages {
   static const String classroomIcon = "assets/images/icons/classroam.png";
   static const String classroomIcon2 = "assets/images/icons/classroom02.png";
   static const String adminIcon = "assets/images/icons/admin01.png";
+  static const String activityIcon01 = "assets/images/icons/activity01.png";
+  static const String activityIcon02 = "assets/images/icons/activity02.png";
   static const String backgroundImage = "assets/images/register.png";
   static const String authLogo = "assets/images/logoWithoutBackground.png";
   static const String schoolLogo = "assets/images/school_paint.png";

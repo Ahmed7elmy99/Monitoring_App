@@ -9,11 +9,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
 import 'package:teatcher_app/models/children_model.dart';
-import 'package:teatcher_app/modules/parents/parent_home_screen.dart';
+import 'package:teatcher_app/models/school_activities_model.dart';
+import 'package:teatcher_app/models/teacher_model.dart';
+import 'package:teatcher_app/modules/parents/home/parent_home_screen.dart';
 import 'package:teatcher_app/modules/parents/parent_setting_screen.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../models/parent_model.dart';
+import '../../../models/school_model.dart';
 
 part 'parent_state.dart';
 
@@ -171,6 +174,58 @@ class ParentCubit extends Cubit<ParentState> {
       print('Add Children Error: $error');
       emit(ParentAddChildrenErrorState(
           error: 'Error: ${error.toString().split(']')[1]}'));
+    });
+  }
+
+  List<SchoolModel> parentSchoolsList = [];
+  void getAllSchools() {
+    emit(ParentGetAllSchoolsLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .snapshots()
+        .listen((event) {
+      parentSchoolsList = [];
+      event.docs.forEach((element) {
+        if (element.data()['ban'] != 'true') {
+          parentSchoolsList.add(SchoolModel.fromJson(element.data()));
+        }
+      });
+      emit(ParentGetAllSchoolsSuccessState());
+    });
+  }
+
+  List<TeacherModel> parentSchoolsTeachersList = [];
+  void getAllSchoolsTeachers({required String schoolId}) {
+    emit(ParentGetAllSchoolsTeachersLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('teachers')
+        .snapshots()
+        .listen((event) {
+      parentSchoolsTeachersList = [];
+      event.docs.forEach((element) {
+        parentSchoolsTeachersList.add(TeacherModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllSchoolsTeachersSuccessState());
+    });
+  }
+
+  List<SchoolActivitiesModel> parentSchoolsActivityList = [];
+  void getAllSchoolsActivity({required String schoolId}) {
+    emit(ParentGetAllSchoolsActivityLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('activities')
+        .snapshots()
+        .listen((event) {
+      parentSchoolsActivityList = [];
+      event.docs.forEach((element) {
+        parentSchoolsActivityList
+            .add(SchoolActivitiesModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllSchoolsActivitySuccessState());
     });
   }
 }
