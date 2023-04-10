@@ -4,3 +4,5 @@ part of 'parent_cubit.dart';
 abstract class ParentState {}
 
 class ParentInitial extends ParentState {}
+
+class ParentChangeBottomNavState extends ParentState {}

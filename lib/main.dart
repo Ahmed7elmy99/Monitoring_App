@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/controller/auth/auth_cubit.dart';
+import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
 import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
 import 'package:teatcher_app/core/style/theme.dart';
 
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
             ..getCurrentSchool()
             ..getAllSupervisors(),
         ),
+        BlocProvider(create: (context) => ParentCubit()),
         BlocProvider(
           create: (context) => AuthCubit(),
         ),
