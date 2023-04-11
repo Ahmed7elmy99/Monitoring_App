@@ -23,6 +23,7 @@ import '../../modules/schools/setting/create_teacher_screen.dart';
 import '../../modules/schools/setting/edit_school_information.dart';
 import '../../modules/schools/setting/edit_supervisor_screen.dart';
 import '../../modules/schools/supervisors_layout_screen.dart';
+import '../../modules/teachers/teacher_layout_screen.dart';
 
 class Routers {
   static const String INITIAL = '/';
@@ -52,6 +53,7 @@ class Routers {
   static const String PARENTS_EDIT_PROFILE = '/Parents_Edit_Profile_Screen';
   static const String ADD_CHILDREN_SCREEN = '/Add_Children_Screen';
   static const String PARENTS_SCHOOLS_SCREEN = '/Parents_Schools_Screen';
+  static const String TEACHERS_LAYOUT_SCREEN = '/Teachers_Layout_Screen';
 }
 
 class RoutersGenerated {
@@ -152,6 +154,10 @@ class RoutersGenerated {
       case Routers.PARENTS_SCHOOLS_SCREEN:
         return MaterialPageRoute(
           builder: (_) => const ParentSchoolsScreen(),
+        );
+      case Routers.TEACHERS_LAYOUT_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const TeachersLayoutScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => const AdminLayoutScreen());

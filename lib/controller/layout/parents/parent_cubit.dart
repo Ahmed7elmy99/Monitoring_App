@@ -114,17 +114,22 @@ class ParentCubit extends Cubit<ParentState> {
     });
   }
 
-  void getCurrentParentData() {
-    FirebaseFirestore.instance
-        .collection('parents')
-        .doc(CacheHelper.getData(key: 'uid') == null
-            ? ''
-            : CacheHelper.getData(key: 'uid'))
-        .snapshots()
-        .listen((event) {
-      PARENT_MODEL = ParentModel.fromJson(event.data()!);
-      emit(ParentGetCurrentDataSuccessState());
-    });
+  void getCurrentParentData() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('parents')
+          .doc(CacheHelper.getData(key: 'uid') == null
+              ? ''
+              : CacheHelper.getData(key: 'uid'))
+          .snapshots()
+          .listen((event) {
+        PARENT_MODEL = ParentModel.fromJson(event.data()!);
+        emit(ParentGetCurrentDataSuccessState());
+      });
+    } catch (e) {
+      print('Get Parent Data Error: $e');
+      emit(ParentGetCurrentDataErrorState());
+    }
   }
 
   void addChildren({
