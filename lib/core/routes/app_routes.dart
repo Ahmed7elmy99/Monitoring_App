@@ -9,7 +9,7 @@ import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
 import '../../modules/auth/register_screen.dart';
-import '../../modules/parents/home/parent_schools_screen.dart';
+import '../../modules/parents/home/schools/parent_schools_screen.dart';
 import '../../modules/parents/parents_layout_screen.dart';
 import '../../modules/parents/setting/add_children_screen.dart';
 import '../../modules/parents/setting/edit_parent_profile.dart';

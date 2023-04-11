@@ -241,7 +241,8 @@ class AddSchoolScreen extends StatelessWidget {
                                   schoolName: fullNameController.text,
                                   schoolDescription: descriptionController.text,
                                   schoolPhone: phoneController.text,
-                                  schoolLocation: locationController.text,
+                                  schoolLocation:
+                                      locationController.text.toLowerCase(),
                                   establishmentDate:
                                       establishedInController.text,
                                   establishmentType:

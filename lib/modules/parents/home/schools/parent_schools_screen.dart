@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/core/style/icon_broken.dart';
-import 'package:teatcher_app/modules/parents/home/parent_school_details_screen.dart';
-import 'package:teatcher_app/modules/parents/home/parent_schools_search_screen.dart';
+import 'package:teatcher_app/modules/parents/home/schools/parent_school_details_screen.dart';
+import 'package:teatcher_app/modules/parents/home/schools/parent_schools_search_screen.dart';
 
-import '../../../controller/layout/parents/parent_cubit.dart';
-import '../../../core/utils/app_size.dart';
-import '../../../core/utils/screen_config.dart';
-import '../../../models/school_model.dart';
-import '../../widgets/const_widget.dart';
+import '../../../../controller/layout/parents/parent_cubit.dart';
+import '../../../../core/utils/app_size.dart';
+import '../../../../core/utils/screen_config.dart';
+import '../../../../models/school_model.dart';
+import '../../../widgets/const_widget.dart';
 
 class ParentSchoolsScreen extends StatelessWidget {
   const ParentSchoolsScreen({super.key});

@@ -11,6 +11,7 @@ class AppTextFormFiledWidget extends StatefulWidget {
   final TextInputType? keyboardType;
   bool isPassword = false;
   bool isEnable = true;
+  final Function(String)? onChanged;
   final FormFieldValidator<String>? validate;
   AppTextFormFiledWidget({
     super.key,
@@ -21,6 +22,7 @@ class AppTextFormFiledWidget extends StatefulWidget {
     this.suffix,
     this.isPassword = false,
     this.isEnable = true,
+    this.onChanged,
     this.validate,
   });
 
@@ -36,6 +38,7 @@ class _AppTextFormFiledWidgetState extends State<AppTextFormFiledWidget> {
       controller: widget.controller,
       keyboardType: widget.keyboardType ?? TextInputType.text,
       validator: widget.validate,
+      onChanged: widget.onChanged,
       obscureText: widget.isPassword,
       style: GoogleFonts.almarai(
         fontSize: 16.0,

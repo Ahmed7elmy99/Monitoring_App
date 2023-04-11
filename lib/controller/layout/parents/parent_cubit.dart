@@ -16,6 +16,7 @@ import 'package:teatcher_app/modules/parents/parent_setting_screen.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../models/parent_model.dart';
+import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
 
 part 'parent_state.dart';
@@ -77,12 +78,8 @@ class ParentCubit extends Cubit<ParentState> {
     }
   }
 
-  void updateParentProfileData({
-    String? name,
-    String? phone,
-    String? age,
-    String? gender,
-  }) async {
+  void updateParentProfileData(
+      {String? name, String? phone, String? age, String? gender}) async {
     emit(ParentUpdateProfileImageLoadingState());
     await FirebaseFirestore.instance
         .collection('parents')
@@ -231,6 +228,90 @@ class ParentCubit extends Cubit<ParentState> {
             .add(SchoolActivitiesModel.fromJson(element.data()));
       });
       emit(ParentGetAllSchoolsActivitySuccessState());
+    });
+  }
+
+  List<SchoolModel> parentSchoolByLocationList = [];
+  void getSchoolByLocation({required String location}) async {
+    emit(ParentGetSchoolByLocationLoadingState());
+    await FirebaseFirestore.instance
+        .collection('schools')
+        .where('location', isGreaterThanOrEqualTo: location)
+        .get()
+        .then((value) {
+      parentSchoolByLocationList = [];
+      value.docs.forEach((element) {
+        parentSchoolByLocationList.add(SchoolModel.fromJson(element.data()));
+      });
+      emit(ParentGetSchoolByLocationSuccessState());
+    }).catchError((error) {
+      parentSchoolByLocationList = [];
+      print('Error: $error');
+      emit(ParentGetSchoolByLocationErrorState());
+    });
+  }
+
+  List<ChildrenModel> parentChildrenList = [];
+  void getAllChildren() {
+    emit(ParentGetAllChildrenLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('children')
+        .snapshots()
+        .listen((event) {
+      parentChildrenList = [];
+      event.docs.forEach((element) {
+        parentChildrenList.add(ChildrenModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllChildrenSuccessState());
+    });
+  }
+
+  void addRequestToSchool({
+    required String schoolId,
+    required String childId,
+    required String note,
+  }) {
+    emit(ParentAddRequestToSchoolLoadingState());
+    SchoolRequestModel schoolRequestModel = SchoolRequestModel(
+      id: '333333',
+      childId: childId,
+      schoolId: schoolId,
+      requestStatus: 'pending',
+      note: note,
+      createdAt: DateTime.now().toString(),
+    );
+    if (childId == '') {
+      emit(ParentAddRequestToSchoolErrorState(error: 'Please Select Child'));
+      return;
+    }
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('requestsChildren')
+        .add(schoolRequestModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(schoolId)
+          .collection('requestsChildren')
+          .doc(value.id)
+          .update({
+        'id': value.id,
+      }).then((value) {
+        print('Add Request Success🎉');
+        emit(ParentAddRequestToSchoolSuccessState());
+      }).catchError((error) {
+        print('Add Request Error: $error');
+        emit(ParentAddRequestToSchoolErrorState(
+            error: 'Error: ${error.toString().split(']')[1]}'));
+      });
+      emit(ParentAddRequestToSchoolSuccessState());
+    }).catchError((error) {
+      print('Add Request Error: $error');
+      emit(ParentAddRequestToSchoolErrorState(
+          error: 'Error: ${error.toString().split(']')[1]}'));
     });
   }
 }

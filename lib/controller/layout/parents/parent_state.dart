@@ -43,3 +43,27 @@ class ParentGetAllSchoolsTeachersErrorState extends ParentState {}
 class ParentGetAllSchoolsActivityLoadingState extends ParentState {}
 
 class ParentGetAllSchoolsActivitySuccessState extends ParentState {}
+
+class ParentGetSchoolByLocationLoadingState extends ParentState {}
+
+class ParentGetSchoolByLocationSuccessState extends ParentState {}
+
+class ParentGetSchoolByLocationErrorState extends ParentState {}
+
+class ParentGetAllChildrenLoadingState extends ParentState {}
+
+class ParentGetAllChildrenSuccessState extends ParentState {}
+
+class ParentGetAllChildrenErrorState extends ParentState {
+  final String error;
+  ParentGetAllChildrenErrorState({required this.error});
+}
+
+class ParentAddRequestToSchoolLoadingState extends ParentState {}
+
+class ParentAddRequestToSchoolSuccessState extends ParentState {}
+
+class ParentAddRequestToSchoolErrorState extends ParentState {
+  final String error;
+  ParentAddRequestToSchoolErrorState({required this.error});
+}
