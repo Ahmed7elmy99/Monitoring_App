@@ -1,45 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
+import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/children_model.dart';
+import '../../../../models/school_activities_model.dart';
 import '../../../admin/widgets/save_changes_bottom.dart';
 import '../../../widgets/const_widget.dart';
 
-class ParentSchoolRequestScreen extends StatefulWidget {
-  final String schoolId;
-  ParentSchoolRequestScreen({super.key, required this.schoolId});
+class ParentSchoolActivityJoinScreen extends StatefulWidget {
+  const ParentSchoolActivityJoinScreen({super.key});
 
   @override
-  State<ParentSchoolRequestScreen> createState() =>
-      _ParentSchoolRequestScreenState();
+  State<ParentSchoolActivityJoinScreen> createState() =>
+      _ParentSchoolActivityJoinScreenState();
 }
 
-class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
+class _ParentSchoolActivityJoinScreenState
+    extends State<ParentSchoolActivityJoinScreen> {
   TextEditingController childIdController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   ChildrenModel? selectedChild;
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
+    final SchoolActivitiesModel schoolActivitiesModel =
+        ModalRoute.of(context)!.settings.arguments as SchoolActivitiesModel;
     return Scaffold(
       appBar: AppBar(
-        title: Text('School Request'),
+        title: const Text('Join Activity'),
       ),
       body: BlocConsumer<ParentCubit, ParentState>(
         listener: (context, state) {
-          if (state is ParentAddRequestToSchoolSuccessState) {
+          if (state is ParentCreateActivityJoinSuccessState) {
             showFlutterToast(
-              message: "Request sent successfully",
+              message: 'Activity joined successfully',
               toastColor: Colors.green,
             );
-            Navigator.pop(context);
           }
-          if (state is ParentAddRequestToSchoolErrorState) {
+          if (state is ParentCreateActivityJoinErrorState) {
             showFlutterToast(
               message: state.error,
               toastColor: Colors.red,
@@ -78,7 +80,7 @@ class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
                       ),
                     ),
                     AppSize.sv_10,
-                    parentCubit.parentChildrenList.isNotEmpty
+                    parentCubit.parentChildrenForActivityJoinList.isNotEmpty
                         ? Container(
                             width: SizeConfig.screenWidth * 0.4,
                             height: SizeConfig.screenHeight * 0.06,
@@ -103,12 +105,13 @@ class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                               ),
-                              items: parentCubit.parentChildrenList
-                                  .map((child) => DropdownMenuItem(
-                                        value: child,
-                                        child: Text(child.name),
-                                      ))
-                                  .toList(),
+                              items:
+                                  parentCubit.parentChildrenForActivityJoinList
+                                      .map((child) => DropdownMenuItem(
+                                            value: child,
+                                            child: Text(child.name),
+                                          ))
+                                      .toList(),
                               onChanged: (child) {
                                 setState(() {
                                   selectedChild = child;
@@ -119,27 +122,39 @@ class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
                           )
                         : Container(),
                     AppSize.sv_20,
-                    state is ParentAddRequestToSchoolLoadingState
+                    state is ParentCreateActivityJoinLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                if (selectedChild?.schoolId == 'requested' ||
-                                    selectedChild?.schoolId == '') {
-                                  parentCubit.addRequestToSchool(
-                                    childModel: selectedChild!,
-                                    schoolId: widget.schoolId,
+                                if (selectedChild == null) {
+                                  showFlutterToast(
+                                    message: 'Please select child',
+                                    toastColor: Colors.red,
                                   );
+                                } else if (selectedChild!.activityId == '' ||
+                                    selectedChild!.activityId == 'rejected') {
+                                  if (selectedChild!.schoolId == '' ||
+                                      selectedChild!.schoolId == 'pending') {
+                                    showFlutterToast(
+                                      message: 'Please add child to school',
+                                      toastColor: Colors.red,
+                                    );
+                                  } else {
+                                    parentCubit.crateActivityJoin(
+                                      activityId: schoolActivitiesModel.id,
+                                      childModel: selectedChild!,
+                                    );
+                                  }
                                 } else {
                                   showFlutterToast(
-                                    message:
-                                        "You have already sent a request to  school",
+                                    message: 'Child already joined activity',
                                     toastColor: Colors.red,
                                   );
                                 }
                               }
                             },
-                            textBottom: "Send Request",
+                            textBottom: "Activity Join",
                           ),
                   ],
                 ),

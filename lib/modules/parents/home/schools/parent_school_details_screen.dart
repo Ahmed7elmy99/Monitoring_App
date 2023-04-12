@@ -221,7 +221,7 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               SchoolActivitiesModel model =
                                   parentCubit.parentSchoolsActivityList[index];
-                              return _buildActivityCard(model);
+                              return _buildActivityCard(context, model);
                             },
                           ),
                         )
@@ -309,93 +309,103 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityCard(SchoolActivitiesModel model) {
-    return Container(
-      width: SizeConfig.screenWidth * 0.65,
-      height: SizeConfig.screenHeight * 0.15,
-      margin: const EdgeInsets.only(right: 10.0),
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 3,
-            blurRadius: 7,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.transparent,
-            backgroundImage: AssetImage(AppImages.activityIcon02),
-          ),
-          AppSize.sh_10,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  model.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.almarai(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black54,
-                  ),
-                ),
-                Text(
-                  model.description,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.almarai(
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black54,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5.0),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 3.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: model.activityType == 'pending'
-                          ? Colors.yellow
-                          : model.activityType == 'accepted'
-                              ? Colors.green
-                              : Colors.red,
+  Widget _buildActivityCard(BuildContext context, SchoolActivitiesModel model) {
+    return InkWell(
+      onTap: () {
+        BlocProvider.of<ParentCubit>(context).getAllChildren();
+        Navigator.pushNamed(
+          context,
+          Routers.PARENTS_SCHOOL_ACTIVITY_JOIN_SCREEN,
+          arguments: model,
+        );
+      },
+      child: Container(
+        width: SizeConfig.screenWidth * 0.65,
+        height: SizeConfig.screenHeight * 0.15,
+        margin: const EdgeInsets.only(right: 10.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundColor: Colors.transparent,
+              backgroundImage: AssetImage(AppImages.activityIcon02),
+            ),
+            AppSize.sh_10,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    model.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.almarai(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black54,
                     ),
                   ),
-                  child: Text(
-                    model.activityType,
+                  Text(
+                    model.description,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.almarai(
                       fontSize: 13.0,
                       fontWeight: FontWeight.w400,
-                      color: model.activityType == 'pending'
-                          ? Colors.yellow
-                          : model.activityType == 'accepted'
-                              ? Colors.green
-                              : Colors.red,
+                      color: Colors.black54,
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    margin: const EdgeInsets.only(top: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 3.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: model.activityType == 'pending'
+                            ? Colors.yellow
+                            : model.activityType == 'accepted'
+                                ? Colors.green
+                                : Colors.red,
+                      ),
+                    ),
+                    child: Text(
+                      model.activityType,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.almarai(
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.w400,
+                        color: model.activityType == 'pending'
+                            ? Colors.yellow
+                            : model.activityType == 'accepted'
+                                ? Colors.green
+                                : Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

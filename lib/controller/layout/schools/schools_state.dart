@@ -173,3 +173,30 @@ class SchoolsRejectRequestErrorState extends SchoolsState {
   final String error;
   SchoolsRejectRequestErrorState(this.error);
 }
+
+class SchoolsAddChildrenToClassLoadingState extends SchoolsState {}
+
+class SchoolsAddChildrenToClassSuccessState extends SchoolsState {}
+
+class SchoolsAddChildrenToClassErrorState extends SchoolsState {
+  final String error;
+  SchoolsAddChildrenToClassErrorState(this.error);
+}
+
+class SchoolsGetAllActivitiesLoadingState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesSuccessState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllActivitiesErrorState(this.error);
+}
+
+class SchoolsGetAllChildrenClassLoadingState extends SchoolsState {}
+
+class SchoolsGetAllChildrenClassSuccessState extends SchoolsState {}
+
+class SchoolsGetAllChildrenClassErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllChildrenClassErrorState(this.error);
+}

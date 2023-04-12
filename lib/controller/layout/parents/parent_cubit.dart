@@ -15,6 +15,7 @@ import 'package:teatcher_app/modules/parents/home/parent_home_screen.dart';
 import 'package:teatcher_app/modules/parents/parent_setting_screen.dart';
 
 import '../../../core/services/cache_helper.dart';
+import '../../../models/activity_join_model.dart';
 import '../../../models/parent_model.dart';
 import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
@@ -141,8 +142,9 @@ class ParentCubit extends Cubit<ParentState> {
     ChildrenModel childrenModel = ChildrenModel(
       id: '333333',
       parentId: PARENT_MODEL!.id,
-      schoolId: 'null',
+      schoolId: '',
       classId: '',
+      activityId: '',
       name: name,
       gender: gender,
       age: age,
@@ -255,6 +257,7 @@ class ParentCubit extends Cubit<ParentState> {
   }
 
   List<ChildrenModel> parentChildrenList = [];
+  List<ChildrenModel> parentChildrenForActivityJoinList = [];
   void getAllChildren() {
     emit(ParentGetAllChildrenLoadingState());
     FirebaseFirestore.instance
@@ -264,10 +267,55 @@ class ParentCubit extends Cubit<ParentState> {
         .snapshots()
         .listen((event) {
       parentChildrenList = [];
+      parentChildrenForActivityJoinList = [];
       event.docs.forEach((element) {
         parentChildrenList.add(ChildrenModel.fromJson(element.data()));
+        if (element.data()['activityId'] == '') {
+          parentChildrenForActivityJoinList
+              .add(ChildrenModel.fromJson(element.data()));
+        }
       });
       emit(ParentGetAllChildrenSuccessState());
+    });
+  }
+
+  void crateActivityJoin({
+    required String activityId,
+    required ChildrenModel childModel,
+  }) {
+    emit(ParentCreateActivityJoinLoadingState());
+    ActivityJoinModel activityJoinModel = ActivityJoinModel(
+      id: '333333',
+      childId: childModel.id,
+      activityStatus: 'pending',
+      schoolActivityId: activityId,
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(childModel.schoolId)
+        .collection('activitiesJoin')
+        .add(activityJoinModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childModel.parentId)
+          .collection('children')
+          .doc(childModel.id)
+          .update({
+        'activityId': 'pending',
+      });
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(childModel.schoolId)
+          .collection('activitiesJoin')
+          .doc(value.id)
+          .update({
+        'id': value.id,
+      }).then((value) {
+        emit(ParentCreateActivityJoinSuccessState());
+      }).catchError((error) {
+        emit(ParentCreateActivityJoinErrorState(error: error.toString()));
+      });
     });
   }
 
