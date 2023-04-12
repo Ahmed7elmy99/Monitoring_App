@@ -7,7 +7,6 @@ import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/children_model.dart';
-import '../../../admin/widgets/app_textformfiled_widget.dart';
 import '../../../admin/widgets/save_changes_bottom.dart';
 import '../../../widgets/const_widget.dart';
 
@@ -22,7 +21,6 @@ class ParentSchoolRequestScreen extends StatefulWidget {
 
 class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
   TextEditingController childIdController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   ChildrenModel? selectedChild;
   @override
@@ -82,8 +80,8 @@ class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
                     AppSize.sv_10,
                     parentCubit.parentChildrenList.isNotEmpty
                         ? Container(
-                            width: SizeConfig.screenWidth * 0.8,
-                            height: SizeConfig.screenHeight * 0.08,
+                            width: SizeConfig.screenWidth * 0.4,
+                            height: SizeConfig.screenHeight * 0.06,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
@@ -115,44 +113,29 @@ class _ParentSchoolRequestScreenState extends State<ParentSchoolRequestScreen> {
                                 setState(() {
                                   selectedChild = child;
                                   childIdController.text = child!.name;
-                                  print(
-                                      'selected child id is: ' + '${child.id}');
                                 });
                               },
                             ),
                           )
                         : Container(),
                     AppSize.sv_20,
-                    const Text(
-                      "Note",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    AppSize.sv_10,
-                    AppTextFormFiledWidget(
-                      controller: noteController,
-                      hintText: "Enter note for school",
-                      prefix: Icons.person,
-                      validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please enter note for school";
-                        }
-                        return null;
-                      },
-                    ),
-                    AppSize.sv_40,
                     state is ParentAddRequestToSchoolLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                parentCubit.addRequestToSchool(
-                                  childId: selectedChild?.id ?? "",
-                                  schoolId: widget.schoolId,
-                                  note: noteController.text,
-                                );
+                                if (selectedChild?.schoolId == 'pending') {
+                                  showFlutterToast(
+                                    message:
+                                        "You have already sent a request to  school",
+                                    toastColor: Colors.red,
+                                  );
+                                } else {
+                                  parentCubit.addRequestToSchool(
+                                    childModel: selectedChild!,
+                                    schoolId: widget.schoolId,
+                                  );
+                                }
                               }
                             },
                             textBottom: "Send Request",

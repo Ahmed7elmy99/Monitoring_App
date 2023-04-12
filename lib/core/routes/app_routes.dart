@@ -9,13 +9,18 @@ import '../../modules/admin/settings/add_school_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
 import '../../modules/auth/register_screen.dart';
+import '../../modules/parents/home/children/parent_childreen_screen.dart';
+import '../../modules/parents/home/schools/parent_school_teacher_details.dart';
 import '../../modules/parents/home/schools/parent_schools_screen.dart';
 import '../../modules/parents/parents_layout_screen.dart';
 import '../../modules/parents/setting/add_children_screen.dart';
 import '../../modules/parents/setting/edit_parent_profile.dart';
+import '../../modules/parents/setting/parent_show_requests.dart';
 import '../../modules/schools/home/add_school_supervisor.dart';
+import '../../modules/schools/home/school_requests_screen.dart';
 import '../../modules/schools/home/school_supervisor_screen.dart';
 import '../../modules/schools/home/school_teachers_screen.dart';
+import '../../modules/schools/home/schools_children_screen.dart';
 import '../../modules/schools/home/show_school_classe_screen.dart';
 import '../../modules/schools/setting/create_class_screen.dart';
 import '../../modules/schools/setting/create_school_activities_screen.dart';
@@ -44,6 +49,8 @@ class Routers {
   static const String SCHOOL_SUPERVISOR = '/School_Supervisors_Screen';
   static const String SCHOOL_TEACHERS = '/School_Teachers_Screen';
   static const String SCHOOL_CLASSES = '/School_Classes_Screen';
+  static const String SCHOOL_CHILDREN = '/School_Children_Screen';
+  static const String SCHOOL_REQUESTS = '/School_Requests_Screen';
   static const String ADD_SCHOOL_SUPERVISOR = '/Add_School_Supervisor_Screen';
   static const String CREATE_TEACHER = '/Create_Teacher_Screen';
   static const String CREATE_CLASS = '/Create_Class_Screen';
@@ -53,6 +60,11 @@ class Routers {
   static const String PARENTS_EDIT_PROFILE = '/Parents_Edit_Profile_Screen';
   static const String ADD_CHILDREN_SCREEN = '/Add_Children_Screen';
   static const String PARENTS_SCHOOLS_SCREEN = '/Parents_Schools_Screen';
+  static const String PARENTS_CHILDREN_SCREEN = '/Parents_Children_Screen';
+  static const String PARENTS_SHOW_REQUESTS_SCREEN =
+      '/Parents_Show_Requests_Screen';
+  static const String PARENTS_SCHOOL_TEACHERS_SCREEN =
+      '/Parents_School_Teachers_Screen';
   static const String TEACHERS_LAYOUT_SCREEN = '/Teachers_Layout_Screen';
 }
 
@@ -110,6 +122,14 @@ class RoutersGenerated {
         return MaterialPageRoute(
           builder: (_) => const ShowSchoolClassScreen(),
         );
+      case Routers.SCHOOL_CHILDREN:
+        return MaterialPageRoute(
+          builder: (_) => const SchoolChildrenScreen(),
+        );
+      case Routers.SCHOOL_REQUESTS:
+        return MaterialPageRoute(
+          builder: (_) => const SchoolRequestsScreen(),
+        );
       case Routers.ADD_SCHOOL_SUPERVISOR:
         return MaterialPageRoute(
           builder: (_) => AddSchoolSupervisorScreen(),
@@ -154,6 +174,19 @@ class RoutersGenerated {
       case Routers.PARENTS_SCHOOLS_SCREEN:
         return MaterialPageRoute(
           builder: (_) => const ParentSchoolsScreen(),
+        );
+      case Routers.PARENTS_CHILDREN_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const ParentChildrenScreen(),
+        );
+      case Routers.PARENTS_SHOW_REQUESTS_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const ParentShowRequestsScreen(),
+        );
+      case Routers.PARENTS_SCHOOL_TEACHERS_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const ParentSchoolTeacherDetails(),
+          settings: settings,
         );
       case Routers.TEACHERS_LAYOUT_SCREEN:
         return MaterialPageRoute(

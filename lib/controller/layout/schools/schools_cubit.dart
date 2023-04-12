@@ -11,8 +11,10 @@ import 'package:teatcher_app/models/teacher_model.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
+import '../../../models/children_model.dart';
 import '../../../models/class_model.dart';
 import '../../../models/school_activities_model.dart';
+import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
 import '../../../models/supervisors_model.dart';
 import '../../../modules/schools/home/shcools_home_screens.dart';
@@ -370,14 +372,16 @@ class SchoolsCubit extends Cubit<SchoolsState> {
   }
 
   List<SupervisorsModel> schoolsSupervisorsList = [];
-  void getAllSupervisors() {
+  void getAllSupervisors() async {
     try {
       emit(SchoolsGetAllSupervisorsLoadingState());
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('schools')
-          .doc(CacheHelper.getData(key: 'schoolId') == null
-              ? ''
-              : CacheHelper.getData(key: 'schoolId'))
+          .doc(
+            SUPERVISOR_MODEL?.schoolsId == null
+                ? CacheHelper.getData(key: 'schoolId')
+                : SUPERVISOR_MODEL?.schoolsId,
+          )
           .collection('supervisors')
           .snapshots()
           .listen((value) {
@@ -387,7 +391,6 @@ class SchoolsCubit extends Cubit<SchoolsState> {
             print('this is me🙄');
           } else {
             print('get all supervisors🎉');
-            print(element.data());
             schoolsSupervisorsList
                 .add(SupervisorsModel.fromJson(element.data()));
           }
@@ -561,6 +564,147 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }).catchError((error) {
       print('Sign Out Error: $error');
       emit(SchoolSignOutErrorState(error.toString()));
+    });
+  }
+
+  List<SchoolRequestModel> schoolsRequestsList = [];
+  void getAllRequests() {
+    try {
+      emit(SchoolsGetAllRequestsLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SUPERVISOR_MODEL?.schoolsId)
+          .collection('requestsChildren')
+          .snapshots()
+          .listen((value) {
+        schoolsRequestsList = [];
+        for (var element in value.docs) {
+          print('get all requests🎉');
+          schoolsRequestsList.add(SchoolRequestModel.fromJson(element.data()));
+        }
+        print('Success get all requests🎉');
+        emit(SchoolsGetAllRequestsSuccessState());
+      });
+    } catch (error) {
+      print('Error get all requests: $error');
+      emit(SchoolsGetAllRequestsErrorState(error.toString()));
+    }
+  }
+
+  ChildrenModel? childrenRequestModel;
+  void getChildForRequest({
+    required String childId,
+  }) {
+    emit(SchoolsGetChildForRequestLoadingState());
+    FirebaseFirestore.instance.collection('parents').get().then((value) {
+      for (var element in value.docs) {
+        element.reference
+            .collection('children')
+            .doc(childId)
+            .get()
+            .then((value) {
+          if (value.exists) {
+            childrenRequestModel = ChildrenModel.fromJson(value.data()!);
+            print('Success get child for request🎉');
+            emit(SchoolsGetChildForRequestSuccessState());
+          }
+        });
+      }
+    }).catchError((error) {
+      print('Error get child for request: $error');
+      emit(SchoolsGetChildForRequestErrorState(error.toString()));
+    });
+  }
+
+  List<ChildrenModel> schoolsChildrenList = [];
+  void getAllSchoolChildren() async {
+    try {
+      emit(SchoolsGetAllChildrenLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SUPERVISOR_MODEL?.schoolsId)
+          .collection('children')
+          .snapshots()
+          .listen((value) {
+        schoolsChildrenList = [];
+        for (var element in value.docs) {
+          schoolsChildrenList.add(ChildrenModel.fromJson(element.data()));
+        }
+        print('Success get all children🎉');
+        emit(SchoolsGetAllChildrenSuccessState());
+      });
+    } catch (error) {
+      print('Error get all children: $error');
+      emit(SchoolsGetAllChildrenErrorState(error.toString()));
+    }
+  }
+
+  void acceptRequest(
+      {required ChildrenModel childrenModel, required String requestId}) async {
+    emit(SchoolsAccepteRequestLoadingState());
+    await FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('children')
+        .doc(childrenModel.id)
+        .set(childrenModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childrenModel.parentId)
+          .collection('requests')
+          .doc(requestId)
+          .update({
+        'requestStatus': 'accepted',
+      });
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SUPERVISOR_MODEL?.schoolsId)
+          .collection('requestsChildren')
+          .doc(requestId)
+          .update({
+        'requestStatus': 'accepted',
+      });
+      emit(SchoolsAccepteRequestSuccessState());
+    }).catchError((error) {
+      print('Error accepte request: $error');
+      emit(SchoolsAccepteRequestErrorState(error.toString()));
+    });
+  }
+
+  void rejectRequest({required String requestId, required String stringNote}) {
+    emit(SchoolsRejectRequestLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('requestsChildren')
+        .doc(requestId)
+        .update({
+      'requestStatus': 'rejected',
+      'note': stringNote,
+    }).then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childrenRequestModel?.parentId)
+          .collection('requests')
+          .doc(requestId)
+          .update({
+        'requestStatus': 'rejected',
+        'note': stringNote,
+      });
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childrenRequestModel?.parentId)
+          .collection('children')
+          .doc(childrenRequestModel?.id)
+          .update({
+        'schoolId': '',
+        'note': stringNote,
+      });
+      emit(SchoolsRejectRequestSuccessState());
+    }).catchError((error) {
+      print('Error reject request: $error');
+      emit(SchoolsRejectRequestErrorState(error.toString()));
     });
   }
 }

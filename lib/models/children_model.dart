@@ -1,6 +1,8 @@
 class ChildrenModel {
   final String id;
   final String parentId;
+  final String schoolId;
+  final String classId;
   final String name;
   final String gender;
   final int age;
@@ -8,11 +10,14 @@ class ChildrenModel {
   final String certificate;
   final String phone;
   final String image;
+
   final String createdAt;
 
   ChildrenModel({
     required this.id,
     required this.parentId,
+    required this.schoolId,
+    required this.classId,
     required this.name,
     required this.gender,
     required this.age,
@@ -27,6 +32,8 @@ class ChildrenModel {
     return ChildrenModel(
       id: json['id'],
       parentId: json['parentId'],
+      schoolId: json['schoolId'],
+      classId: json['classId'],
       name: json['name'],
       gender: json['gender'],
       age: json['age'],
@@ -41,6 +48,8 @@ class ChildrenModel {
     return {
       'id': id,
       'parentId': parentId,
+      'schoolId': schoolId,
+      'classId': classId,
       'name': name,
       'gender': gender,
       'age': age,

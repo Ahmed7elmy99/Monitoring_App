@@ -60,7 +60,12 @@ class SchoolHomeModel {
     SchoolHomeModel(
       title: 'Children',
       image: AppImages.childrenIcon,
-      route: Routers.ADMINS_SCREEN,
+      route: Routers.SCHOOL_CHILDREN,
+    ),
+    SchoolHomeModel(
+      title: 'Requests',
+      image: AppImages.requestIcon,
+      route: Routers.SCHOOL_REQUESTS,
     ),
   ];
 }
@@ -85,12 +90,7 @@ class ParentHomeModel {
     ParentHomeModel(
       title: 'Children',
       image: AppImages.childrenIcon,
-      route: Routers.SCHOOL_CLASSES,
-    ),
-    ParentHomeModel(
-      title: 'Classes',
-      image: AppImages.classroomIcon,
-      route: Routers.SCHOOL_CLASSES,
+      route: Routers.PARENTS_CHILDREN_SCREEN,
     ),
   ];
 }

@@ -116,6 +116,9 @@ class ParentHomeScreen extends StatelessWidget {
         if (item.title == 'Schools') {
           BlocProvider.of<ParentCubit>(context).getAllSchools();
           Navigator.pushNamed(context, item.route);
+        } else if (item.title == 'Children') {
+          BlocProvider.of<ParentCubit>(context).getAllChildren();
+          Navigator.pushNamed(context, item.route);
         } else
           Navigator.pushNamed(context, item.route);
       },

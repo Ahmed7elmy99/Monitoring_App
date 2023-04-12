@@ -129,11 +129,15 @@ class ParentSettingScreen extends StatelessWidget {
                 },
               ),
               BuildListTitleWidget(
-                title: 'New school supervisor',
-                leadingIcon: IconBroken.Profile,
-                subtitle: 'Create new school supervisor account',
+                title: 'Show Requests',
+                leadingIcon: IconBroken.Document,
+                subtitle: 'show all requests to your account',
                 onTap: () {
-                  Navigator.pushNamed(context, Routers.ADD_SCHOOL);
+                  parentCubit.getAllRequests();
+                  Navigator.pushNamed(
+                    context,
+                    Routers.PARENTS_SHOW_REQUESTS_SCREEN,
+                  );
                 },
               ),
               const Spacer(),

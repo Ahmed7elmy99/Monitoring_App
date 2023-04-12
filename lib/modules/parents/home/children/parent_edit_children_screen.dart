@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
-import '../../../controller/layout/parents/parent_cubit.dart';
-import '../../../core/utils/app_images.dart';
-import '../../../core/utils/app_size.dart';
-import '../../../core/utils/screen_config.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
-import '../../admin/widgets/save_changes_bottom.dart';
-import '../../widgets/const_widget.dart';
+import '../../../../controller/layout/parents/parent_cubit.dart';
+import '../../../../core/style/icon_broken.dart';
+import '../../../../core/utils/app_size.dart';
+import '../../../../core/utils/screen_config.dart';
+import '../../../../models/children_model.dart';
+import '../../../admin/widgets/app_textformfiled_widget.dart';
+import '../../../admin/widgets/save_changes_bottom.dart';
+import '../../../widgets/const_widget.dart';
 
-class AddChildrenScreen extends StatelessWidget {
-  AddChildrenScreen({super.key});
+class ParentEditChildren extends StatefulWidget {
+  final ChildrenModel childrenModel;
+  const ParentEditChildren({super.key, required this.childrenModel});
+
+  @override
+  State<ParentEditChildren> createState() => _ParentEditChildrenState();
+}
+
+class _ParentEditChildrenState extends State<ParentEditChildren> {
   TextEditingController nameController = TextEditingController();
   TextEditingController educationController = TextEditingController();
   TextEditingController ageController = TextEditingController();
@@ -20,21 +28,39 @@ class AddChildrenScreen extends StatelessWidget {
   TextEditingController certificateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.childrenModel.name;
+    educationController.text = widget.childrenModel.educationLevel;
+    ageController.text = widget.childrenModel.age.toString();
+    genderController.text = widget.childrenModel.gender;
+    phoneController.text = widget.childrenModel.phone;
+    certificateController.text = widget.childrenModel.certificate;
+  }
+
+  @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Children'),
+        title: const Text('Edit Children'),
       ),
       body: BlocConsumer<ParentCubit, ParentState>(
         listener: (context, state) {
-          if (state is ParentAddChildrenSuccessState) {
+          if (state is ParentUpdateProfileImageSuccessState) {
             showFlutterToast(
-              message: 'Children Added Successfully',
+              message: "Profile Image Updated Successfully",
               toastColor: Colors.green,
             );
           }
-          if (state is ParentAddChildrenErrorState) {
+          if (state is ParentUpdateProfileSuccessState) {
+            Navigator.pop(context);
+            showFlutterToast(
+              message: "Profile Updated Successfully",
+              toastColor: Colors.green,
+            );
+          }
+          if (state is ParentUpdateProfileErrorState) {
             showFlutterToast(
               message: state.error,
               toastColor: Colors.red,
@@ -52,17 +78,46 @@ class AddChildrenScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        width: SizeConfig.screenWidth * 0.6,
-                        height: SizeConfig.screenHeight * 0.3,
-                        decoration: const BoxDecoration(
-                          //color: Colors.grey,
-                          image: DecorationImage(
-                            image: AssetImage(AppImages.childrenLogo),
-                            fit: BoxFit.cover,
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          Container(
+                            width: SizeConfig.screenWidth * 0.25,
+                            height: SizeConfig.screenHeight * 0.12,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: parentCubit.childrenImageFile == null
+                                    ? NetworkImage(
+                                        widget.childrenModel.image,
+                                      )
+                                    : FileImage(parentCubit.childrenImageFile!)
+                                        as ImageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          InkWell(
+                            onTap: () {
+                              parentCubit.updateChildrenProfileImage(
+                                  userId: widget.childrenModel.id);
+                            },
+                            child: Container(
+                              width: SizeConfig.screenWidth * 0.08,
+                              height: SizeConfig.screenHeight * 0.04,
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                IconBroken.Camera,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const Text(
@@ -210,15 +265,16 @@ class AddChildrenScreen extends StatelessWidget {
                       },
                     ),
                     AppSize.sv_20,
-                    state is ParentAddChildrenLoadingState
+                    state is ParentUpdateProfileLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
-                            textBottom: "Add Children",
+                            textBottom: "Update Children",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                parentCubit.addChildren(
+                                parentCubit.updateChildrenProfile(
+                                  id: widget.childrenModel.id,
                                   name: nameController.text,
-                                  educationLevel: educationController.text,
+                                  education: educationController.text,
                                   phone: phoneController.text,
                                   age: int.parse(ageController.text),
                                   gender: genderController.text,

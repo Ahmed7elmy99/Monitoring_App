@@ -141,6 +141,8 @@ class ParentCubit extends Cubit<ParentState> {
     ChildrenModel childrenModel = ChildrenModel(
       id: '333333',
       parentId: PARENT_MODEL!.id,
+      schoolId: 'null',
+      classId: '',
       name: name,
       gender: gender,
       age: age,
@@ -224,8 +226,9 @@ class ParentCubit extends Cubit<ParentState> {
         .listen((event) {
       parentSchoolsActivityList = [];
       event.docs.forEach((element) {
-        parentSchoolsActivityList
-            .add(SchoolActivitiesModel.fromJson(element.data()));
+        if (element.data()['activityType'] != 'pending')
+          parentSchoolsActivityList
+              .add(SchoolActivitiesModel.fromJson(element.data()));
       });
       emit(ParentGetAllSchoolsActivitySuccessState());
     });
@@ -268,21 +271,20 @@ class ParentCubit extends Cubit<ParentState> {
     });
   }
 
+  String requestChildId = '';
   void addRequestToSchool({
     required String schoolId,
-    required String childId,
-    required String note,
+    required ChildrenModel childModel,
   }) {
     emit(ParentAddRequestToSchoolLoadingState());
     SchoolRequestModel schoolRequestModel = SchoolRequestModel(
-      id: '333333',
-      childId: childId,
-      schoolId: schoolId,
-      requestStatus: 'pending',
-      note: note,
-      createdAt: DateTime.now().toString(),
-    );
-    if (childId == '') {
+        id: '333333',
+        childId: childModel.id,
+        schoolId: schoolId,
+        requestStatus: 'pending',
+        note: '',
+        createdAt: DateTime.now().toString());
+    if (childModel.id == '') {
       emit(ParentAddRequestToSchoolErrorState(error: 'Please Select Child'));
       return;
     }
@@ -292,6 +294,7 @@ class ParentCubit extends Cubit<ParentState> {
         .collection('requestsChildren')
         .add(schoolRequestModel.toMap())
         .then((value) {
+      requestChildId = value.id;
       FirebaseFirestore.instance
           .collection('schools')
           .doc(schoolId)
@@ -299,6 +302,39 @@ class ParentCubit extends Cubit<ParentState> {
           .doc(value.id)
           .update({
         'id': value.id,
+      }).then((value) {
+        FirebaseFirestore.instance
+            .collection('parents')
+            .doc(PARENT_MODEL!.id)
+            .collection('requests')
+            .doc(requestChildId)
+            .set({
+              'id': requestChildId,
+              'childId': childModel.id,
+              'schoolId': schoolId,
+              'requestStatus': 'pending',
+              'note': '',
+              'createdAt': DateTime.now().toString(),
+            })
+            .then((value) {})
+            .catchError((error) {
+              print('Add Request Error: $error');
+              emit(ParentAddRequestToSchoolErrorState(
+                  error: 'Error: ${error.toString().split(']')[1]}'));
+            });
+        emit(ParentAddRequestToSchoolSuccessState());
+      }).catchError((error) {
+        print('Add Request Error: $error');
+        emit(ParentAddRequestToSchoolErrorState(
+            error: 'Error: ${error.toString().split(']')[1]}'));
+      });
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(PARENT_MODEL!.id)
+          .collection('children')
+          .doc(childModel.id)
+          .update({
+        'schoolId': 'pending',
       }).then((value) {
         print('Add Request Success🎉');
         emit(ParentAddRequestToSchoolSuccessState());
@@ -312,6 +348,98 @@ class ParentCubit extends Cubit<ParentState> {
       print('Add Request Error: $error');
       emit(ParentAddRequestToSchoolErrorState(
           error: 'Error: ${error.toString().split(']')[1]}'));
+    });
+  }
+
+  List<SchoolRequestModel> parentSchoolRequestsList = [];
+  void getAllRequests() {
+    emit(ParentGetAllRequestsLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('requests')
+        .snapshots()
+        .listen((event) {
+      parentSchoolRequestsList = [];
+      event.docs.forEach((element) {
+        parentSchoolRequestsList
+            .add(SchoolRequestModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllRequestsSuccessState());
+    });
+  }
+
+  String childrenImageUrl = '';
+  File? childrenImageFile;
+  void updateChildrenProfileImage({required String userId}) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    if (image != null) {
+      childrenImageFile = File(image.path);
+      childrenImageUrl = image.path;
+      await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('images/$userId')
+          .putFile(childrenImageFile!)
+          .then((p0) => {
+                p0.ref.getDownloadURL().then((value) {
+                  childrenImageUrl = value;
+                  childrenImageFile = null;
+                  FirebaseFirestore.instance
+                      .collection('parents')
+                      .doc(PARENT_MODEL!.id)
+                      .collection('children')
+                      .doc(userId)
+                      .update({
+                    'image': childrenImageUrl,
+                  }).then((value) {
+                    emit(ParentUpdateProfileImageSuccessState());
+                  }).catchError((error) {
+                    print('Error: $error');
+                    emit(ParentUpdateProfileImageErrorState());
+                  });
+                })
+              })
+          .catchError((error) {
+        print('Error: $error');
+        emit(ParentUpdateProfileImageErrorState());
+      });
+    } else {
+      emit(ParentUpdateProfileImageErrorState());
+    }
+  }
+
+  void updateChildrenProfile({
+    required String id,
+    String? name,
+    String? education,
+    String? phone,
+    int? age,
+    String? gender,
+    String? certificate,
+  }) {
+    emit(ParentUpdateProfileLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('children')
+        .doc(id)
+        .update({
+      'name': name,
+      'educationLevel': education,
+      'phone': phone,
+      'age': age,
+      'gender': gender,
+      'certificate': certificate,
+    }).then((value) {
+      emit(ParentUpdateProfileSuccessState());
+    }).catchError((error) {
+      print('Error: $error');
+      emit(
+        ParentUpdateProfileErrorState(
+            error: 'Error: ${error.toString().split(']')[1]}'),
+      );
     });
   }
 }

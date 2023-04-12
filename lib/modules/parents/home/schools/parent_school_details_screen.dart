@@ -3,15 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/models/school_activities_model.dart';
 import 'package:teatcher_app/modules/parents/home/schools/parent_school_request_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/style/icon_broken.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/school_model.dart';
 import '../../../../models/teacher_model.dart';
 import '../../../widgets/build_cover_text.dart';
+import '../../../widgets/luanch_url.dart';
 
 class ParentSchoolsDetailsScreen extends StatelessWidget {
   final SchoolModel schoolModel;
@@ -22,6 +24,15 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Schools Details'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              IconBroken.Chat,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: BlocConsumer<ParentCubit, ParentState>(
         listener: (context, state) {},
@@ -145,7 +156,7 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                       const Spacer(),
                       IconButton(
                         onPressed: () {
-                          _launchURL(schoolModel.website);
+                          launchURLFunction(schoolModel.website);
                         },
                         icon: const Icon(
                           Icons.open_in_new,
@@ -175,7 +186,7 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               TeacherModel model =
                                   parentCubit.parentSchoolsTeachersList[index];
-                              return _buildTeacherCard(model);
+                              return _buildTeacherCard(context, model);
                             },
                           ),
                         )
@@ -248,51 +259,52 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
     );
   }
 
-  void _launchURL(String website) async {
-    final Uri parsedUri = Uri.parse(website);
-    print(parsedUri);
-    if (!await launchUrl(parsedUri, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not launch $parsedUri');
-    }
-  }
-
-  Widget _buildTeacherCard(TeacherModel teacherModel) {
-    return Container(
-      width: SizeConfig.screenWidth * 0.27,
-      margin: const EdgeInsets.only(right: 10.0),
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 3,
-            blurRadius: 7,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundImage: NetworkImage(teacherModel.image),
-          ),
-          AppSize.sv_5,
-          Text(
-            teacherModel.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.almarai(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w400,
-              color: Colors.black54,
+  Widget _buildTeacherCard(BuildContext context, TeacherModel teacherModel) {
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          Routers.PARENTS_SCHOOL_TEACHERS_SCREEN,
+          arguments: teacherModel,
+        );
+      },
+      child: Container(
+        width: SizeConfig.screenWidth * 0.27,
+        margin: const EdgeInsets.only(right: 10.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(teacherModel.image),
+            ),
+            AppSize.sv_5,
+            Text(
+              teacherModel.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.almarai(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -121,6 +121,15 @@ class SchoolsHomeScreen extends StatelessWidget {
         } else if (item.title == 'Classes') {
           BlocProvider.of<SchoolsCubit>(context).getAllSchoolClasses();
           Navigator.pushNamed(context, item.route);
+        } else if (item.title == "Supervisors") {
+          BlocProvider.of<SchoolsCubit>(context).getAllSupervisors();
+          Navigator.pushNamed(context, item.route);
+        } else if (item.title == "Requests") {
+          BlocProvider.of<SchoolsCubit>(context).getAllRequests();
+          Navigator.pushNamed(context, item.route);
+        } else if (item.title == "Children") {
+          BlocProvider.of<SchoolsCubit>(context).getAllSchoolChildren();
+          Navigator.pushNamed(context, item.route);
         } else {
           Navigator.pushNamed(context, item.route);
         }

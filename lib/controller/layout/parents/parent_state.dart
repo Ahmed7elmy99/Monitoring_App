@@ -67,3 +67,16 @@ class ParentAddRequestToSchoolErrorState extends ParentState {
   final String error;
   ParentAddRequestToSchoolErrorState({required this.error});
 }
+
+class ParentUpdateProfileLoadingState extends ParentState {}
+
+class ParentUpdateProfileSuccessState extends ParentState {}
+
+class ParentUpdateProfileErrorState extends ParentState {
+  final String error;
+  ParentUpdateProfileErrorState({required this.error});
+}
+
+class ParentGetAllRequestsLoadingState extends ParentState {}
+
+class ParentGetAllRequestsSuccessState extends ParentState {}
