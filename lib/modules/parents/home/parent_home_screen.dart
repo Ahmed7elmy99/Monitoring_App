@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/core/utils/dummy_data.dart';
 
-import '../../../controller/layout/schools/schools_cubit.dart';
+import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../core/utils/dummy_data.dart';
 import '../../../core/utils/screen_config.dart';
 
-class SchoolsHomeScreen extends StatelessWidget {
-  const SchoolsHomeScreen({super.key});
+class ParentHomeScreen extends StatelessWidget {
+  const ParentHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return BlocConsumer<SchoolsCubit, SchoolsState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+    return BlocConsumer<ParentCubit, ParentState>(
+      listener: (context, state) {},
       builder: (context, state) {
         return SingleChildScrollView(
           child: Padding(
@@ -40,8 +38,8 @@ class SchoolsHomeScreen extends StatelessWidget {
                         color: Colors.grey[200],
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image: NetworkImage(SUPERVISOR_MODEL?.image ??
-                              AppImages.defaultImage),
+                          image: NetworkImage(
+                              PARENT_MODEL?.image ?? AppImages.defaultImage),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -71,7 +69,7 @@ class SchoolsHomeScreen extends StatelessWidget {
                 ),
                 AppSize.sv_5,
                 Text(
-                  SUPERVISOR_MODEL?.name ?? 'Supervisor name',
+                  PARENT_MODEL?.name ?? 'Supervisor name',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -79,7 +77,7 @@ class SchoolsHomeScreen extends StatelessWidget {
                 ),
                 AppSize.sv_5,
                 Text(
-                  SUPERVISOR_MODEL?.email ?? 'Supervisor email',
+                  PARENT_MODEL?.email ?? 'Supervisor email',
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
@@ -97,10 +95,10 @@ class SchoolsHomeScreen extends StatelessWidget {
                     crossAxisSpacing: 10,
                     childAspectRatio: 1.0,
                   ),
-                  itemCount: SchoolHomeModel.schoolHomeList.length,
+                  itemCount: ParentHomeModel.parentHomeList.length,
                   itemBuilder: (context, index) {
-                    SchoolHomeModel model =
-                        SchoolHomeModel.schoolHomeList[index];
+                    ParentHomeModel model =
+                        ParentHomeModel.parentHomeList[index];
                     return _buildListItem(context, item: model);
                   },
                 ),
@@ -112,27 +110,17 @@ class SchoolsHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListItem(BuildContext context, {required SchoolHomeModel item}) {
+  Widget _buildListItem(BuildContext context, {required ParentHomeModel item}) {
     return InkWell(
       onTap: () {
-        if (item.title == 'Teachers') {
-          BlocProvider.of<SchoolsCubit>(context).getAllTeacher();
+        if (item.title == 'Schools') {
+          BlocProvider.of<ParentCubit>(context).getAllSchools();
           Navigator.pushNamed(context, item.route);
-        } else if (item.title == 'Classes') {
-          BlocProvider.of<SchoolsCubit>(context).getAllSchoolClasses();
+        } else if (item.title == 'Children') {
+          BlocProvider.of<ParentCubit>(context).getAllChildren();
           Navigator.pushNamed(context, item.route);
-        } else if (item.title == "Supervisors") {
-          BlocProvider.of<SchoolsCubit>(context).getAllSupervisors();
+        } else
           Navigator.pushNamed(context, item.route);
-        } else if (item.title == "Requests") {
-          BlocProvider.of<SchoolsCubit>(context).getAllRequests();
-          Navigator.pushNamed(context, item.route);
-        } else if (item.title == "Children") {
-          BlocProvider.of<SchoolsCubit>(context).getAllSchoolChildren();
-          Navigator.pushNamed(context, item.route);
-        } else {
-          Navigator.pushNamed(context, item.route);
-        }
       },
       child: Container(
         padding: const EdgeInsets.all(10.0),

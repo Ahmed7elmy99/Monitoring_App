@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/admin/widgets/save_changes_bottom.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
-import '../../../controller/layout/schools/schools_cubit.dart';
+import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../admin/widgets/app_textformfiled_widget.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
 
-class EditSupervisorScreen extends StatefulWidget {
-  const EditSupervisorScreen({super.key});
+class EditParentProfileScreen extends StatefulWidget {
+  const EditParentProfileScreen({super.key});
 
   @override
-  State<EditSupervisorScreen> createState() => _EditSupervisorScreenState();
+  State<EditParentProfileScreen> createState() =>
+      _EditParentProfileScreenState();
 }
 
-class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
-  TextEditingController fullNameController = TextEditingController();
+class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
+  TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     super.initState();
-    fullNameController.text = SUPERVISOR_MODEL!.name;
-    phoneController.text = SUPERVISOR_MODEL!.phone;
-    ageController.text = SUPERVISOR_MODEL!.age;
-    genderController.text = SUPERVISOR_MODEL!.gender;
+    nameController.text = PARENT_MODEL!.name;
+    phoneController.text = PARENT_MODEL!.phone;
+    ageController.text = PARENT_MODEL!.age;
+    genderController.text = PARENT_MODEL!.gender;
   }
 
   @override
@@ -39,26 +38,12 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Supervisor'),
+        title: const Text('Edit Profile'),
       ),
-      body: BlocConsumer<SchoolsCubit, SchoolsState>(
-        listener: (context, state) {
-          if (state is SchoolsUpdateSupervisorProfileSuccessState) {
-            showFlutterToast(
-              message: 'Profile Updated Successfully',
-              toastColor: Colors.green,
-            );
-            Navigator.pop(context);
-          }
-          if (state is SchoolsUpdateSupervisorProfileErrorState) {
-            showFlutterToast(
-              message: 'Error Updating Profile',
-              toastColor: Colors.red,
-            );
-          }
-        },
+      body: BlocConsumer<ParentCubit, ParentState>(
+        listener: (context, state) {},
         builder: (context, state) {
-          SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
+          ParentCubit parentCubit = ParentCubit.get(context);
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -78,11 +63,11 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                               color: Colors.grey[200],
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: schoolsCubit.uploadImageFile == null
+                                image: parentCubit.parentImageFile == null
                                     ? NetworkImage(
-                                        SCHOOL_MODEL!.image,
+                                        PARENT_MODEL!.image,
                                       )
-                                    : FileImage(schoolsCubit.uploadImageFile!)
+                                    : FileImage(parentCubit.parentImageFile!)
                                         as ImageProvider,
                                 fit: BoxFit.cover,
                               ),
@@ -90,8 +75,8 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              schoolsCubit.updateSupervisorImage(
-                                  uid: SUPERVISOR_MODEL!.id);
+                              parentCubit.updateParentProfileImage(
+                                  userId: PARENT_MODEL!.id);
                             },
                             child: Container(
                               width: SizeConfig.screenWidth * 0.08,
@@ -119,7 +104,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                     ),
                     AppSize.sv_10,
                     AppTextFormFiledWidget(
-                      controller: fullNameController,
+                      controller: nameController,
                       hintText: "Enter your full name",
                       prefix: Icons.person,
                       validate: (value) {
@@ -211,16 +196,16 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                       ],
                     ),
                     AppSize.sv_20,
-                    state is SchoolsUpdateSupervisorProfileLoadingState
+                    state is ParentUpdateProfileImageLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                schoolsCubit.updateSupervisorProfile(
-                                  superName: fullNameController.text,
-                                  superPhone: phoneController.text,
-                                  superAge: ageController.text,
-                                  superGender: genderController.text,
+                                parentCubit.updateParentProfileData(
+                                  name: nameController.text,
+                                  phone: phoneController.text,
+                                  age: ageController.text,
+                                  gender: genderController.text,
                                 );
                               }
                             },

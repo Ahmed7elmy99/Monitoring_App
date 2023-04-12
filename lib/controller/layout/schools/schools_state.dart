@@ -128,3 +128,48 @@ class SchoolSignOutErrorState extends SchoolsState {
   final String error;
   SchoolSignOutErrorState(this.error);
 }
+
+class SchoolsGetAllRequestsLoadingState extends SchoolsState {}
+
+class SchoolsGetAllRequestsSuccessState extends SchoolsState {}
+
+class SchoolsGetAllRequestsErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllRequestsErrorState(this.error);
+}
+
+class SchoolsGetAllChildrenLoadingState extends SchoolsState {}
+
+class SchoolsGetAllChildrenSuccessState extends SchoolsState {}
+
+class SchoolsGetAllChildrenErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllChildrenErrorState(this.error);
+}
+
+class SchoolsAccepteRequestLoadingState extends SchoolsState {}
+
+class SchoolsAccepteRequestSuccessState extends SchoolsState {}
+
+class SchoolsAccepteRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsAccepteRequestErrorState(this.error);
+}
+
+class SchoolsGetChildForRequestLoadingState extends SchoolsState {}
+
+class SchoolsGetChildForRequestSuccessState extends SchoolsState {}
+
+class SchoolsGetChildForRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetChildForRequestErrorState(this.error);
+}
+
+class SchoolsRejectRequestLoadingState extends SchoolsState {}
+
+class SchoolsRejectRequestSuccessState extends SchoolsState {}
+
+class SchoolsRejectRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsRejectRequestErrorState(this.error);
+}

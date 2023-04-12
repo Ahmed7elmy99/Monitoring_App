@@ -1,64 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/admin/widgets/save_changes_bottom.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
-import '../../../controller/layout/schools/schools_cubit.dart';
-import '../../../core/style/icon_broken.dart';
+import '../../../controller/layout/parents/parent_cubit.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../admin/widgets/app_textformfiled_widget.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
 
-class EditSupervisorScreen extends StatefulWidget {
-  const EditSupervisorScreen({super.key});
-
-  @override
-  State<EditSupervisorScreen> createState() => _EditSupervisorScreenState();
-}
-
-class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
-  TextEditingController fullNameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+class AddChildrenScreen extends StatelessWidget {
+  AddChildrenScreen({super.key});
+  TextEditingController nameController = TextEditingController();
+  TextEditingController educationController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController genderController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController certificateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    fullNameController.text = SUPERVISOR_MODEL!.name;
-    phoneController.text = SUPERVISOR_MODEL!.phone;
-    ageController.text = SUPERVISOR_MODEL!.age;
-    genderController.text = SUPERVISOR_MODEL!.gender;
-  }
-
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Supervisor'),
+        title: const Text('Add Children'),
       ),
-      body: BlocConsumer<SchoolsCubit, SchoolsState>(
+      body: BlocConsumer<ParentCubit, ParentState>(
         listener: (context, state) {
-          if (state is SchoolsUpdateSupervisorProfileSuccessState) {
+          if (state is ParentAddChildrenSuccessState) {
             showFlutterToast(
-              message: 'Profile Updated Successfully',
+              message: 'Children Added Successfully',
               toastColor: Colors.green,
             );
-            Navigator.pop(context);
           }
-          if (state is SchoolsUpdateSupervisorProfileErrorState) {
+          if (state is ParentAddChildrenErrorState) {
             showFlutterToast(
-              message: 'Error Updating Profile',
+              message: state.error,
               toastColor: Colors.red,
             );
           }
         },
         builder: (context, state) {
-          SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
+          ParentCubit parentCubit = ParentCubit.get(context);
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -68,46 +52,17 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Stack(
-                        alignment: AlignmentDirectional.bottomEnd,
-                        children: [
-                          Container(
-                            width: SizeConfig.screenWidth * 0.25,
-                            height: SizeConfig.screenHeight * 0.12,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: schoolsCubit.uploadImageFile == null
-                                    ? NetworkImage(
-                                        SCHOOL_MODEL!.image,
-                                      )
-                                    : FileImage(schoolsCubit.uploadImageFile!)
-                                        as ImageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 20),
+                        width: SizeConfig.screenWidth * 0.6,
+                        height: SizeConfig.screenHeight * 0.3,
+                        decoration: const BoxDecoration(
+                          //color: Colors.grey,
+                          image: DecorationImage(
+                            image: AssetImage(AppImages.childrenLogo),
+                            fit: BoxFit.cover,
                           ),
-                          InkWell(
-                            onTap: () {
-                              schoolsCubit.updateSupervisorImage(
-                                  uid: SUPERVISOR_MODEL!.id);
-                            },
-                            child: Container(
-                              width: SizeConfig.screenWidth * 0.08,
-                              height: SizeConfig.screenHeight * 0.04,
-                              decoration: const BoxDecoration(
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                IconBroken.Camera,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                     const Text(
@@ -119,8 +74,8 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                     ),
                     AppSize.sv_10,
                     AppTextFormFiledWidget(
-                      controller: fullNameController,
-                      hintText: "Enter your full name",
+                      controller: nameController,
+                      hintText: "enter name of the child",
                       prefix: Icons.person,
                       validate: (value) {
                         if (value!.isEmpty) {
@@ -141,7 +96,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                     AppTextFormFiledWidget(
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
-                      hintText: "Enter your phone",
+                      hintText: "enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
                         if (value!.isEmpty) {
@@ -150,7 +105,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_10,
                     Row(
                       children: [
                         Expanded(
@@ -166,12 +121,13 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                               ),
                               AppSize.sv_10,
                               AppTextFormFiledWidget(
+                                keyboardType: TextInputType.number,
                                 controller: ageController,
-                                hintText: "Enter your age",
+                                hintText: "enter age of the child",
                                 prefix: Icons.person,
                                 validate: (value) {
                                   if (value!.isEmpty) {
-                                    return "Please Enter your age";
+                                    return "Please Enter age of the child";
                                   }
                                   return null;
                                 },
@@ -194,12 +150,13 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                               ),
                               AppSize.sv_10,
                               AppTextFormFiledWidget(
+                                keyboardType: TextInputType.text,
                                 controller: genderController,
-                                hintText: "Enter your gender",
+                                hintText: "ender gender of the child",
                                 prefix: Icons.person,
                                 validate: (value) {
                                   if (value!.isEmpty) {
-                                    return "Please Enter your gender";
+                                    return "Please enter gender of the child";
                                   }
                                   return null;
                                 },
@@ -211,20 +168,64 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                       ],
                     ),
                     AppSize.sv_20,
-                    state is SchoolsUpdateSupervisorProfileLoadingState
+                    const Text(
+                      "Education level",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_10,
+                    AppTextFormFiledWidget(
+                      controller: educationController,
+                      hintText: "enter education level of the child",
+                      prefix: Icons.storage_rounded,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter education level of the child";
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_20,
+                    const Text(
+                      "link of certificate",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_10,
+                    AppTextFormFiledWidget(
+                      controller: certificateController,
+                      hintText: "enter link of certificate",
+                      prefix: Icons.link,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter link of certificate";
+                        } else if (!value.startsWith("https://")) {
+                          return "Please Enter valid link of certificate";
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_20,
+                    state is ParentAddChildrenLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
+                            textBottom: "Add Children",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                schoolsCubit.updateSupervisorProfile(
-                                  superName: fullNameController.text,
-                                  superPhone: phoneController.text,
-                                  superAge: ageController.text,
-                                  superGender: genderController.text,
+                                parentCubit.addChildren(
+                                  name: nameController.text,
+                                  educationLevel: educationController.text,
+                                  phone: phoneController.text,
+                                  age: int.parse(ageController.text),
+                                  gender: genderController.text,
+                                  certificate: certificateController.text,
                                 );
                               }
                             },
-                            textBottom: 'Save Changes',
                           ),
                   ],
                 ),

@@ -18,12 +18,12 @@ class AuthGetUserAfterLoginLoadingState extends AuthState {}
 
 class AuthGetUserAfterLoginSuccessState extends AuthState {
   final String message;
-  AuthGetUserAfterLoginSuccessState(this.message);
+  AuthGetUserAfterLoginSuccessState({required this.message});
 }
 
 class AuthGetUserAfterLoginErrorState extends AuthState {
   final String error;
-  AuthGetUserAfterLoginErrorState(this.error);
+  AuthGetUserAfterLoginErrorState({required this.error});
 }
 
 class AuthRegisterUserLoadingState extends AuthState {}

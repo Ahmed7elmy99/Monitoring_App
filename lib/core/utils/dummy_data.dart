@@ -60,7 +60,37 @@ class SchoolHomeModel {
     SchoolHomeModel(
       title: 'Children',
       image: AppImages.childrenIcon,
-      route: Routers.ADMINS_SCREEN,
+      route: Routers.SCHOOL_CHILDREN,
+    ),
+    SchoolHomeModel(
+      title: 'Requests',
+      image: AppImages.requestIcon,
+      route: Routers.SCHOOL_REQUESTS,
+    ),
+  ];
+}
+
+class ParentHomeModel {
+  final String title;
+  final String route;
+  final String image;
+
+  ParentHomeModel({
+    required this.title,
+    required this.image,
+    required this.route,
+  });
+
+  static List<ParentHomeModel> parentHomeList = [
+    ParentHomeModel(
+      title: 'Schools',
+      image: AppImages.schoolIcon,
+      route: Routers.PARENTS_SCHOOLS_SCREEN,
+    ),
+    ParentHomeModel(
+      title: 'Children',
+      image: AppImages.childrenIcon,
+      route: Routers.PARENTS_CHILDREN_SCREEN,
     ),
   ];
 }

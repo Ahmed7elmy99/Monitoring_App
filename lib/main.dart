@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/controller/auth/auth_cubit.dart';
+import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
 import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
 import 'package:teatcher_app/core/style/theme.dart';
+import 'package:teatcher_app/modules/teachers/teacher_layout_screen.dart';
 
 import 'controller/layout/admins/layout_cubit.dart';
+import 'controller/layout/teachers/teacher_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/cache_helper.dart';
 import 'modules/admin/admin_layout_screen.dart';
@@ -33,6 +36,8 @@ Widget checkUser() {
     return const AdminLayoutScreen();
   } else if (user == 'parent') {
     return ParentsLayoutScreen();
+  } else if (user == 'teacher') {
+    return const TeachersLayoutScreen();
   } else {
     return LoginScreen();
   }
@@ -50,19 +55,23 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => AuthCubit(),
+        ),
+        BlocProvider(
           create: (context) => LayoutCubit()
             ..getCurrentAdmin()
             ..getAllAdmins()
             ..getAllSchools(),
         ),
         BlocProvider(
-          create: (context) => SchoolsCubit()
-            ..getCurrentSupervisor()
-            ..getCurrentSchool()
-            ..getAllSupervisors(),
+          create: (context) => ParentCubit()..getCurrentParentData(),
         ),
         BlocProvider(
-          create: (context) => AuthCubit(),
+            create: (context) => SchoolsCubit()
+              ..getCurrentSupervisor()
+              ..getCurrentSchool()),
+        BlocProvider(
+          create: (context) => TeacherCubit(),
         ),
       ],
       child: MaterialApp(
