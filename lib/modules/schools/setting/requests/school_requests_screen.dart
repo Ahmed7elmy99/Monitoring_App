@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/schools/home/widgets/build_requests_item.dart';
+import 'package:teatcher_app/modules/schools/setting/requests/build_requests_item.dart';
 
-import '../../../controller/layout/schools/schools_cubit.dart';
-import '../../../core/utils/app_size.dart';
-import '../../../models/school_join_model.dart';
-import '../../widgets/const_widget.dart';
+import '../../../../controller/layout/schools/schools_cubit.dart';
+import '../../../../core/utils/app_size.dart';
+import '../../../../models/school_join_model.dart';
+import '../../../widgets/const_widget.dart';
 
 class SchoolRequestsScreen extends StatelessWidget {
   const SchoolRequestsScreen({super.key});
@@ -17,9 +17,7 @@ class SchoolRequestsScreen extends StatelessWidget {
         title: Text('Requests'),
       ),
       body: BlocConsumer<SchoolsCubit, SchoolsState>(
-        listener: (context, state) {
-          if (state is SchoolsBanTeacherSuccessState) {}
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
           return state is SchoolsGetAllTeachersLoadingState

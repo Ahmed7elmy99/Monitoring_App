@@ -63,9 +63,9 @@ class SchoolHomeModel {
       route: Routers.SCHOOL_CHILDREN,
     ),
     SchoolHomeModel(
-      title: 'Requests',
-      image: AppImages.requestIcon,
-      route: Routers.SCHOOL_REQUESTS,
+      title: 'Activities',
+      image: AppImages.activityIcon01,
+      route: Routers.SCHOOL_ACTIVITIES,
     ),
   ];
 }

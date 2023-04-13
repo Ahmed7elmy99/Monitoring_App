@@ -79,4 +79,13 @@ class ParentUpdateProfileErrorState extends ParentState {
 
 class ParentGetAllRequestsLoadingState extends ParentState {}
 
+class ParentCreateActivityJoinLoadingState extends ParentState {}
+
 class ParentGetAllRequestsSuccessState extends ParentState {}
+
+class ParentCreateActivityJoinSuccessState extends ParentState {}
+
+class ParentCreateActivityJoinErrorState extends ParentState {
+  final String error;
+  ParentCreateActivityJoinErrorState({required this.error});
+}

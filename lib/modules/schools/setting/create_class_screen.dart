@@ -5,22 +5,44 @@ import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
+import '../../../models/class_model.dart';
 import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 
-class CreateClassScreen extends StatelessWidget {
-  CreateClassScreen({super.key});
+class CreateClassScreen extends StatefulWidget {
+  final ClassModel? classModel;
+  final bool? isUpdate;
+  CreateClassScreen({super.key, this.classModel, this.isUpdate = false});
+
+  @override
+  State<CreateClassScreen> createState() => _CreateClassScreenState();
+}
+
+class _CreateClassScreenState extends State<CreateClassScreen> {
   TextEditingController fullNameController = TextEditingController();
+
   TextEditingController educationalLevelController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    fullNameController.text = widget.isUpdate! ? widget.classModel!.name : '';
+    educationalLevelController.text =
+        widget.isUpdate! ? widget.classModel!.educationalLevel : '';
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Class'),
+        title: widget.isUpdate!
+            ? const Text('Update Class')
+            : const Text('Create Class'),
       ),
       body: BlocConsumer<SchoolsCubit, SchoolsState>(
         listener: (context, state) {
@@ -31,9 +53,22 @@ class CreateClassScreen extends StatelessWidget {
             );
             Navigator.pop(context);
           }
+          if (state is SchoolsUpdateClassSuccessState) {
+            showFlutterToast(
+              message: 'Class updated successfully',
+              toastColor: Colors.green,
+            );
+            Navigator.pop(context);
+          }
           if (state is SchoolsAddClassErrorState) {
             showFlutterToast(
               message: 'Error',
+              toastColor: Colors.red,
+            );
+          }
+          if (state is SchoolsUpdateClassErrorState) {
+            showFlutterToast(
+              message: state.error,
               toastColor: Colors.red,
             );
           }
@@ -103,16 +138,27 @@ class CreateClassScreen extends StatelessWidget {
                       },
                     ),
                     AppSize.sv_20,
-                    state is SchoolsAddClassLoadingState
+                    state is SchoolsAddClassLoadingState ||
+                            state is SchoolsUpdateClassLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
-                            textBottom: "Create Class",
+                            textBottom: widget.isUpdate!
+                                ? 'Update Class'
+                                : 'Save Class',
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                schoolsCubit.createClass(
-                                  className: fullNameController.text,
-                                  eduLevel: educationalLevelController.text,
-                                );
+                                if (widget.isUpdate!) {
+                                  schoolsCubit.updateClass(
+                                    classId: widget.classModel!.id,
+                                    className: fullNameController.text,
+                                    eduLevel: educationalLevelController.text,
+                                  );
+                                } else {
+                                  schoolsCubit.createClass(
+                                    className: fullNameController.text,
+                                    eduLevel: educationalLevelController.text,
+                                  );
+                                }
                               }
                             },
                           ),

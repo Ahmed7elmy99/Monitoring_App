@@ -11,6 +11,7 @@ import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../auth/widgets/build_auth_bottom.dart';
+import 'add_chilren_to clasee_screen.dart';
 
 class SupervisorSettingsScreen extends StatelessWidget {
   const SupervisorSettingsScreen({super.key});
@@ -38,7 +39,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
         SchoolsCubit cubit = SchoolsCubit.get(context);
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
+          child: ListView(
             children: [
               SizedBox(
                 width: SizeConfig.screenWidth,
@@ -159,6 +160,32 @@ class SupervisorSettingsScreen extends StatelessWidget {
               ),
               _buildListItem(
                 context,
+                title: 'Activity join',
+                leadingIcon: IconBroken.Document,
+                subtitle: 'show all activity join request',
+                onTap: () {
+                  cubit.getAllActivitiesJoiRequests();
+                  Navigator.pushNamed(
+                    context,
+                    Routers.SCHOOL_ACTIVITIES_JOIN_SCREEN,
+                  );
+                },
+              ),
+              _buildListItem(
+                context,
+                title: 'School join',
+                leadingIcon: IconBroken.Document,
+                subtitle: 'show all school join request',
+                onTap: () {
+                  cubit.getAllRequests();
+                  Navigator.pushNamed(
+                    context,
+                    Routers.SCHOOL_REQUESTS,
+                  );
+                },
+              ),
+              _buildListItem(
+                context,
                 title: 'Add Class',
                 leadingIcon: IconBroken.Edit_Square,
                 subtitle: 'Create new school class',
@@ -169,7 +196,22 @@ class SupervisorSettingsScreen extends StatelessWidget {
                   );
                 },
               ),
-              const Spacer(),
+              _buildListItem(
+                context,
+                title: 'Add Children to Class',
+                leadingIcon: IconBroken.Edit_Square,
+                subtitle: 'Add children to class room',
+                onTap: () {
+                  cubit.getAllSchoolClasses();
+                  cubit.getAllSchoolChildren();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddChildrenToClass(),
+                    ),
+                  );
+                },
+              ),
               BottomComponent(
                   child: Text(
                     'Sign Out',

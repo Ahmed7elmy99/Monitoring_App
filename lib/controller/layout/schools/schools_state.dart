@@ -173,3 +173,66 @@ class SchoolsRejectRequestErrorState extends SchoolsState {
   final String error;
   SchoolsRejectRequestErrorState(this.error);
 }
+
+class SchoolsAddChildrenToClassLoadingState extends SchoolsState {}
+
+class SchoolsAddChildrenToClassSuccessState extends SchoolsState {}
+
+class SchoolsAddChildrenToClassErrorState extends SchoolsState {
+  final String error;
+  SchoolsAddChildrenToClassErrorState(this.error);
+}
+
+class SchoolsGetAllActivitiesLoadingState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesSuccessState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllActivitiesErrorState(this.error);
+}
+
+class SchoolsGetAllChildrenClassLoadingState extends SchoolsState {}
+
+class SchoolsGetAllChildrenClassSuccessState extends SchoolsState {}
+
+class SchoolsGetAllChildrenClassErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllChildrenClassErrorState(this.error);
+}
+
+class SchoolsGetAllActivitiesJoinRequestsLoadingState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesJoinRequestsSuccessState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesJoinRequestsErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllActivitiesJoinRequestsErrorState(this.error);
+}
+
+class SchoolsAcceptActivitiesJoinRequestLoadingState extends SchoolsState {}
+
+class SchoolsAcceptActivitiesJoinRequestSuccessState extends SchoolsState {}
+
+class SchoolsAcceptActivitiesJoinRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsAcceptActivitiesJoinRequestErrorState(this.error);
+}
+
+class SchoolsGetParentForChildRequestLoadingState extends SchoolsState {}
+
+class SchoolsGetParentForChildRequestSuccessState extends SchoolsState {}
+
+class SchoolsGetParentForChildRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetParentForChildRequestErrorState(this.error);
+}
+
+class SchoolsUpdateClassLoadingState extends SchoolsState {}
+
+class SchoolsUpdateClassSuccessState extends SchoolsState {}
+
+class SchoolsUpdateClassErrorState extends SchoolsState {
+  final String error;
+  SchoolsUpdateClassErrorState(this.error);
+}

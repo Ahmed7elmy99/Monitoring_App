@@ -3,6 +3,7 @@ class ChildrenModel {
   final String parentId;
   final String schoolId;
   final String classId;
+  final String activityId;
   final String name;
   final String gender;
   final int age;
@@ -18,6 +19,7 @@ class ChildrenModel {
     required this.parentId,
     required this.schoolId,
     required this.classId,
+    required this.activityId,
     required this.name,
     required this.gender,
     required this.age,
@@ -34,6 +36,7 @@ class ChildrenModel {
       parentId: json['parentId'],
       schoolId: json['schoolId'],
       classId: json['classId'],
+      activityId: json['activityId'],
       name: json['name'],
       gender: json['gender'],
       age: json['age'],
@@ -50,6 +53,7 @@ class ChildrenModel {
       'parentId': parentId,
       'schoolId': schoolId,
       'classId': classId,
+      'activityId': activityId,
       'name': name,
       'gender': gender,
       'age': age,

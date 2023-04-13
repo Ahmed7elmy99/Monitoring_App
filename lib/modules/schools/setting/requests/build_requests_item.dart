@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/models/school_join_model.dart';
-import 'package:teatcher_app/modules/schools/home/widgets/school_show_details_request.dart';
+import 'package:teatcher_app/modules/schools/setting/requests/school_show_details_request.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
