@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
+import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
 import '../../widgets/build_cover_text.dart';
+import '../setting/create_class_screen.dart';
 
 class SchoolClassDetailsScreen extends StatelessWidget {
   final ClassModel classModel;
@@ -18,9 +20,24 @@ class SchoolClassDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('School Class Details'),
-      ),
+      appBar: AppBar(title: const Text('School Class Details'), actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateClassScreen(
+                  classModel: classModel,
+                  isUpdate: true,
+                ),
+              ),
+            );
+          },
+          icon: const Icon(
+            IconBroken.Edit_Square,
+          ),
+        ),
+      ]),
       body: BlocConsumer<SchoolsCubit, SchoolsState>(
         listener: (context, state) {},
         builder: (context, state) {

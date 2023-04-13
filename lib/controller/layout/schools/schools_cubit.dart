@@ -332,6 +332,27 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     });
   }
 
+  void updateClass(
+      {required String className,
+      required String eduLevel,
+      required String classId}) {
+    emit(SchoolsUpdateClassLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SCHOOL_MODEL?.id)
+        .collection('classes')
+        .doc(classId)
+        .update({
+      'name': className,
+      'educationalLevel': eduLevel,
+    }).then((value) {
+      print("Seccess Update Class 🎉 ");
+      emit(SchoolsUpdateClassSuccessState());
+    }).catchError((error) {
+      emit(SchoolsUpdateClassErrorState(error.toString()));
+    });
+  }
+
   void createActivityInSchool({
     required String activityName,
     required String activityDescription,

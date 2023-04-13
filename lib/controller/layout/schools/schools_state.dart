@@ -227,3 +227,12 @@ class SchoolsGetParentForChildRequestErrorState extends SchoolsState {
   final String error;
   SchoolsGetParentForChildRequestErrorState(this.error);
 }
+
+class SchoolsUpdateClassLoadingState extends SchoolsState {}
+
+class SchoolsUpdateClassSuccessState extends SchoolsState {}
+
+class SchoolsUpdateClassErrorState extends SchoolsState {
+  final String error;
+  SchoolsUpdateClassErrorState(this.error);
+}
