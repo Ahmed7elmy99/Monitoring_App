@@ -163,7 +163,13 @@ class SupervisorSettingsScreen extends StatelessWidget {
                 title: 'Activity join',
                 leadingIcon: IconBroken.Document,
                 subtitle: 'show all activity join request',
-                onTap: () {},
+                onTap: () {
+                  cubit.getAllActivitiesJoiRequests();
+                  Navigator.pushNamed(
+                    context,
+                    Routers.SCHOOL_ACTIVITIES_JOIN_SCREEN,
+                  );
+                },
               ),
               _buildListItem(
                 context,

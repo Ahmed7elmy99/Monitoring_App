@@ -11,9 +11,11 @@ import 'package:teatcher_app/models/teacher_model.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
+import '../../../models/activity_join_model.dart';
 import '../../../models/children_model.dart';
 import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
+import '../../../models/parent_model.dart';
 import '../../../models/school_activities_model.dart';
 import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
@@ -620,10 +622,28 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }
   }
 
+  List<ActivityJoinModel> schoolsActivitiesJoinList = [];
+  void getAllActivitiesJoiRequests() async {
+    emit(SchoolsGetAllActivitiesJoinRequestsLoadingState());
+    await FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('activitiesJoin')
+        .snapshots()
+        .listen((event) {
+      schoolsActivitiesJoinList = [];
+      for (var element in event.docs) {
+        print('get all activities join requests🎉');
+        schoolsActivitiesJoinList
+            .add(ActivityJoinModel.fromJson(element.data()));
+      }
+      print('Success get all activities join requests🎉');
+      emit(SchoolsGetAllActivitiesJoinRequestsSuccessState());
+    });
+  }
+
   ChildrenModel? childrenRequestModel;
-  void getChildForRequest({
-    required String childId,
-  }) {
+  void getChildForRequest({required String childId}) {
     emit(SchoolsGetChildForRequestLoadingState());
     FirebaseFirestore.instance.collection('parents').get().then((value) {
       for (var element in value.docs) {
@@ -674,6 +694,26 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       print('Error get all children: $error');
       emit(SchoolsGetAllChildrenErrorState(error.toString()));
     }
+  }
+
+// get data of parent for request
+  ParentModel? parentModelForChildren;
+  void getParentForChildren({required String parentId}) {
+    emit(SchoolsGetParentForChildRequestLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(parentId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        parentModelForChildren = ParentModel.fromJson(value.data()!);
+        print('Success get parent for child request🎉');
+        emit(SchoolsGetParentForChildRequestSuccessState());
+      }
+    }).catchError((error) {
+      print('Error get parent for child request: $error');
+      emit(SchoolsGetParentForChildRequestErrorState(error.toString()));
+    });
   }
 
   void addChildrenToClass(
@@ -798,6 +838,51 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }).catchError((error) {
       print('Error reject request: $error');
       emit(SchoolsRejectRequestErrorState(error.toString()));
+    });
+  }
+
+  void acceptActivitiesJoinRequest({required ActivityJoinModel activitiesReq}) {
+    emit(SchoolsAcceptActivitiesJoinRequestLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('activitiesJoin')
+        .doc(activitiesReq.id)
+        .update({
+      'activityStatus': 'accepted',
+    }).then((value) {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SUPERVISOR_MODEL?.schoolsId)
+          .collection('activities')
+          .doc(activitiesReq.schoolActivityId)
+          .collection('children')
+          .add(activitiesReq.toMap())
+          .then((value) {
+        FirebaseFirestore.instance
+            .collection('schools')
+            .doc(SUPERVISOR_MODEL?.schoolsId)
+            .collection('activities')
+            .doc(activitiesReq.schoolActivityId)
+            .collection('children')
+            .doc(value.id)
+            .update({
+          'id': value.id,
+          'activityStatus': 'accepted',
+        }).then((value) {
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(childrenRequestModel?.parentId)
+              .collection('children')
+              .doc(activitiesReq.childId)
+              .collection('activitiesJoin')
+              .add(activitiesReq.toMap());
+        });
+      });
+      emit(SchoolsAcceptActivitiesJoinRequestSuccessState());
+    }).catchError((error) {
+      print('Error accept activities join request: $error');
+      emit(SchoolsAcceptActivitiesJoinRequestErrorState(error.toString()));
     });
   }
 

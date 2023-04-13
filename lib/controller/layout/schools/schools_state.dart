@@ -200,3 +200,30 @@ class SchoolsGetAllChildrenClassErrorState extends SchoolsState {
   final String error;
   SchoolsGetAllChildrenClassErrorState(this.error);
 }
+
+class SchoolsGetAllActivitiesJoinRequestsLoadingState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesJoinRequestsSuccessState extends SchoolsState {}
+
+class SchoolsGetAllActivitiesJoinRequestsErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllActivitiesJoinRequestsErrorState(this.error);
+}
+
+class SchoolsAcceptActivitiesJoinRequestLoadingState extends SchoolsState {}
+
+class SchoolsAcceptActivitiesJoinRequestSuccessState extends SchoolsState {}
+
+class SchoolsAcceptActivitiesJoinRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsAcceptActivitiesJoinRequestErrorState(this.error);
+}
+
+class SchoolsGetParentForChildRequestLoadingState extends SchoolsState {}
+
+class SchoolsGetParentForChildRequestSuccessState extends SchoolsState {}
+
+class SchoolsGetParentForChildRequestErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetParentForChildRequestErrorState(this.error);
+}

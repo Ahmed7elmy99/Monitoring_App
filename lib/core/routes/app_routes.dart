@@ -19,16 +19,17 @@ import '../../modules/parents/setting/edit_parent_profile.dart';
 import '../../modules/parents/setting/parent_show_requests.dart';
 import '../../modules/schools/home/add_school_supervisor.dart';
 import '../../modules/schools/home/school_activities_screen.dart';
+import '../../modules/schools/home/school_children_screen.dart';
 import '../../modules/schools/home/school_classe_screen.dart';
-import '../../modules/schools/home/school_requests_screen.dart';
 import '../../modules/schools/home/school_supervisor_screen.dart';
 import '../../modules/schools/home/school_teachers_screen.dart';
-import '../../modules/schools/home/schools_children_screen.dart';
+import '../../modules/schools/setting/activity_join/school_activities_join_screen.dart';
 import '../../modules/schools/setting/create_class_screen.dart';
 import '../../modules/schools/setting/create_school_activities_screen.dart';
 import '../../modules/schools/setting/create_teacher_screen.dart';
 import '../../modules/schools/setting/edit_school_information.dart';
 import '../../modules/schools/setting/edit_supervisor_screen.dart';
+import '../../modules/schools/setting/requests/school_requests_screen.dart';
 import '../../modules/schools/supervisors_layout_screen.dart';
 import '../../modules/teachers/teacher_layout_screen.dart';
 
@@ -53,7 +54,10 @@ class Routers {
   static const String SCHOOL_CLASSES = '/School_Classes_Screen';
   static const String SCHOOL_CHILDREN = '/School_Children_Screen';
   static const String SCHOOL_REQUESTS = '/School_Requests_Screen';
+
   static const String SCHOOL_ACTIVITIES = '/School_Activities_Screen';
+  static const String SCHOOL_ACTIVITIES_JOIN_SCREEN =
+      '/School_Activities_Join_Screen';
   static const String ADD_SCHOOL_SUPERVISOR = '/Add_School_Supervisor_Screen';
   static const String CREATE_TEACHER = '/Create_Teacher_Screen';
   static const String CREATE_CLASS = '/Create_Class_Screen';
@@ -138,6 +142,10 @@ class RoutersGenerated {
       case Routers.SCHOOL_ACTIVITIES:
         return MaterialPageRoute(
           builder: (_) => const SchoolActivitiesScreen(),
+        );
+      case Routers.SCHOOL_ACTIVITIES_JOIN_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const SchoolActivitiesJoinScreen(),
         );
       case Routers.ADD_SCHOOL_SUPERVISOR:
         return MaterialPageRoute(
