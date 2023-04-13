@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
               ..getCurrentSupervisor()
               ..getCurrentSchool()),
         BlocProvider(
-          create: (context) => TeacherCubit(),
+          create: (context) => TeacherCubit()..getCurrentTeacher(),
         ),
       ],
       child: MaterialApp(

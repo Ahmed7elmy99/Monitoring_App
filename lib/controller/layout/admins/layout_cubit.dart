@@ -448,6 +448,8 @@ class LayoutCubit extends Cubit<LayoutState> {
   Future signOut() async {
     await FirebaseAuth.instance.signOut().then((value) {
       CacheHelper.saveData(key: 'uid', value: '');
+      CacheHelper.saveData(key: 'user', value: '');
+      currentIndex = 0;
       print('Sign Out Success🎉');
       emit(AuthAdminSignOutSuccessState());
     }).catchError((error) {

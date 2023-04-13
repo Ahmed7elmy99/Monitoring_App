@@ -23,7 +23,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is SchoolSignOutSuccessState) {
           showFlutterToast(
-            message: 'SuperVisor Sign out successfully',
+            message: 'Supervisor Sign out successfully',
             toastColor: Colors.green,
           );
           Navigator.pushReplacementNamed(

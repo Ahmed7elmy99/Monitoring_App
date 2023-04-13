@@ -611,6 +611,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       CacheHelper.saveData(key: 'uid', value: '');
       CacheHelper.saveData(key: 'schoolId', value: '');
       CacheHelper.saveData(key: 'user', value: '');
+      _currentIndex = 0;
       print('Sign Out Success🎉');
       emit(SchoolSignOutSuccessState());
     }).catchError((error) {
