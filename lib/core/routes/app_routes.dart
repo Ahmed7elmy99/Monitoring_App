@@ -3,6 +3,7 @@ import 'package:teatcher_app/modules/admin/settings/add_admin_screen.dart';
 import 'package:teatcher_app/modules/admin/settings/add_supervisor_screen.dart';
 
 import '../../modules/admin/admin_layout_screen.dart';
+import '../../modules/admin/home/admin_parents_screen.dart';
 import '../../modules/admin/home/admins/admins_screen.dart';
 import '../../modules/admin/home/schools/schools_screen.dart';
 import '../../modules/admin/settings/add_school_screen.dart';
@@ -46,6 +47,7 @@ class Routers {
   static const String ADMIN_EDIT_PROFILE = '/Admin_Edit_Profile_Screen';
   static const String ADD_ADMIN = '/Add_Admin_Screen';
   static const String ADMINS_SCREEN = '/Admins_Screen';
+  static const String ADMIN_PARENTS_SCREEN = '/Admin_Parents_Screen';
   static const String SCHOOL = '/School_Screen';
   static const String ADD_SCHOOL = '/Add_School_Screen';
   static const String ADD_SUPERVISOR = '/Add_Supervisor_Screen';
@@ -106,6 +108,10 @@ class RoutersGenerated {
         return MaterialPageRoute(
           builder: (_) => const AdminsScreen(),
           settings: settings,
+        );
+      case Routers.ADMIN_PARENTS_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const AdminParentsScreen(),
         );
       case Routers.SCHOOL:
         return MaterialPageRoute(

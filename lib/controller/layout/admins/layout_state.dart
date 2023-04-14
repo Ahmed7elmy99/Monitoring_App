@@ -123,11 +123,38 @@ class LayoutGetAllSupervisorsErrorState extends LayoutState {
   LayoutGetAllSupervisorsErrorState(this.error);
 }
 
-class LayoutChangeSupervisorBanLoadingState extends LayoutState {}
+class AdminGetAllParentLoadingState extends LayoutState {}
 
-class LayoutChangeSupervisorBanSuccessState extends LayoutState {}
+class AdminGetAllParentSuccessState extends LayoutState {}
 
-class LayoutChangeSupervisorBanErrorState extends LayoutState {
+class AdminGetAllParentErrorState extends LayoutState {
   final String error;
-  LayoutChangeSupervisorBanErrorState(this.error);
+  AdminGetAllParentErrorState({required this.error});
+}
+
+class AdminBanParentLoadingState extends LayoutState {}
+
+class AdminBanParentSuccessState extends LayoutState {}
+
+class AdminBanParentErrorState extends LayoutState {
+  final String error;
+  AdminBanParentErrorState({required this.error});
+}
+
+class LayoutGetAllTeachersLoadingState extends LayoutState {}
+
+class LayoutGetAllTeachersSuccessState extends LayoutState {}
+
+class LayoutGetAllTeachersErrorState extends LayoutState {
+  final String error;
+  LayoutGetAllTeachersErrorState({required this.error});
+}
+
+class LayoutGetAllChildrenLoadingState extends LayoutState {}
+
+class LayoutGetAllChildrenSuccessState extends LayoutState {}
+
+class LayoutGetAllChildrenErrorState extends LayoutState {
+  final String error;
+  LayoutGetAllChildrenErrorState({required this.error});
 }

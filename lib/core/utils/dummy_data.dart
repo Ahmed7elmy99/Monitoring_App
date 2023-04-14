@@ -27,6 +27,12 @@ class HomeModel {
       image: AppImages.adminIcon,
       route: Routers.ADMINS_SCREEN,
     ),
+    HomeModel(
+      title: 'Parents',
+      description: 'Teacher Description',
+      image: AppImages.parentLIcon,
+      route: Routers.ADMIN_PARENTS_SCREEN,
+    ),
   ];
 }
 

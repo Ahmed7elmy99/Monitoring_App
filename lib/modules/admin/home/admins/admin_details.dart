@@ -8,8 +8,6 @@ import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/const_data.dart';
 import '../../../../core/utils/screen_config.dart';
-import '../../../widgets/const_widget.dart';
-import '../../widgets/save_changes_bottom.dart';
 
 class AdminDetailsScreen extends StatefulWidget {
   final AdminModels model;
@@ -35,190 +33,175 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Hero(
-                tag: widget.model.id,
-                flightShuttleBuilder: (
-                  BuildContext flightContext,
-                  Animation<double> animation,
-                  HeroFlightDirection flightDirection,
-                  BuildContext fromHeroContext,
-                  BuildContext toHeroContext,
-                ) {
-                  final Hero toHero = toHeroContext.widget as Hero;
-                  return RotationTransition(
-                    turns: animation,
-                    child: toHero.child,
-                  );
-                },
-                child: Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(widget.model.image!),
-                  ),
-                ),
-              ),
-              AppSize.sv_10,
-              Text(
-                "Name",
-                style: GoogleFonts.almarai(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
-                ),
-              ),
-              AppSize.sv_5,
-              _buildCoverText(widget.model.name),
-              AppSize.sv_15,
-              Text(
-                "Email",
-                style: GoogleFonts.almarai(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
-                ),
-              ),
-              AppSize.sv_5,
-              _buildCoverText(widget.model.email),
-              AppSize.sv_15,
-              Text(
-                'phone',
-                style: GoogleFonts.almarai(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
-                ),
-              ),
-              AppSize.sv_5,
-              _buildCoverText(widget.model.phone),
-              AppSize.sv_15,
-              Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Gender',
-                        style: GoogleFonts.almarai(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
+        appBar: AppBar(
+          title: const Text('Admin Details'),
+        ),
+        body: BlocConsumer<LayoutCubit, LayoutState>(
+          listener: (context, state) {
+            if (state is LayoutUpdateAdminsBanSuccessState) {
+              showFlutterToast(
+                  message: 'admin updated successfully',
+                  toastColor: Colors.green);
+            }
+            if (state is LayoutUpdateAdminsBanErrorState) {
+              showFlutterToast(
+                  message: 'error in update admin', toastColor: Colors.red);
+            }
+          },
+          builder: (context, state) {
+            LayoutCubit layoutCubit = LayoutCubit.get(context);
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Hero(
+                      tag: widget.model.id,
+                      flightShuttleBuilder: (
+                        BuildContext flightContext,
+                        Animation<double> animation,
+                        HeroFlightDirection flightDirection,
+                        BuildContext fromHeroContext,
+                        BuildContext toHeroContext,
+                      ) {
+                        final Hero toHero = toHeroContext.widget as Hero;
+                        return RotationTransition(
+                          turns: animation,
+                          child: toHero.child,
+                        );
+                      },
+                      child: Center(
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(widget.model.image!),
                         ),
                       ),
-                      AppSize.sv_5,
-                      _buildCoverText(widget.model.gender,
-                          width: SizeConfig.screenWidth * 0.43),
-                    ],
-                  ),
-                  AppSize.sh_10,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Ban',
-                        style: GoogleFonts.almarai(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
+                    ),
+                    AppSize.sv_10,
+                    Container(
+                      width: SizeConfig.screenWidth,
+                      height: SizeConfig.screenHeight * 0.07,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      AppSize.sv_5,
-                      Container(
-                        width: SizeConfig.screenWidth * 0.43,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: DropdownButton<String>(
-                            items: <String>[
-                              'true',
-                              'false',
-                            ].map<DropdownMenuItem<String>>(
-                              (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Ban',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.almarai(
+                                height: 1.5,
+                                color: Colors.black45,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Spacer(),
+                            Switch(
+                              value:
+                                  banController.text == 'false' ? false : true,
+                              activeColor: Colors.red,
+                              onChanged: (value) {
+                                setState(() {
+                                  banController.text = value.toString();
+                                });
+                                if (widget.model.createdAt!
+                                        .compareTo(ADMIN_MODEL!.createdAt!) <
+                                    0) {
+                                  showFlutterToast(
+                                      message: 'you can\'t update this admin',
+                                      toastColor: Colors.red);
+                                } else {
+                                  layoutCubit.updateAdminsBan(
+                                    adminId: widget.model.id,
+                                    adminBan: banController.text,
+                                  );
+                                }
                               },
-                            ).toList(),
-                            value: _banValue,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                              size: 20.0,
                             ),
-                            elevation: 16,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(fontWeight: FontWeight.w500),
-                            underline: Container(
-                              height: 0,
-                              color: Colors.transparent,
-                            ),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _banValue = newValue!;
-                                banController.text = _banValue;
-                              });
-                            },
+                          ],
+                        ),
+                      ),
+                    ),
+                    AppSize.sv_15,
+                    Text(
+                      "Name",
+                      style: GoogleFonts.almarai(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    _buildCoverText(widget.model.name),
+                    AppSize.sv_15,
+                    Text(
+                      "Email",
+                      style: GoogleFonts.almarai(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    _buildCoverText(widget.model.email),
+                    AppSize.sv_15,
+                    AppSize.sv_15,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'phone',
+                                style: GoogleFonts.almarai(
+                                  fontSize: 17.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              AppSize.sv_5,
+                              _buildCoverText(widget.model.phone,
+                                  width: SizeConfig.screenWidth * 0.43),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        AppSize.sh_10,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Gender',
+                                style: GoogleFonts.almarai(
+                                  fontSize: 17.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              AppSize.sv_5,
+                              _buildCoverText(widget.model.gender,
+                                  width: SizeConfig.screenWidth * 0.43),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    AppSize.sv_40,
+                  ],
+                ),
               ),
-              AppSize.sv_40,
-              BlocConsumer<LayoutCubit, LayoutState>(
-                listener: (context, state) {
-                  if (state is LayoutUpdateAdminsBanSuccessState) {
-                    showFlutterToast(
-                        message: 'admin updated successfully',
-                        toastColor: Colors.green);
-                  }
-                  if (state is LayoutUpdateAdminsBanErrorState) {
-                    showFlutterToast(
-                        message: 'error in update admin',
-                        toastColor: Colors.red);
-                  }
-                },
-                builder: (context, state) {
-                  return state is LayoutUpdateAdminsBanLoadingState
-                      ? const CircularProgressComponent()
-                      : SaveChangesBottom(
-                          onPressed: () {
-                            if (widget.model.createdAt!
-                                    .compareTo(ADMIN_MODEL!.createdAt!) <
-                                0) {
-                              showFlutterToast(
-                                  message: 'you can\'t update this admin',
-                                  toastColor: Colors.red);
-                            } else {
-                              BlocProvider.of<LayoutCubit>(context)
-                                  .updateAdminsBan(
-                                adminId: widget.model.id,
-                                adminBan: banController.text,
-                              );
-                            }
-                          },
-                          textBottom: 'update admin',
-                        );
-                },
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+          },
+        ));
   }
 
   Widget _buildCoverText(String message, {double? width = 0}) {

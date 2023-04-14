@@ -21,72 +21,73 @@ class AdminHomeScreen extends StatelessWidget {
       builder: (context, state) {
         LayoutCubit cubit = LayoutCubit.get(context);
         return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AppSize.sv_40,
-                AppSize.sv_40,
-                Stack(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  children: [
-                    Container(
-                      width: SizeConfig.screenWidth * 0.25,
-                      height: SizeConfig.screenHeight * 0.12,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              ADMIN_MODEL?.image ?? AppImages.defaultImage),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          Routers.ADMIN_EDIT_PROFILE,
-                        );
-                      },
-                      child: Container(
-                        width: SizeConfig.screenWidth * 0.08,
-                        height: SizeConfig.screenHeight * 0.04,
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppSize.sv_40,
+                  AppSize.sv_40,
+                  Stack(
+                    alignment: AlignmentDirectional.bottomEnd,
+                    children: [
+                      Container(
+                        width: SizeConfig.screenWidth * 0.25,
+                        height: SizeConfig.screenHeight * 0.12,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
                           shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                          size: 20,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                ADMIN_MODEL?.image ?? AppImages.defaultImage),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routers.ADMIN_EDIT_PROFILE,
+                          );
+                        },
+                        child: Container(
+                          width: SizeConfig.screenWidth * 0.08,
+                          height: SizeConfig.screenHeight * 0.04,
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  AppSize.sv_5,
+                  Text(
+                    ADMIN_MODEL?.name ?? 'Admin',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-                AppSize.sv_5,
-                Text(
-                  ADMIN_MODEL?.name ?? 'Admin',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
                   ),
-                ),
-                AppSize.sv_5,
-                Text(
-                  ADMIN_MODEL?.email ?? '',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
+                  AppSize.sv_5,
+                  Text(
+                    ADMIN_MODEL?.email ?? '',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-                AppSize.sv_30,
-                Expanded(
-                  child: GridView.builder(
+                  AppSize.sv_30,
+                  GridView.builder(
                     scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -101,8 +102,8 @@ class AdminHomeScreen extends StatelessWidget {
                       return _buildListItem(context, item: model);
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -113,7 +114,12 @@ class AdminHomeScreen extends StatelessWidget {
   Widget _buildListItem(BuildContext context, {required HomeModel item}) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, item.route);
+        if (item.title == 'Parents') {
+          BlocProvider.of<LayoutCubit>(context).getAllParent();
+          Navigator.pushNamed(context, item.route);
+        } else {
+          Navigator.pushNamed(context, item.route);
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(10.0),

@@ -105,7 +105,7 @@ class AdminsScreen extends StatelessWidget {
                           ),
                           AppSize.sv_10,
                           Text(
-                            model.ban == 'true' ? 'Banned' : 'Not Banned',
+                            model.ban == 'true' ? 'Banned' : '',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.almarai(

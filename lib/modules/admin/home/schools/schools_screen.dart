@@ -123,6 +123,10 @@ class SchoolsScreen extends StatelessWidget {
                       onTap: () {
                         BlocProvider.of<LayoutCubit>(context)
                             .getAllSupervisors(schoolId: model.id);
+                        BlocProvider.of<LayoutCubit>(context)
+                            .getAllTeachers(schoolId: model.id);
+                        BlocProvider.of<LayoutCubit>(context)
+                            .getAllChildren(schoolId: model.id);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

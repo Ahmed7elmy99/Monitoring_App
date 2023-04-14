@@ -17,6 +17,7 @@ class AppImages {
   static const String adminIcon = "assets/images/icons/admin01.png";
   static const String activityIcon01 = "assets/images/icons/activity01.png";
   static const String activityIcon02 = "assets/images/icons/activity02.png";
+  static const String parentLIcon = "assets/images/icons/parents.png";
   static const String requestIcon = "assets/images/icons/request.png";
   static const String backgroundImage = "assets/images/register.png";
   static const String authLogo = "assets/images/logoWithoutBackground.png";

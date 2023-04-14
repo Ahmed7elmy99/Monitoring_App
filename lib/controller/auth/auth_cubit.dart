@@ -58,7 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthGetUserAfterLoginErrorState(error: 'Admin is banned'));
         return false;
       } else {
-        CacheHelper.saveData(key: 'user', value: 'supervisor');
+        CacheHelper.saveData(key: 'user', value: 'admin');
         ADMIN_MODEL = AdminModels.fromJson(adminDoc.data()!);
         return true;
       }
