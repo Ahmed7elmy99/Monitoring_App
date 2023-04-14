@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -10,9 +11,23 @@ import '../../../models/children_model.dart';
 import '../../widgets/build_cover_text.dart';
 import '../../widgets/luanch_url.dart';
 
-class SchoolChildrenDetailsScreen extends StatelessWidget {
+class SchoolChildrenDetailsScreen extends StatefulWidget {
   final ChildrenModel childrenModel;
   const SchoolChildrenDetailsScreen({super.key, required this.childrenModel});
+
+  @override
+  State<SchoolChildrenDetailsScreen> createState() =>
+      _SchoolChildrenDetailsScreenState();
+}
+
+class _SchoolChildrenDetailsScreenState
+    extends State<SchoolChildrenDetailsScreen> {
+  TextEditingController banController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    banController.text = widget.childrenModel.tracking.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +39,26 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               launchURLFunction(
-                  'https://wa.me/+201111447437?text=Hello%20${childrenModel.name}');
+                  'https://wa.me/+201111447437?text=Hello%20${widget.childrenModel.name}');
             },
             icon: Icon(IconBroken.Chat),
           ),
         ],
       ),
       body: BlocConsumer<SchoolsCubit, SchoolsState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is SchoolsUnTrackingChildSuccessState) {
+            banController.text == 'true'
+                ? showFlutterToast(
+                    message: 'Untracked successfully',
+                    toastColor: Colors.green,
+                  )
+                : showFlutterToast(
+                    message: 'Tracked successfully',
+                    toastColor: Colors.green,
+                  );
+          }
+        },
         builder: (context, state) {
           SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
           return SingleChildScrollView(
@@ -41,7 +68,7 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Hero(
-                    tag: childrenModel.id,
+                    tag: widget.childrenModel.id,
                     flightShuttleBuilder: (
                       BuildContext flightContext,
                       Animation<double> animation,
@@ -58,10 +85,56 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                     child: Center(
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(childrenModel.image),
+                        backgroundImage:
+                            NetworkImage(widget.childrenModel.image),
                       ),
                     ),
                   ),
+                  AppSize.sv_20,
+                  Container(
+                    width: SizeConfig.screenWidth,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 10.0,
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Untracked',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.almarai(
+                              height: 1.5,
+                              color: Colors.black45,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Spacer(),
+                          Switch(
+                            value: banController.text == 'false' ? false : true,
+                            activeColor: Colors.red,
+                            onChanged: (value) {
+                              setState(() {
+                                banController.text = value.toString();
+                              });
+                              schoolsCubit.unTrackingChild(
+                                childId: widget.childrenModel.id,
+                                parentId: widget.childrenModel.parentId,
+                                isTracking: value,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  AppSize.sv_10,
                   Text(
                     "Name",
                     style: GoogleFonts.almarai(
@@ -71,7 +144,7 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   AppSize.sv_5,
-                  BuildCoverTextWidget(message: childrenModel.name),
+                  BuildCoverTextWidget(message: widget.childrenModel.name),
                   AppSize.sv_15,
                   Text(
                     "Education Level",
@@ -82,7 +155,8 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   AppSize.sv_5,
-                  BuildCoverTextWidget(message: childrenModel.educationLevel),
+                  BuildCoverTextWidget(
+                      message: widget.childrenModel.educationLevel),
                   AppSize.sv_15,
                   Text(
                     "Phone",
@@ -95,7 +169,7 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   AppSize.sv_5,
-                  BuildCoverTextWidget(message: childrenModel.phone),
+                  BuildCoverTextWidget(message: widget.childrenModel.phone),
                   AppSize.sv_15,
                   Row(
                     children: [
@@ -112,7 +186,7 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                           ),
                           AppSize.sv_5,
                           BuildCoverTextWidget(
-                            message: childrenModel.age.toString(),
+                            message: widget.childrenModel.age.toString(),
                             width: SizeConfig.screenWidth * 0.42,
                           ),
                         ],
@@ -131,7 +205,7 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                           ),
                           AppSize.sv_5,
                           BuildCoverTextWidget(
-                            message: childrenModel.gender,
+                            message: widget.childrenModel.gender,
                             width: SizeConfig.screenWidth * 0.42,
                           ),
                         ],
@@ -151,14 +225,14 @@ class SchoolChildrenDetailsScreen extends StatelessWidget {
                   Row(
                     children: [
                       BuildCoverTextWidget(
-                        message: childrenModel.certificate,
+                        message: widget.childrenModel.certificate,
                         width: SizeConfig.screenWidth * 0.7,
                         maxLines: 1,
                       ),
                       const Spacer(),
                       IconButton(
                         onPressed: () {
-                          launchURLFunction(childrenModel.certificate);
+                          launchURLFunction(widget.childrenModel.certificate);
                         },
                         icon: const Icon(
                           Icons.open_in_new,

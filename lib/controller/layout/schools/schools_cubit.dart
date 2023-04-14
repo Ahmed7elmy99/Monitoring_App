@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
+import 'package:teatcher_app/models/stop_tracking_child_model.dart';
 import 'package:teatcher_app/models/teacher_model.dart';
 
 import '../../../core/services/cache_helper.dart';
@@ -926,6 +927,57 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }).onError((error, stackTrace) {
       print('Error get all activities: $error');
       emit(SchoolsGetAllActivitiesErrorState(error.toString()));
+    });
+  }
+
+  void unTrackingChild({
+    required String childId,
+    required String parentId,
+    required bool isTracking,
+  }) {
+    StopTrackingChildModel stopTrackingChildModel = StopTrackingChildModel(
+      id: 'wwwwwwww',
+      childId: childId,
+      supervisorId: SUPERVISOR_MODEL?.id ?? '',
+      note: '',
+    );
+    emit(SchoolsUnTrackingChildLoadingState());
+    if (isTracking) {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SUPERVISOR_MODEL?.schoolsId)
+          .collection('stopTracking')
+          .doc(childId)
+          .set(stopTrackingChildModel.toMap());
+    } else {
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(SUPERVISOR_MODEL?.schoolsId)
+          .collection('stopTracking')
+          .doc(childId)
+          .delete();
+    }
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('children')
+        .doc(childId)
+        .update({
+      'tracking': isTracking,
+    }).then((value) {
+      print('Success un tracking child');
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(parentId)
+          .collection('children')
+          .doc(childId)
+          .update({
+        'tracking': isTracking,
+      });
+      emit(SchoolsUnTrackingChildSuccessState());
+    }).catchError((error) {
+      print('Error un tracking child: $error');
+      emit(SchoolsUnTrackingChildErrorState(error.toString()));
     });
   }
 }

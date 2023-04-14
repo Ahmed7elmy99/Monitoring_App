@@ -236,3 +236,12 @@ class SchoolsUpdateClassErrorState extends SchoolsState {
   final String error;
   SchoolsUpdateClassErrorState(this.error);
 }
+
+class SchoolsUnTrackingChildLoadingState extends SchoolsState {}
+
+class SchoolsUnTrackingChildSuccessState extends SchoolsState {}
+
+class SchoolsUnTrackingChildErrorState extends SchoolsState {
+  final String error;
+  SchoolsUnTrackingChildErrorState(this.error);
+}
