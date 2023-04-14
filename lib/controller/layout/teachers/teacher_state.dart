@@ -73,3 +73,12 @@ class TeacherSchedulesAttendErrorState extends TeacherState {
 }
 
 class TeacherChangeStatusState extends TeacherState {}
+
+class TeacherUploadPdfLoadingState extends TeacherState {}
+
+class TeacherUploadPdfSuccessState extends TeacherState {}
+
+class TeacherUploadPdfErrorState extends TeacherState {
+  final String error;
+  TeacherUploadPdfErrorState({required this.error});
+}

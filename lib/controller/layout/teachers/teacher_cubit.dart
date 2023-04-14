@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
@@ -271,6 +275,72 @@ class TeacherCubit extends Cubit<TeacherState> {
         TeacherSchedulesAttendErrorState(error: error.toString()),
       );
     });
+  }
+
+  Future<void> uploadPdfToFirebase() async {
+    emit(TeacherUploadPdfLoadingState());
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result != null) {
+      File file = File(result.files.first.path!);
+      String fileName = result.files.first.name;
+      await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('reports/$fileName')
+          .putFile(file)
+          .then((value) {
+        value.ref.getDownloadURL().then((value) {
+          FirebaseFirestore.instance
+              .collection('schools')
+              .doc(TEACHER_MODEL?.schoolId ?? '')
+              .collection('children')
+              .doc(childrenModel!.id)
+              .collection('reports')
+              .add({
+            'id': '',
+            'childId': childrenModel!.id,
+            'teacherId': TEACHER_MODEL?.id ?? '',
+            'file': value,
+          }).then((value) {
+            FirebaseFirestore.instance
+                .collection('schools')
+                .doc(TEACHER_MODEL?.schoolId ?? '')
+                .collection('children')
+                .doc(childrenModel!.id)
+                .collection('reports')
+                .doc(value.id)
+                .update({'id': value.id});
+          });
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(childrenModel!.parentId)
+              .collection('children')
+              .doc(childrenModel!.id)
+              .collection('reports')
+              .add({
+            'id': '',
+            'childId': childrenModel!.id,
+            'teacherId': TEACHER_MODEL?.id ?? '',
+            'file': value,
+          }).then((value) {
+            FirebaseFirestore.instance
+                .collection('parents')
+                .doc(childrenModel!.parentId)
+                .collection('children')
+                .doc(childrenModel!.id)
+                .collection('reports')
+                .doc(value.id)
+                .update({'id': value.id});
+          });
+          emit(TeacherUploadPdfSuccessState());
+        });
+      }).catchError((error) {
+        print('Error upload pdf: $error');
+        emit(TeacherUploadPdfErrorState(error: error.toString()));
+      });
+    }
   }
 
   Future<void> signOutTeacher() async {

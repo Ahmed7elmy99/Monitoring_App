@@ -18,21 +18,25 @@ class TeacherChildrenDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TeacherCubit, TeacherState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is TeacherUploadPdfSuccessState) {
+          showFlutterToast(
+            message: 'Report Uploaded Successfully',
+            toastColor: Colors.green,
+          );
+        }
+        if (state is TeacherUploadPdfErrorState) {
+          showFlutterToast(
+            message: state.error,
+            toastColor: Colors.red,
+          );
+        }
+      },
       builder: (context, state) {
         TeacherCubit teacherCubit = TeacherCubit.get(context);
         return Scaffold(
           appBar: AppBar(
             title: Text('Children Details'),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  launchURLFunction(
-                      'https://wa.me/+201111447437?text=Hello%20parent');
-                },
-                icon: Icon(IconBroken.Chat),
-              ),
-            ],
           ),
           body: state is TeacherGetChildrenDataLoadingState ||
                   teacherCubit.childrenModel == null
@@ -66,6 +70,65 @@ class TeacherChildrenDetails extends StatelessWidget {
                             ),
                           ),
                         ),
+                        AppSize.sv_15,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.teal.shade300,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  minimumSize: Size(
+                                    SizeConfig.screenWidth * 0.4,
+                                    SizeConfig.screenHeight * 0.06,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (teacherCubit.childrenModel!.tracking ==
+                                      false) {
+                                    Navigator.pushNamed(
+                                      context,
+                                      Routers.TEACHERS_ATTENDANCE_SCREEN,
+                                    );
+                                  } else {
+                                    showFlutterToast(
+                                      message:
+                                          'You can not add attendance for this child',
+                                      toastColor: Colors.red,
+                                    );
+                                  }
+                                  ;
+                                },
+                                child: Text('Attendance'),
+                              ),
+                            ),
+                            AppSize.sh_10,
+                            Expanded(
+                              child: state is TeacherUploadPdfLoadingState
+                                  ? CircularProgressComponent()
+                                  : ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.teal.shade300,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        minimumSize: Size(
+                                          SizeConfig.screenWidth * 0.4,
+                                          SizeConfig.screenHeight * 0.06,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        teacherCubit.uploadPdfToFirebase();
+                                      },
+                                      child: Text('Report'),
+                                    ),
+                            ),
+                          ],
+                        ),
+                        AppSize.sv_15,
                         Text(
                           "Name",
                           style: GoogleFonts.almarai(
@@ -235,30 +298,12 @@ class TeacherChildrenDetails extends StatelessWidget {
                     ),
                   ),
                 ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              if (teacherCubit.childrenModel!.tracking == false) {
-                Navigator.pushNamed(
-                  context,
-                  Routers.TEACHERS_ATTENDANCE_SCREEN,
-                );
-              } else {
-                showFlutterToast(
-                  message: 'You can not add attendance for this child',
-                  toastColor: Colors.red,
-                );
-              }
-              ;
-            },
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {},
             backgroundColor: Colors.teal.withOpacity(0.8),
-            icon: const Icon(Icons.add),
-            label: Text(
-              'Attendance',
-              style: GoogleFonts.almarai(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
+            child: const Icon(
+              IconBroken.Chat,
+              color: Colors.white,
             ),
           ),
         );
