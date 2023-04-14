@@ -104,7 +104,9 @@ class TeacherSettingScreen extends StatelessWidget {
                       child: IconButton(
                         onPressed: () {
                           Navigator.pushNamed(
-                              context, Routers.PARENTS_EDIT_PROFILE);
+                            context,
+                            Routers.TEACHERS_EDIT_PROFILE,
+                          );
                         },
                         icon: Icon(
                           IconBroken.Edit,

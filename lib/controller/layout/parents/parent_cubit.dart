@@ -153,6 +153,7 @@ class ParentCubit extends Cubit<ParentState> {
       certificate: certificate,
       phone: phone,
       image: AppImages.defaultChildren,
+      tracking: false,
       createdAt: DateTime.now().toString(),
     );
     FirebaseFirestore.instance

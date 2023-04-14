@@ -5,6 +5,7 @@ import 'package:teatcher_app/core/utils/screen_config.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/dummy_data.dart';
@@ -49,7 +50,7 @@ class TeacherHomeScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          Routers.SUPERVISORS_EDIT_PROFILE,
+                          Routers.TEACHERS_EDIT_PROFILE,
                         );
                       },
                       child: Container(
@@ -96,10 +97,9 @@ class TeacherHomeScreen extends StatelessWidget {
                     crossAxisSpacing: 10,
                     childAspectRatio: 1.0,
                   ),
-                  itemCount: SchoolHomeModel.schoolHomeList.length,
+                  itemCount: TeachersModel.teacherHomeList.length,
                   itemBuilder: (context, index) {
-                    SchoolHomeModel model =
-                        SchoolHomeModel.schoolHomeList[index];
+                    TeachersModel model = TeachersModel.teacherHomeList[index];
                     return _buildListItem(context, item: model);
                   },
                 ),
@@ -111,7 +111,83 @@ class TeacherHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListItem(BuildContext context, {required SchoolHomeModel item}) {
-    return Container();
+  Widget _buildListItem(BuildContext context, {required TeachersModel item}) {
+    return InkWell(
+      onTap: () {
+        if (item.title == 'Teachers') {
+          BlocProvider.of<TeacherCubit>(context).getAllTeacher();
+          Navigator.pushNamed(context, item.route);
+        } else if (item.title == 'Classes') {
+          BlocProvider.of<TeacherCubit>(context).getAllSchoolClasses();
+          Navigator.pushNamed(context, item.route);
+        } else
+          Navigator.pushNamed(context, item.route);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        width: SizeConfig.screenWidth,
+        height: SizeConfig.screenHeight * 0.13,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: SizeConfig.screenWidth * 0.3,
+              height: SizeConfig.screenHeight * 0.15,
+              decoration: BoxDecoration(
+                //color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Image(
+                image: AssetImage(
+                  item.image,
+                ),
+                width: SizeConfig.screenWidth * 0.18,
+                height: SizeConfig.screenHeight * 0.09,
+                fit: BoxFit.contain,
+              ),
+            ),
+            AppSize.sv_10,
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      item.title,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: const Icon(
+                      IconBroken.Arrow___Right_2,
+                      size: 25.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

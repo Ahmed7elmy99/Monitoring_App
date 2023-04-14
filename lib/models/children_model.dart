@@ -11,7 +11,7 @@ class ChildrenModel {
   final String certificate;
   final String phone;
   final String image;
-
+  final bool tracking;
   final String createdAt;
 
   ChildrenModel({
@@ -27,6 +27,7 @@ class ChildrenModel {
     required this.certificate,
     required this.phone,
     required this.image,
+    required this.tracking,
     required this.createdAt,
   });
 
@@ -44,6 +45,7 @@ class ChildrenModel {
       certificate: json['certificate'],
       phone: json['phone'],
       image: json['image'],
+      tracking: json['tracking'] == null ? false : json['tracking'],
       createdAt: json['createdAt'],
     );
   }
@@ -61,6 +63,7 @@ class ChildrenModel {
       'certificate': certificate,
       'phone': phone,
       'image': image,
+      'tracking': tracking,
       'createdAt': createdAt,
     };
   }
