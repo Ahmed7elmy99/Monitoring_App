@@ -498,6 +498,7 @@ class ParentCubit extends Cubit<ParentState> {
     required String message,
     required String receiverId,
     required String schoolId,
+    required bool isTeacher,
   }) {
     emit(ParentSendMessageLoadingState());
     MessageModel messageModel = MessageModel(
@@ -519,7 +520,7 @@ class ParentCubit extends Cubit<ParentState> {
     FirebaseFirestore.instance
         .collection('schools')
         .doc(schoolId)
-        .collection('teachers')
+        .collection('${isTeacher ? 'teachers' : 'supervisors'}')
         .doc(receiverId)
         .collection('chats')
         .doc(PARENT_MODEL!.id)

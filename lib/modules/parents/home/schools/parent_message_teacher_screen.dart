@@ -77,6 +77,7 @@ class ParentMessageTeacherScreen extends StatelessWidget {
                                 message: messageController.text,
                                 receiverId: model.id,
                                 schoolId: model.schoolId,
+                                isTeacher: true,
                               );
                               messageController.clear();
                             }
