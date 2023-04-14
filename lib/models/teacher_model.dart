@@ -42,7 +42,7 @@ class TeacherModel {
       subject: json['subject'] == null ? '' : json['subject'],
       image: json['image'],
       phone: json['phone'],
-      gender: json['gander'] == null ? '' : json['gander'],
+      gender: json['gender'] == null ? '' : json['gender'],
       age: json['age'] == null ? '' : json['age'],
       address: json['address'],
       ban: json['ban'],

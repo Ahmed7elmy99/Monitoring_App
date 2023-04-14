@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/core/style/icon_broken.dart';
 import 'package:teatcher_app/models/teacher_model.dart';
+import 'package:teatcher_app/modules/parents/home/schools/parent_message_teacher_screen.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/utils/app_size.dart';
@@ -15,15 +16,15 @@ class ParentSchoolTeacherDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final TeacherModel teacherModel =
         ModalRoute.of(context)!.settings.arguments as TeacherModel;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${teacherModel.name}'),
-      ),
-      body: BlocConsumer<ParentCubit, ParentState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          ParentCubit parentCubit = ParentCubit.get(context);
-          return SingleChildScrollView(
+    return BlocConsumer<ParentCubit, ParentState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        ParentCubit parentCubit = ParentCubit.get(context);
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('${teacherModel.name}'),
+          ),
+          body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -102,17 +103,27 @@ class ParentSchoolTeacherDetails extends StatelessWidget {
                 ],
               ),
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.teal,
-        onPressed: () {},
-        child: const Icon(
-          IconBroken.Chat,
-          size: 27.0,
-        ),
-      ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.teal,
+            onPressed: () {
+              parentCubit.getMessages(receiverId: teacherModel.id);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ParentMessageTeacherScreen(
+                    model: teacherModel,
+                  ),
+                ),
+              );
+            },
+            child: const Icon(
+              IconBroken.Chat,
+              size: 27.0,
+            ),
+          ),
+        );
+      },
     );
   }
 }

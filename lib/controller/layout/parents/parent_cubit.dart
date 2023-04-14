@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:teatcher_app/core/utils/app_images.dart';
 import 'package:teatcher_app/core/utils/const_data.dart';
 import 'package:teatcher_app/models/children_model.dart';
+import 'package:teatcher_app/models/message_model.dart';
 import 'package:teatcher_app/models/school_activities_model.dart';
 import 'package:teatcher_app/models/teacher_model.dart';
 import 'package:teatcher_app/modules/parents/home/parent_home_screen.dart';
@@ -104,6 +105,7 @@ class ParentCubit extends Cubit<ParentState> {
       CacheHelper.saveData(key: 'uid', value: '');
       CacheHelper.saveData(key: 'schoolId', value: '');
       CacheHelper.saveData(key: 'user', value: '');
+      currentIndex = 0;
       print('Sign Out Success🎉');
       emit(ParentSignOutSuccessState());
     }).catchError((error) {
@@ -152,6 +154,7 @@ class ParentCubit extends Cubit<ParentState> {
       certificate: certificate,
       phone: phone,
       image: AppImages.defaultChildren,
+      tracking: false,
       createdAt: DateTime.now().toString(),
     );
     FirebaseFirestore.instance
@@ -488,6 +491,67 @@ class ParentCubit extends Cubit<ParentState> {
         ParentUpdateProfileErrorState(
             error: 'Error: ${error.toString().split(']')[1]}'),
       );
+    });
+  }
+
+  void sendMessageToTeacher({
+    required String message,
+    required String receiverId,
+    required String schoolId,
+    required bool isTeacher,
+  }) {
+    emit(ParentSendMessageLoadingState());
+    MessageModel messageModel = MessageModel(
+      senderId: PARENT_MODEL!.id,
+      receiverId: receiverId,
+      message: message,
+      dateTime: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .add(messageModel.toMap())
+        .then((value) {
+      print('Success send message to parent🎉');
+    });
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('${isTeacher ? 'teachers' : 'supervisors'}')
+        .doc(receiverId)
+        .collection('chats')
+        .doc(PARENT_MODEL!.id)
+        .collection('messages')
+        .add(messageModel.toMap())
+        .then((value) {
+      print('Success send message to teacher 🎉');
+      emit(ParentSendMessageSuccessState());
+    }).catchError((error) {
+      print('Error send message: $error');
+      emit(ParentSendMessageErrorState(error: error.toString()));
+    });
+  }
+
+  List<MessageModel> messages = [];
+  void getMessages({required String receiverId}) {
+    emit(ParentGetMessagesLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+      messages = [];
+      event.docs.forEach((element) {
+        messages.add(MessageModel.fromJson(element.data()));
+      });
+      emit(ParentGetMessagesSuccessState());
     });
   }
 }

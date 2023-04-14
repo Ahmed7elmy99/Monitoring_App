@@ -31,6 +31,10 @@ import '../../modules/schools/setting/edit_school_information.dart';
 import '../../modules/schools/setting/edit_supervisor_screen.dart';
 import '../../modules/schools/setting/requests/school_requests_screen.dart';
 import '../../modules/schools/supervisors_layout_screen.dart';
+import '../../modules/teachers/home/teacher_attendance_screen.dart';
+import '../../modules/teachers/home/teacher_classes_screen.dart';
+import '../../modules/teachers/home/teachers_screen.dart';
+import '../../modules/teachers/setting/teacher_edit_profile.dart';
 import '../../modules/teachers/teacher_layout_screen.dart';
 
 class Routers {
@@ -75,6 +79,11 @@ class Routers {
   static const String PARENTS_SCHOOL_ACTIVITY_JOIN_SCREEN =
       '/Parents_School_Activity_Join_Screen';
   static const String TEACHERS_LAYOUT_SCREEN = '/Teachers_Layout_Screen';
+  static const String TEACHERS_SCREEN = '/Teachers_Screen';
+  static const String TEACHERS_CLASSES_SCREEN = '/Teachers_Classes_Screen';
+  static const String TEACHERS_EDIT_PROFILE = '/Teachers_Edit_Profile_Screen';
+  static const String TEACHERS_ATTENDANCE_SCREEN =
+      '/Teachers_Attendance_Screen';
 }
 
 class RoutersGenerated {
@@ -213,6 +222,22 @@ class RoutersGenerated {
       case Routers.TEACHERS_LAYOUT_SCREEN:
         return MaterialPageRoute(
           builder: (_) => const TeachersLayoutScreen(),
+        );
+      case Routers.TEACHERS_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const TeachersScreen(),
+        );
+      case Routers.TEACHERS_CLASSES_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const TeacherClassesScreen(),
+        );
+      case Routers.TEACHERS_EDIT_PROFILE:
+        return MaterialPageRoute(
+          builder: (_) => const TeacherEditProfileScreen(),
+        );
+      case Routers.TEACHERS_ATTENDANCE_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => TeacherAttendanceScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => const AdminLayoutScreen());
