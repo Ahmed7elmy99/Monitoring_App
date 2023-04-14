@@ -20,6 +20,7 @@ import '../../../models/activity_join_model.dart';
 import '../../../models/parent_model.dart';
 import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
+import '../../../models/supervisors_model.dart';
 
 part 'parent_state.dart';
 
@@ -236,6 +237,24 @@ class ParentCubit extends Cubit<ParentState> {
               .add(SchoolActivitiesModel.fromJson(element.data()));
       });
       emit(ParentGetAllSchoolsActivitySuccessState());
+    });
+  }
+
+  List<SupervisorsModel> parentSchoolsSupervisorsList = [];
+  void getAllSchoolsSupervisors({required String schoolId}) {
+    emit(ParentGetAllSchoolsSupervisorsLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolId)
+        .collection('supervisors')
+        .snapshots()
+        .listen((event) {
+      parentSchoolsSupervisorsList = [];
+      event.docs.forEach((element) {
+        parentSchoolsSupervisorsList
+            .add(SupervisorsModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllSchoolsSupervisorsSuccessState());
     });
   }
 

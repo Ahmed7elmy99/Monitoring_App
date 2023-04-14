@@ -117,6 +117,9 @@ class AdminHomeScreen extends StatelessWidget {
         if (item.title == 'Parents') {
           BlocProvider.of<LayoutCubit>(context).getAllParent();
           Navigator.pushNamed(context, item.route);
+        } else if (item.title == 'Admins') {
+          BlocProvider.of<LayoutCubit>(context).getAllAdmins();
+          Navigator.pushNamed(context, item.route);
         } else {
           Navigator.pushNamed(context, item.route);
         }

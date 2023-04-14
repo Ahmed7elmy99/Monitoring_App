@@ -109,9 +109,6 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
                                   banController.text == 'false' ? false : true,
                               activeColor: Colors.red,
                               onChanged: (value) {
-                                setState(() {
-                                  banController.text = value.toString();
-                                });
                                 if (widget.model.createdAt!
                                         .compareTo(ADMIN_MODEL!.createdAt!) <
                                     0) {
@@ -119,6 +116,9 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
                                       message: 'you can\'t update this admin',
                                       toastColor: Colors.red);
                                 } else {
+                                  setState(() {
+                                    banController.text = value.toString();
+                                  });
                                   layoutCubit.updateAdminsBan(
                                     adminId: widget.model.id,
                                     adminBan: banController.text,

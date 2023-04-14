@@ -60,7 +60,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LayoutCubit()
             ..getCurrentAdmin()
-            ..getAllAdmins()
             ..getAllSchools(),
         ),
         BlocProvider(

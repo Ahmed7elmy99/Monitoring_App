@@ -73,6 +73,8 @@ Widget _buildItemList(BuildContext context, SchoolModel model) {
           .getAllSchoolsActivity(schoolId: model.id);
       BlocProvider.of<ParentCubit>(context)
           .getAllSchoolsTeachers(schoolId: model.id);
+      BlocProvider.of<ParentCubit>(context)
+          .getAllSchoolsSupervisors(schoolId: model.id);
       Navigator.push(
         context,
         MaterialPageRoute(

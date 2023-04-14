@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/models/school_activities_model.dart';
+import 'package:teatcher_app/modules/parents/home/schools/parent_message_teacher_screen.dart';
 import 'package:teatcher_app/modules/parents/home/schools/parent_school_request_screen.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/style/icon_broken.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/school_model.dart';
+import '../../../../models/supervisors_model.dart';
 import '../../../../models/teacher_model.dart';
 import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/luanch_url.dart';
@@ -24,15 +25,6 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Schools Details'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              IconBroken.Chat,
-              color: Colors.white,
-            ),
-          ),
-        ],
       ),
       body: BlocConsumer<ParentCubit, ParentState>(
         listener: (context, state) {},
@@ -167,6 +159,41 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                   ),
                   AppSize.sv_15,
                   Text(
+                    'Supervisors',
+                    style: GoogleFonts.almarai(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  AppSize.sv_10,
+                  parentCubit.parentSchoolsSupervisorsList.isNotEmpty
+                      ? Container(
+                          width: SizeConfig.screenWidth,
+                          height: SizeConfig.screenHeight * 0.15,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                                parentCubit.parentSchoolsSupervisorsList.length,
+                            itemBuilder: (context, index) {
+                              SupervisorsModel model = parentCubit
+                                  .parentSchoolsSupervisorsList[index];
+                              return _buildSuperCart(context, model);
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            'No supervisor yet  !!',
+                            style: GoogleFonts.almarai(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                  AppSize.sv_15,
+                  Text(
                     'Teachers',
                     style: GoogleFonts.almarai(
                       fontSize: 17.0,
@@ -192,11 +219,11 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                         )
                       : Center(
                           child: Text(
-                            'No Teachers',
+                            'No teachers yet  !!',
                             style: GoogleFonts.almarai(
-                              fontSize: 17.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Colors.grey,
                             ),
                           ),
                         ),
@@ -227,11 +254,11 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                         )
                       : Center(
                           child: Text(
-                            'No Activities',
+                            'No activities  !!',
                             style: GoogleFonts.almarai(
-                              fontSize: 17.0,
+                              fontSize: 16.0,
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Colors.grey,
                             ),
                           ),
                         ),
@@ -402,6 +429,61 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSuperCart(BuildContext context, SupervisorsModel superModel) {
+    return InkWell(
+      onTap: () {
+        BlocProvider.of<ParentCubit>(context)
+            .getMessages(receiverId: superModel.id);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ParentMessageTeacherScreen(
+              supervisorsModel: superModel,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: SizeConfig.screenWidth * 0.27,
+        margin: const EdgeInsets.only(right: 10.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(superModel.image),
+            ),
+            AppSize.sv_5,
+            Text(
+              superModel.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.almarai(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
               ),
             ),
           ],
