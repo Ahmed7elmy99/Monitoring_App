@@ -95,7 +95,7 @@ class TeacherHomeScreen extends StatelessWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: 20,
                     crossAxisSpacing: 10,
-                    childAspectRatio: 1.0,
+                    childAspectRatio: 0.95,
                   ),
                   itemCount: TeachersModel.teacherHomeList.length,
                   itemBuilder: (context, index) {
@@ -126,7 +126,7 @@ class TeacherHomeScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10.0),
         width: SizeConfig.screenWidth,
-        height: SizeConfig.screenHeight * 0.13,
+        height: SizeConfig.screenHeight * 0.14,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -143,7 +143,7 @@ class TeacherHomeScreen extends StatelessWidget {
           children: [
             Container(
               width: SizeConfig.screenWidth * 0.3,
-              height: SizeConfig.screenHeight * 0.15,
+              height: SizeConfig.screenHeight * 0.14,
               decoration: BoxDecoration(
                 //color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10.0),

@@ -14,6 +14,7 @@ import '../../../core/services/cache_helper.dart';
 import '../../../models/children_model.dart';
 import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
+import '../../../models/message_model.dart';
 import '../../../models/parent_model.dart';
 import '../../../modules/teachers/home/teacher_home_screen.dart';
 import '../../../modules/teachers/setting/teacher_setting_screen.dart';
@@ -341,6 +342,70 @@ class TeacherCubit extends Cubit<TeacherState> {
         emit(TeacherUploadPdfErrorState(error: error.toString()));
       });
     }
+  }
+
+  void sendMessage({required String message, required String receiverId}) {
+    emit(TeacherSendMessageLoadingState());
+    MessageModel messageModel = MessageModel(
+      senderId: TEACHER_MODEL?.id ?? '',
+      receiverId: receiverId,
+      message: message,
+      dateTime: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(TEACHER_MODEL!.schoolId)
+        .collection('teachers')
+        .doc(TEACHER_MODEL!.id)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .add(messageModel.toMap())
+        .then((value) {
+      print('Success send message to teacher 🎉');
+      emit(TeacherSendMessageSuccessState());
+    }).catchError((error) {
+      print('Error send message: $error');
+      emit(TeacherSendMessageErrorState(error: error.toString()));
+    });
+    FirebaseFirestore.instance.collection('parents').doc(receiverId).get().then(
+      (value) {
+        if (value.exists) {
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(receiverId)
+              .collection('chats')
+              .doc(TEACHER_MODEL!.id)
+              .collection('messages')
+              .add(messageModel.toMap())
+              .then((value) {
+            print('Success send message to parent🎉');
+          });
+        }
+      },
+    );
+  }
+
+  List<MessageModel> messages = [];
+  void getMessages({required String receiverId}) {
+    emit(TeacherGetMessagesLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(TEACHER_MODEL!.schoolId)
+        .collection('teachers')
+        .doc(TEACHER_MODEL!.id)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+      messages = [];
+      event.docs.forEach((element) {
+        messages.add(MessageModel.fromJson(element.data()));
+      });
+      emit(TeacherGetMessagesSuccessState());
+    });
   }
 
   Future<void> signOutTeacher() async {

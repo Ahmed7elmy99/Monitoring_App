@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/core/routes/app_routes.dart';
+import 'package:teatcher_app/modules/teachers/home/teacher_message_parent_screen.dart';
 import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
@@ -299,7 +300,18 @@ class TeacherChildrenDetails extends StatelessWidget {
                   ),
                 ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              teacherCubit.getMessages(
+                  receiverId: teacherCubit.parentModel!.id);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TeacherMessageParentScreen(
+                    parentModel: teacherCubit.parentModel!,
+                  ),
+                ),
+              );
+            },
             backgroundColor: Colors.teal.withOpacity(0.8),
             child: const Icon(
               IconBroken.Chat,

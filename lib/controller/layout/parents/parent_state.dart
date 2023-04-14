@@ -89,3 +89,16 @@ class ParentCreateActivityJoinErrorState extends ParentState {
   final String error;
   ParentCreateActivityJoinErrorState({required this.error});
 }
+
+class ParentSendMessageLoadingState extends ParentState {}
+
+class ParentSendMessageSuccessState extends ParentState {}
+
+class ParentSendMessageErrorState extends ParentState {
+  final String error;
+  ParentSendMessageErrorState({required this.error});
+}
+
+class ParentGetMessagesLoadingState extends ParentState {}
+
+class ParentGetMessagesSuccessState extends ParentState {}

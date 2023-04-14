@@ -82,3 +82,21 @@ class TeacherUploadPdfErrorState extends TeacherState {
   final String error;
   TeacherUploadPdfErrorState({required this.error});
 }
+
+class TeacherSendMessageLoadingState extends TeacherState {}
+
+class TeacherSendMessageSuccessState extends TeacherState {}
+
+class TeacherSendMessageErrorState extends TeacherState {
+  final String error;
+  TeacherSendMessageErrorState({required this.error});
+}
+
+class TeacherGetMessagesLoadingState extends TeacherState {}
+
+class TeacherGetMessagesSuccessState extends TeacherState {}
+
+class TeacherGetMessagesErrorState extends TeacherState {
+  final String error;
+  TeacherGetMessagesErrorState({required this.error});
+}
