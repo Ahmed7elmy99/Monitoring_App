@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:teatcher_app/modules/schools/home/school_message_parent_screen.dart';
+import 'package:teatcher_app/modules/schools/home/widgets/school_children_attend_screen.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -10,6 +11,7 @@ import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/children_model.dart';
 import '../../../models/report_model.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/build_cover_text.dart';
 import '../../widgets/luanch_url.dart';
 import '../../widgets/show_flutter_toast.dart';
@@ -310,7 +312,7 @@ class _SchoolChildrenDetailsScreenState
                             itemBuilder: (context, index) {
                               ReportModel model =
                                   schoolsCubit.schoolsReportsList[index];
-                              return _buildReposrtCard(context, model);
+                              return _buildReportCard(context, model);
                             },
                           ),
                         )
@@ -334,6 +336,19 @@ class _SchoolChildrenDetailsScreenState
                     ),
                   ),
                   AppSize.sv_10,
+                  SaveChangesBottom(
+                    onPressed: () {
+                      schoolsCubit.getAllAttendList(
+                          childId: widget.childrenModel.id);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchoolChildrenAttendScreen(),
+                        ),
+                      );
+                    },
+                    textBottom: 'View Schedules',
+                  )
                 ],
               ),
             ),
@@ -357,7 +372,7 @@ class _SchoolChildrenDetailsScreenState
     );
   }
 
-  Widget _buildReposrtCard(BuildContext context, ReportModel reportModel) {
+  Widget _buildReportCard(BuildContext context, ReportModel reportModel) {
     return InkWell(
       onTap: () {
         launchURLFunction(reportModel.file);

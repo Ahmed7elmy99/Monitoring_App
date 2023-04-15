@@ -55,8 +55,6 @@ class SchoolChildrenScreen extends StatelessWidget {
         BlocProvider.of<SchoolsCubit>(context)
             .getParentForChildren(parentId: model.parentId);
         BlocProvider.of<SchoolsCubit>(context).getAllReports(childId: model.id);
-        BlocProvider.of<SchoolsCubit>(context)
-            .getAllAttendList(childId: model.id);
         Navigator.push(
           context,
           MaterialPageRoute(

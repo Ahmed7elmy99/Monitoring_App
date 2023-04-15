@@ -19,6 +19,7 @@ class AppImages {
   static const String activityIcon02 = "assets/images/icons/activity02.png";
   static const String parentLIcon = "assets/images/icons/parents.png";
   static const String requestIcon = "assets/images/icons/request.png";
+  static const String attendanceIcon = "assets/images/icons/attend.png";
   static const String backgroundImage = "assets/images/register.png";
   static const String authLogo = "assets/images/logoWithoutBackground.png";
   static const String schoolLogo = "assets/images/school_paint.png";

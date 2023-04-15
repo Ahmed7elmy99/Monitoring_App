@@ -11,9 +11,11 @@ import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../models/activity_join_model.dart';
+import '../../../models/attend_model.dart';
 import '../../../models/children_model.dart';
 import '../../../models/message_model.dart';
 import '../../../models/parent_model.dart';
+import '../../../models/report_model.dart';
 import '../../../models/school_activities_model.dart';
 import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
@@ -464,6 +466,7 @@ class ParentCubit extends Cubit<ParentState> {
                       .update({
                     'image': childrenImageUrl,
                   }).then((value) {
+                    getAllChildren();
                     emit(ParentUpdateProfileImageSuccessState());
                   }).catchError((error) {
                     print('Error: $error');
@@ -551,6 +554,44 @@ class ParentCubit extends Cubit<ParentState> {
     }).catchError((error) {
       print('Error send message: $error');
       emit(ParentSendMessageErrorState(error: error.toString()));
+    });
+  }
+
+  List<ReportModel> parentReportsList = [];
+  void getAllChildReports({required String childId}) {
+    emit(ParentGetAllChildReportsLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('children')
+        .doc(childId)
+        .collection('reports')
+        .snapshots()
+        .listen((event) {
+      parentReportsList = [];
+      event.docs.forEach((element) {
+        parentReportsList.add(ReportModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllChildReportsSuccessState());
+    });
+  }
+
+  List<AttendModel> parentAttendList = [];
+  void getAllChildAttend({required String childId}) {
+    emit(ParentGetAllChildAttendLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('children')
+        .doc(childId)
+        .collection('schedules')
+        .snapshots()
+        .listen((event) {
+      parentAttendList = [];
+      event.docs.forEach((element) {
+        parentAttendList.add(AttendModel.fromJson(element.data()));
+      });
+      emit(ParentGetAllChildAttendSuccessState());
     });
   }
 
