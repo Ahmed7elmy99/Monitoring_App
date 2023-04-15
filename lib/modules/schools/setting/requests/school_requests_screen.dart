@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/schools/setting/requests/build_requests_item.dart';
+import 'build_requests_item.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_size.dart';

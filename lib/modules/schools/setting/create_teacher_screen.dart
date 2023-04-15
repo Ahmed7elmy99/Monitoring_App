@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
-import 'package:teatcher_app/core/routes/app_routes.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../../controller/layout/schools/schools_cubit.dart';
+import '../../../core/routes/app_routes.dart';
+import '../../../core/utils/app_images.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../core/utils/screen_config.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';

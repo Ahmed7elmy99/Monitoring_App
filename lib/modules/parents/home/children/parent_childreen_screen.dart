@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/parents/home/children/parent_children_details.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/children_model.dart';
 import '../../../widgets/const_widget.dart';
+import 'parent_children_details.dart';
 
 class ParentChildrenScreen extends StatelessWidget {
   const ParentChildrenScreen({super.key});
@@ -26,7 +26,7 @@ class ParentChildrenScreen extends StatelessWidget {
               : parentCubit.parentChildrenList.isEmpty
                   ? Center(
                       child: Text(
-                        'No Children',
+                        'No Children Found  !!',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -51,6 +51,8 @@ class ParentChildrenScreen extends StatelessWidget {
   Widget _buildItemList(BuildContext context, ChildrenModel item) {
     return InkWell(
       onTap: () {
+        BlocProvider.of<ParentCubit>(context)
+            .getAllChildReports(childId: item.id);
         Navigator.push(
           context,
           MaterialPageRoute(

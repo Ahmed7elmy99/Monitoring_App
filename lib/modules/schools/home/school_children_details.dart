@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import 'package:teatcher_app/modules/schools/home/school_message_parent_screen.dart';
+import 'package:teatcher_app/modules/schools/home/widgets/school_children_attend_screen.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/children_model.dart';
+import '../../../models/report_model.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/build_cover_text.dart';
 import '../../widgets/luanch_url.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 class SchoolChildrenDetailsScreen extends StatefulWidget {
   final ChildrenModel childrenModel;
@@ -32,36 +37,27 @@ class _SchoolChildrenDetailsScreenState
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('School Children Details'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              launchURLFunction(
-                  'https://wa.me/+201111447437?text=Hello%20${widget.childrenModel.name}');
-            },
-            icon: Icon(IconBroken.Chat),
+    return BlocConsumer<SchoolsCubit, SchoolsState>(
+      listener: (context, state) {
+        if (state is SchoolsUnTrackingChildSuccessState) {
+          banController.text == 'true'
+              ? showFlutterToast(
+                  message: 'Untracked successfully',
+                  toastColor: Colors.green,
+                )
+              : showFlutterToast(
+                  message: 'Tracked successfully',
+                  toastColor: Colors.green,
+                );
+        }
+      },
+      builder: (context, state) {
+        SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('School Children Details'),
           ),
-        ],
-      ),
-      body: BlocConsumer<SchoolsCubit, SchoolsState>(
-        listener: (context, state) {
-          if (state is SchoolsUnTrackingChildSuccessState) {
-            banController.text == 'true'
-                ? showFlutterToast(
-                    message: 'Untracked successfully',
-                    toastColor: Colors.green,
-                  )
-                : showFlutterToast(
-                    message: 'Tracked successfully',
-                    toastColor: Colors.green,
-                  );
-          }
-        },
-        builder: (context, state) {
-          SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
-          return SingleChildScrollView(
+          body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -297,11 +293,118 @@ class _SchoolChildrenDetailsScreenState
                               ? ''
                               : schoolsCubit.parentModelForChildren!.email),
                   AppSize.sv_15,
+                  Text(
+                    'Reports',
+                    style: GoogleFonts.almarai(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  AppSize.sv_10,
+                  schoolsCubit.schoolsReportsList.isNotEmpty
+                      ? Container(
+                          width: SizeConfig.screenWidth,
+                          height: SizeConfig.screenHeight * 0.14,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: schoolsCubit.schoolsReportsList.length,
+                            itemBuilder: (context, index) {
+                              ReportModel model =
+                                  schoolsCubit.schoolsReportsList[index];
+                              return _buildReportCard(context, model);
+                            },
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            'No reports yet  !!',
+                            style: GoogleFonts.almarai(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                  AppSize.sv_15,
+                  Text(
+                    'Schedules',
+                    style: GoogleFonts.almarai(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  AppSize.sv_10,
+                  SaveChangesBottom(
+                    onPressed: () {
+                      schoolsCubit.getAllAttendList(
+                          childId: widget.childrenModel.id);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SchoolChildrenAttendScreen(),
+                        ),
+                      );
+                    },
+                    textBottom: 'View Schedules',
+                  )
                 ],
               ),
             ),
-          );
-        },
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.teal,
+            onPressed: () {
+              schoolsCubit.getMessages(
+                  receiverId: schoolsCubit.parentModelForChildren!.id);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SchoolMessageParentScreen(),
+                ),
+              );
+            },
+            child: const Icon(IconBroken.Chat),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildReportCard(BuildContext context, ReportModel reportModel) {
+    return InkWell(
+      onTap: () {
+        launchURLFunction(reportModel.file);
+      },
+      child: Container(
+        width: SizeConfig.screenWidth * 0.25,
+        margin: const EdgeInsets.only(right: 10.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 7,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundColor: Colors.grey[300],
+              backgroundImage: AssetImage(AppImages.requestIcon),
+            ),
+            AppSize.sv_5,
+          ],
+        ),
       ),
     );
   }

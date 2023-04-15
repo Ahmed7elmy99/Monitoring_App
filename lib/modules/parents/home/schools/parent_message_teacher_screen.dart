@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
-import 'package:teatcher_app/core/utils/app_size.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
+import '../../../../controller/layout/parents/parent_cubit.dart';
+import '../../../../core/utils/app_size.dart';
+import '../../../../core/utils/const_data.dart';
 
 import '../../../../core/style/app_color.dart';
 import '../../../../core/style/icon_broken.dart';
 import '../../../../models/message_model.dart';
+import '../../../../models/supervisors_model.dart';
 import '../../../../models/teacher_model.dart';
 
 class ParentMessageTeacherScreen extends StatelessWidget {
-  final TeacherModel model;
-  ParentMessageTeacherScreen({super.key, required this.model});
+  final TeacherModel? model;
+  final SupervisorsModel? supervisorsModel;
+  ParentMessageTeacherScreen({super.key, this.model, this.supervisorsModel});
   TextEditingController messageController = TextEditingController();
 
   @override
@@ -75,9 +77,13 @@ class ParentMessageTeacherScreen extends StatelessWidget {
                             if (messageController.text.isNotEmpty) {
                               parentCubit.sendMessageToTeacher(
                                 message: messageController.text,
-                                receiverId: model.id,
-                                schoolId: model.schoolId,
-                                isTeacher: true,
+                                receiverId: model?.id == null
+                                    ? supervisorsModel!.id
+                                    : model!.id,
+                                schoolId: model?.schoolId == null
+                                    ? supervisorsModel!.schoolsId
+                                    : model!.schoolId,
+                                isTeacher: model?.id == null ? false : true,
                               );
                               messageController.clear();
                             }

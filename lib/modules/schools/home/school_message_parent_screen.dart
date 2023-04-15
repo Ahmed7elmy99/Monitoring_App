@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/utils/app_size.dart';
-import '../../../core/utils/const_data.dart';
-import '../../../models/parent_model.dart';
+import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
 
-import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../models/message_model.dart';
 
-class TeacherMessageParentScreen extends StatelessWidget {
-  final ParentModel parentModel;
-  TeacherMessageParentScreen({super.key, required this.parentModel});
+class SchoolMessageParentScreen extends StatelessWidget {
+  SchoolMessageParentScreen({super.key});
   TextEditingController messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TeacherCubit, TeacherState>(
+    return BlocConsumer<SchoolsCubit, SchoolsState>(
       listener: (context, state) {},
       builder: (context, state) {
-        TeacherCubit teacherCubit = TeacherCubit.get(context);
+        SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
         return Scaffold(
           appBar: AppBar(
             title: Text('Message Parent'),
@@ -30,19 +28,19 @@ class TeacherMessageParentScreen extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: teacherCubit.messages.isNotEmpty
+                  child: schoolsCubit.messages.isNotEmpty
                       ? ListView.separated(
                           physics: BouncingScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
-                            MessageModel message = teacherCubit.messages[index];
-                            if (TEACHER_MODEL!.id == message.senderId)
+                            MessageModel message = schoolsCubit.messages[index];
+                            if (SUPERVISOR_MODEL!.id == message.senderId)
                               return buildMyMessage(message);
                             return buildMessage(message);
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return AppSize.sv_10;
                           },
-                          itemCount: teacherCubit.messages.length,
+                          itemCount: schoolsCubit.messages.length,
                         )
                       : Center(
                           child: Text('No messages yet'),
@@ -73,13 +71,13 @@ class TeacherMessageParentScreen extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           onPressed: () async {
                             if (messageController.text.isNotEmpty) {
-                              teacherCubit.sendMessage(
+                              schoolsCubit.sendMessage(
                                 message: messageController.text,
-                                receiverId: parentModel.id,
+                                receiverId:
+                                    schoolsCubit.parentModelForChildren!.id,
                               );
                               messageController.clear();
                             }
-
                             ;
                           },
                           color: AppColor.primer,

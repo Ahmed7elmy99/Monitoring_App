@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/routes/app_routes.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../core/routes/app_routes.dart';
+import '../../core/utils/screen_config.dart';
+import '../widgets/show_flutter_toast.dart';
 
 import '../../controller/auth/auth_cubit.dart';
 import '../../core/utils/app_images.dart';
@@ -145,8 +145,11 @@ class RegisterScreen extends StatelessWidget {
                                   hintText: "Enter your phone",
                                   prefix: Icons.call,
                                   validate: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Please Enter your phone number";
+                                    if (!startsWith05(value!)) {
+                                      return 'Phone number must start with 05';
+                                    }
+                                    if (!contains8Digits(value)) {
+                                      return 'Phone number must contain 8 digits';
                                     }
                                     return null;
                                   },
@@ -265,5 +268,19 @@ class RegisterScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool startsWith05(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return number.startsWith('05');
+  }
+
+  bool contains8Digits(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return RegExp(r'^\d{8}$').hasMatch(number.substring(2));
   }
 }

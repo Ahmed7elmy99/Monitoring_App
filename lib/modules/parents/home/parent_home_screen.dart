@@ -48,7 +48,7 @@ class ParentHomeScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          Routers.SUPERVISORS_EDIT_PROFILE,
+                          Routers.PARENTS_EDIT_PROFILE,
                         );
                       },
                       child: Container(

@@ -6,13 +6,16 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:teatcher_app/core/services/cache_helper.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/models/school_model.dart';
 
+import '../../../core/services/cache_helper.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../models/admin_models.dart';
+import '../../../models/children_model.dart';
+import '../../../models/parent_model.dart';
+import '../../../models/school_model.dart';
 import '../../../models/supervisors_model.dart';
+import '../../../models/teacher_model.dart';
 import '../../../modules/admin/home/admin_home_screen.dart';
 import '../../../modules/admin/settings/admin_settings_screen.dart';
 
@@ -104,58 +107,18 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  void userRegister() {
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-      email: 'Admin912@gmail.com',
-      password: 'Admin912',
-    )
-        .then((value) {
-      print('User Register Success');
-      print('value: $value');
-      print('value.user: ${value.user?.uid}');
-    }).catchError((error) {});
-  }
-
-  void userLogin() {
-    FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-      email: 'Admin911@gmail.com',
-      password: 'Admin911',
-    )
-        .then((value) {
-      print('User Login Success');
-      print('value: $value');
-      print('value.user: ${value.user?.uid}');
-      CacheHelper.saveData(key: 'uid', value: value.user?.uid);
-    }).catchError((error) {});
-  }
-
-  Future<void> updateUserData({
-    String? adminId,
-    String? adminName,
-    String? adminEmail,
-    String? adminPhone,
-    String? adminGen,
-    String? adminImage,
-  }) async {
+//i will update this function agein 📌
+  Future<void> updateUserData(
+      {String? adminName, String? adminPhone, String? adminGen}) async {
     emit(LayoutUpdateUserDataLoadingState());
-    AdminModels updateModel = AdminModels(
-      id: adminId ?? ADMIN_MODEL!.id,
-      name: adminName ?? ADMIN_MODEL!.name,
-      email: adminEmail ?? ADMIN_MODEL!.email,
-      password: ADMIN_MODEL!.password,
-      createdAt: ADMIN_MODEL!.createdAt,
-      image: adminImage ?? ADMIN_MODEL!.image,
-      phone: adminPhone ?? ADMIN_MODEL!.phone,
-      gender: adminGen ?? ADMIN_MODEL!.gender,
-      ban: ADMIN_MODEL!.ban,
-    );
     await FirebaseFirestore.instance
         .collection('admins')
-        .doc(adminId ?? ADMIN_MODEL!.id)
-        .update(updateModel.toMap())
-        .then((value) {
+        .doc(ADMIN_MODEL?.id)
+        .update({
+      'name': adminName == null ? ADMIN_MODEL?.name : adminName,
+      'phone': adminPhone == null ? ADMIN_MODEL?.phone : adminPhone,
+      'gender': adminGen == null ? ADMIN_MODEL?.gender : adminGen,
+    }).then((value) {
       print('Success update user data✨');
       getCurrentAdmin();
       emit(LayoutUpdateUserDataSuccessState());
@@ -195,7 +158,14 @@ class LayoutCubit extends Cubit<LayoutState> {
       value.ref.getDownloadURL().then((value) {
         profileImageUrl = value;
         uploadImageFile = null;
-        updateUserData(adminImage: profileImageUrl, adminId: userId);
+        FirebaseFirestore.instance
+            .collection('admins')
+            .doc(ADMIN_MODEL?.id)
+            .update({
+          'image': profileImageUrl,
+        });
+        getCurrentAdmin();
+        emit(LayoutUpdateUserImageSuccessState());
       }).catchError((error) {
         print('Error get image url: $error');
         emit(LayoutUpdateUserImageErrorState(error.toString()));
@@ -390,6 +360,52 @@ class LayoutCubit extends Cubit<LayoutState> {
     }
   }
 
+  List<TeacherModel> teachersList = [];
+  void getAllTeachers({required String schoolId}) {
+    try {
+      emit(LayoutGetAllTeachersLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(schoolId)
+          .collection('teachers')
+          .snapshots()
+          .listen((value) {
+        teachersList = [];
+        for (var element in value.docs) {
+          teachersList.add(TeacherModel.fromJson(element.data()));
+        }
+        print('Success get all teachers🎉');
+        emit(LayoutGetAllTeachersSuccessState());
+      });
+    } catch (error) {
+      print('Error get all teachers: $error');
+      emit(LayoutGetAllTeachersErrorState(error: error.toString()));
+    }
+  }
+
+  List<ChildrenModel> childrenList = [];
+  void getAllChildren({required String schoolId}) {
+    try {
+      emit(LayoutGetAllChildrenLoadingState());
+      FirebaseFirestore.instance
+          .collection('schools')
+          .doc(schoolId)
+          .collection('children')
+          .snapshots()
+          .listen((value) {
+        childrenList = [];
+        for (var element in value.docs) {
+          childrenList.add(ChildrenModel.fromJson(element.data()));
+        }
+        print('Success get all children🎉');
+        emit(LayoutGetAllChildrenSuccessState());
+      });
+    } catch (error) {
+      print('Error get all children: $error');
+      emit(LayoutGetAllChildrenErrorState(error: error.toString()));
+    }
+  }
+
   void changeSchoolBan({
     required String schoolId,
     required String schoolBan,
@@ -406,28 +422,6 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  void changeSupervisorBan({
-    required String schoolId,
-    required String supervisorId,
-    required String supervisorBan,
-  }) {
-    emit(LayoutChangeSupervisorBanLoadingState());
-    FirebaseFirestore.instance
-        .collection('schools')
-        .doc(schoolId)
-        .collection('supervisors')
-        .doc(supervisorId)
-        .update({
-      'ban': supervisorBan,
-    }).then((value) {
-      print('Success update supervisor ban🎉');
-      emit(LayoutChangeSupervisorBanSuccessState());
-    }).catchError((error) {
-      print('Error update supervisor ban: $error');
-      emit(LayoutChangeSupervisorBanErrorState(error.toString()));
-    });
-  }
-
   Future<void> getCurrentAdmin() async {
     await FirebaseFirestore.instance
         .collection('admins')
@@ -436,8 +430,7 @@ class LayoutCubit extends Cubit<LayoutState> {
             : CacheHelper.getData(key: 'uid'))
         .get()
         .then((value) {
-      print('value: ${value.data()}');
-      print('Success get user👋');
+      print('Success get current admin🎉');
       ADMIN_MODEL = AdminModels.fromJson(value.data()!);
       emit(AuthGetUserAfterLoginSuccessState());
     }).catchError((error) {
@@ -445,13 +438,39 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
+  List<ParentModel> parentList = [];
+  void getAllParent() {
+    emit(AdminGetAllParentLoadingState());
+    FirebaseFirestore.instance.collection('parents').get().then((value) {
+      parentList = [];
+      for (var element in value.docs) {
+        parentList.add(ParentModel.fromJson(element.data()));
+      }
+      print('Success get all parent🎉');
+      emit(AdminGetAllParentSuccessState());
+    }).catchError((error) {
+      emit(AdminGetAllParentErrorState(error: error.toString()));
+    });
+  }
+
+  void banParent({required String parentId, required String parentBan}) {
+    emit(AdminBanParentLoadingState());
+    FirebaseFirestore.instance.collection('parents').doc(parentId).update({
+      'ban': parentBan,
+    }).then((value) {
+      print('Success ban parent🎉');
+      emit(AdminBanParentSuccessState());
+    }).catchError((error) {
+      emit(AdminBanParentErrorState(error: error.toString()));
+    });
+  }
+
   Future signOut() async {
     await FirebaseAuth.instance.signOut().then((value) {
       CacheHelper.saveData(key: 'uid', value: '');
       CacheHelper.saveData(key: 'user', value: '');
-      currentIndex = 0;
-      print('Sign Out Success🎉');
       emit(AuthAdminSignOutSuccessState());
+      currentIndex = 0;
     }).catchError((error) {
       print('Sign Out Error: $error');
       emit(AuthAdminSignOutErrorState(error.toString()));

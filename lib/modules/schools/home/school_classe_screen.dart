@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/models/class_model.dart';
-import 'package:teatcher_app/modules/schools/home/widgets/build_classes_item.dart';
+import '../../../models/class_model.dart';
+import 'widgets/build_classes_item.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_size.dart';

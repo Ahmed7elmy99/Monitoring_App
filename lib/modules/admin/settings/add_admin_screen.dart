@@ -155,8 +155,11 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                       hintText: "Enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Phone";
+                        if (!startsWith05(value!)) {
+                          return 'Phone number must start with 05';
+                        }
+                        if (!contains8Digits(value)) {
+                          return 'Phone number must contain 8 digits';
                         }
                         return null;
                       },
@@ -199,7 +202,7 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                                   elevation: 16,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText2!
+                                      .bodyMedium!
                                       .copyWith(fontWeight: FontWeight.w500),
                                   underline: Container(
                                     height: 0,
@@ -249,7 +252,7 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                                 elevation: 16,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2!
+                                    .bodyMedium!
                                     .copyWith(fontWeight: FontWeight.w500),
                                 underline: Container(
                                   height: 0,
@@ -293,5 +296,19 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
         },
       ),
     );
+  }
+
+  bool startsWith05(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return number.startsWith('05');
+  }
+
+  bool contains8Digits(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return RegExp(r'^\d{8}$').hasMatch(number.substring(2));
   }
 }

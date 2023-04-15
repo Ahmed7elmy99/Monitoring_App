@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:teatcher_app/core/style/app_color.dart';
+import '../../core/style/app_color.dart';
 
 class CircularProgressComponent extends StatelessWidget {
   const CircularProgressComponent({super.key});

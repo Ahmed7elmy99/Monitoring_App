@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/core/routes/app_routes.dart';
-import 'package:teatcher_app/modules/teachers/home/teacher_message_parent_screen.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../widgets/build_cover_text.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/luanch_url.dart';
+import '../../widgets/show_flutter_toast.dart';
+import 'teacher_message_parent_screen.dart';
 
 class TeacherChildrenDetails extends StatelessWidget {
   const TeacherChildrenDetails({super.key});

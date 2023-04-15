@@ -6,16 +6,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/models/attend_model.dart';
-import 'package:teatcher_app/models/teacher_model.dart';
 
 import '../../../core/services/cache_helper.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../models/attend_model.dart';
 import '../../../models/children_model.dart';
 import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
 import '../../../models/message_model.dart';
 import '../../../models/parent_model.dart';
+import '../../../models/teacher_model.dart';
 import '../../../modules/teachers/home/teacher_home_screen.dart';
 import '../../../modules/teachers/setting/teacher_setting_screen.dart';
 

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/modules/admin/widgets/app_textformfiled_widget.dart';
-import 'package:teatcher_app/modules/admin/widgets/save_changes_bottom.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../widgets/const_widget.dart';
+import '../../widgets/show_flutter_toast.dart';
+import '../widgets/app_textformfiled_widget.dart';
+import '../widgets/save_changes_bottom.dart';
 
 class EditAdminProfileScreen extends StatefulWidget {
   const EditAdminProfileScreen({super.key});
@@ -21,7 +21,6 @@ class EditAdminProfileScreen extends StatefulWidget {
 
 class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
   TextEditingController fullNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -29,7 +28,6 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
   void initState() {
     super.initState();
     fullNameController.text = ADMIN_MODEL!.name;
-    emailController.text = ADMIN_MODEL!.email;
     phoneController.text = ADMIN_MODEL!.phone;
     genderController.text = ADMIN_MODEL!.gender;
   }
@@ -44,14 +42,7 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
       body: BlocConsumer<LayoutCubit, LayoutState>(
         listener: (context, state) {
           if (state is LayoutUpdateUserImageErrorState) {
-            Fluttertoast.showToast(
-                msg: state.error,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showFlutterToast(message: state.error, toastColor: Colors.red);
           }
         },
         builder: (context, state) {
@@ -127,29 +118,6 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                     ),
                     AppSize.sv_20,
                     const Text(
-                      "Email",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    AppSize.sv_10,
-                    AppTextFormFiledWidget(
-                      controller: emailController,
-                      hintText: "Enter your email",
-                      prefix: Icons.email_rounded,
-                      validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Email";
-                        }
-                        if (!value.contains('@')) {
-                          return "Please Enter Valid Email";
-                        }
-                        return null;
-                      },
-                    ),
-                    AppSize.sv_20,
-                    const Text(
                       "Gender",
                       style: TextStyle(
                         fontSize: 16,
@@ -197,7 +165,6 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                               if (_formKey.currentState!.validate()) {
                                 layoutCubit.updateUserData(
                                   adminName: fullNameController.text,
-                                  adminEmail: emailController.text,
                                   adminPhone: phoneController.text,
                                   adminGen: genderController.text,
                                 );

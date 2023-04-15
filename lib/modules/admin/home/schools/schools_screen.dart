@@ -2,7 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/modules/admin/home/schools/school_details_screen.dart';
+import 'school_details_screen.dart';
 
 import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';
@@ -123,6 +123,10 @@ class SchoolsScreen extends StatelessWidget {
                       onTap: () {
                         BlocProvider.of<LayoutCubit>(context)
                             .getAllSupervisors(schoolId: model.id);
+                        BlocProvider.of<LayoutCubit>(context)
+                            .getAllTeachers(schoolId: model.id);
+                        BlocProvider.of<LayoutCubit>(context)
+                            .getAllChildren(schoolId: model.id);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

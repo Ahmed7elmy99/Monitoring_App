@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'widgets/build_teachers_item.dart';
+import 'widgets/build_item_parent_widget.dart';
 
-import '../../../controller/layout/schools/schools_cubit.dart';
+import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/utils/app_size.dart';
-import '../../../core/utils/screen_config.dart';
-import '../../../models/teacher_model.dart';
+import '../../../models/parent_model.dart';
 import '../../widgets/const_widget.dart';
 
-class SchoolTeachersScreen extends StatelessWidget {
-  const SchoolTeachersScreen({super.key});
+class AdminParentsScreen extends StatelessWidget {
+  const AdminParentsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Teachers'),
+        title: Text('Parents'),
       ),
-      body: BlocConsumer<SchoolsCubit, SchoolsState>(
-        listener: (context, state) {
-          if (state is SchoolsBanTeacherSuccessState) {}
-        },
+      body: BlocConsumer<LayoutCubit, LayoutState>(
+        listener: (context, state) {},
         builder: (context, state) {
-          SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
-          return state is SchoolsGetAllTeachersLoadingState
+          LayoutCubit layoutCubit = LayoutCubit.get(context);
+          return state is AdminGetAllParentLoadingState
               ? CircularProgressComponent()
-              : schoolsCubit.schoolsTeachersList.isEmpty
+              : layoutCubit.parentList.isEmpty
                   ? Center(
                       child: Text(
                         'No Teachers',
@@ -38,12 +35,11 @@ class SchoolTeachersScreen extends StatelessWidget {
                   : ListView.separated(
                       padding: const EdgeInsets.all(10.0),
                       itemBuilder: (context, index) {
-                        TeacherModel item =
-                            schoolsCubit.schoolsTeachersList[index];
-                        return BuildItemTeachersWidget(model: item);
+                        ParentModel item = layoutCubit.parentList[index];
+                        return BuildItemParentWidget(model: item);
                       },
                       separatorBuilder: (context, index) => AppSize.sv_10,
-                      itemCount: schoolsCubit.schoolsTeachersList.length,
+                      itemCount: layoutCubit.parentList.length,
                     );
         },
       ),

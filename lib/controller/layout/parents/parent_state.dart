@@ -102,3 +102,21 @@ class ParentSendMessageErrorState extends ParentState {
 class ParentGetMessagesLoadingState extends ParentState {}
 
 class ParentGetMessagesSuccessState extends ParentState {}
+
+class ParentGetAllSchoolsSupervisorsLoadingState extends ParentState {}
+
+class ParentGetAllSchoolsSupervisorsSuccessState extends ParentState {}
+
+class ParentGetAllSchoolsSupervisorsErrorState extends ParentState {}
+
+class ParentGetAllChildReportsLoadingState extends ParentState {}
+
+class ParentGetAllChildReportsSuccessState extends ParentState {}
+
+class ParentGetAllChildReportsErrorState extends ParentState {}
+
+class ParentGetAllChildAttendLoadingState extends ParentState {}
+
+class ParentGetAllChildAttendSuccessState extends ParentState {}
+
+class ParentGetAllChildAttendErrorState extends ParentState {}

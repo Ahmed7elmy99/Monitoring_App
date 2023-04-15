@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
 
 import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
@@ -129,8 +129,11 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                       hintText: "Enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Phone";
+                        if (!startsWith05(value!)) {
+                          return 'Phone number must start with 05';
+                        }
+                        if (!contains8Digits(value)) {
+                          return 'Phone number must contain 8 digits';
                         }
                         return null;
                       },
@@ -219,5 +222,19 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
         },
       ),
     );
+  }
+
+  bool startsWith05(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return number.startsWith('05');
+  }
+
+  bool contains8Digits(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return RegExp(r'^\d{8}$').hasMatch(number.substring(2));
   }
 }

@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:teatcher_app/core/services/cache_helper.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/models/parent_model.dart';
+import '../../core/services/cache_helper.dart';
+import '../../core/utils/app_images.dart';
+import '../../models/parent_model.dart';
 
 import '../../core/utils/const_data.dart';
 import '../../models/admin_models.dart';
@@ -58,7 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthGetUserAfterLoginErrorState(error: 'Admin is banned'));
         return false;
       } else {
-        CacheHelper.saveData(key: 'user', value: 'supervisor');
+        CacheHelper.saveData(key: 'user', value: 'admin');
         ADMIN_MODEL = AdminModels.fromJson(adminDoc.data()!);
         return true;
       }

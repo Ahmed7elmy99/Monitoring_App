@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../controller/layout/admins/layout_cubit.dart';
 
-import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
-import '../../../../models/teacher_model.dart';
+import '../../../../models/parent_model.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
-class BuildItemTeachersWidget extends StatefulWidget {
-  final TeacherModel model;
-  const BuildItemTeachersWidget({super.key, required this.model});
+class BuildItemParentWidget extends StatefulWidget {
+  final ParentModel model;
+  const BuildItemParentWidget({super.key, required this.model});
 
   @override
-  State<BuildItemTeachersWidget> createState() =>
-      _BuildItemTeachersWidgetState();
+  State<BuildItemParentWidget> createState() => _BuildItemParentWidgetState();
 }
 
-class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
+class _BuildItemParentWidgetState extends State<BuildItemParentWidget> {
   TextEditingController banController = TextEditingController();
   @override
   void initState() {
@@ -67,7 +67,7 @@ class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
                 ),
                 AppSize.sv_2,
                 Text(
-                  widget.model.subject,
+                  widget.model.email,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -76,7 +76,7 @@ class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
                   ),
                 ),
                 Text(
-                  widget.model.ban == 'false' ? '' : 'Banned',
+                  banController.text == 'false' ? '' : 'Banned',
                   style: TextStyle(
                     fontSize: 14,
                     color: '${widget.model.ban}' == 'false'
@@ -87,21 +87,28 @@ class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
               ],
             ),
           ),
-          BlocConsumer<SchoolsCubit, SchoolsState>(
+          BlocConsumer<LayoutCubit, LayoutState>(
             listener: (context, state) {
-              if (state is SchoolsBanTeacherSuccessState) {}
+              if (state is AdminBanParentSuccessState) {
+                showFlutterToast(
+                  message: banController.text == 'true'
+                      ? 'Parent Banned'
+                      : 'Parent Unbanned',
+                  toastColor: Colors.green,
+                );
+              }
             },
             builder: (context, state) {
               return Switch(
-                value: banController.text == 'true' ? true : false,
+                value: banController.text == 'false' ? false : true,
                 activeColor: Colors.red,
                 onChanged: (value) {
                   setState(() {
                     banController.text = value.toString();
                   });
-                  BlocProvider.of<SchoolsCubit>(context).banSchoolTeacher(
-                    teacherId: widget.model.id,
-                    teacherBan: value.toString(),
+                  BlocProvider.of<LayoutCubit>(context).banParent(
+                    parentId: widget.model.id,
+                    parentBan: value.toString(),
                   );
                 },
               );

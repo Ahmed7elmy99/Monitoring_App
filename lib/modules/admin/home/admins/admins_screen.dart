@@ -2,11 +2,11 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/models/admin_models.dart';
 
 import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
+import '../../../../models/admin_models.dart';
 import 'admin_details.dart';
 
 class AdminsScreen extends StatelessWidget {
@@ -105,7 +105,7 @@ class AdminsScreen extends StatelessWidget {
                           ),
                           AppSize.sv_10,
                           Text(
-                            model.ban == 'true' ? 'Banned' : 'Not Banned',
+                            model.ban == 'true' ? 'Banned' : '',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.almarai(
