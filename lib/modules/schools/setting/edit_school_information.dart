@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/modules/admin/widgets/app_textformfiled_widget.dart';
-import 'package:teatcher_app/modules/admin/widgets/save_changes_bottom.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../../core/utils/const_data.dart';
+import '../../admin/widgets/app_textformfiled_widget.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/app_color.dart';

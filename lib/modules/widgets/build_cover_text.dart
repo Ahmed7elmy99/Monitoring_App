@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
+import '../../core/utils/screen_config.dart';
 
 class BuildCoverTextWidget extends StatelessWidget {
   final String message;

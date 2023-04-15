@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/models/supervisors_model.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../../../models/supervisors_model.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';

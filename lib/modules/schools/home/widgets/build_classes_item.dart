@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/models/class_model.dart';
-import 'package:teatcher_app/modules/schools/home/school_classes_details_screen.dart';
+import '../../../../core/utils/screen_config.dart';
+import '../../../../models/class_model.dart';
+import '../school_classes_details_screen.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_images.dart';

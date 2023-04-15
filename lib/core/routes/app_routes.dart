@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:teatcher_app/modules/admin/settings/add_admin_screen.dart';
-import 'package:teatcher_app/modules/admin/settings/add_supervisor_screen.dart';
+import '../../modules/admin/settings/add_admin_screen.dart';
+import '../../modules/admin/settings/add_supervisor_screen.dart';
 
 import '../../modules/admin/admin_layout_screen.dart';
 import '../../modules/admin/home/admin_parents_screen.dart';

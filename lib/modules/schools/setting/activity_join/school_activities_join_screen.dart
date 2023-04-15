@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/schools/setting/activity_join/school_activity_join_details.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../../../core/utils/screen_config.dart';
+import 'school_activity_join_details.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_images.dart';

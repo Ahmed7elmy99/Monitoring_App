@@ -6,21 +6,21 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/models/children_model.dart';
-import 'package:teatcher_app/models/message_model.dart';
-import 'package:teatcher_app/models/school_activities_model.dart';
-import 'package:teatcher_app/models/teacher_model.dart';
-import 'package:teatcher_app/modules/parents/home/parent_home_screen.dart';
-import 'package:teatcher_app/modules/parents/parent_setting_screen.dart';
 
 import '../../../core/services/cache_helper.dart';
+import '../../../core/utils/app_images.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../models/activity_join_model.dart';
+import '../../../models/children_model.dart';
+import '../../../models/message_model.dart';
 import '../../../models/parent_model.dart';
+import '../../../models/school_activities_model.dart';
 import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
 import '../../../models/supervisors_model.dart';
+import '../../../models/teacher_model.dart';
+import '../../../modules/parents/home/parent_home_screen.dart';
+import '../../../modules/parents/parent_setting_screen.dart';
 
 part 'parent_state.dart';
 

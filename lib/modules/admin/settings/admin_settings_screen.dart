@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:teatcher_app/core/routes/app_routes.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../auth/widgets/build_auth_bottom.dart';
 
 class AdminSettingsScreen extends StatelessWidget {

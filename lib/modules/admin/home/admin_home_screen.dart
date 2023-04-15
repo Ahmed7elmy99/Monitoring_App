@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/app_images.dart';
-import 'package:teatcher_app/core/utils/dummy_data.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
+import '../../../core/utils/app_images.dart';
+import '../../../core/utils/dummy_data.dart';
+import '../../../core/utils/screen_config.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/routes/app_routes.dart';

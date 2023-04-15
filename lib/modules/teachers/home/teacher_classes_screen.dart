@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/teachers/home/teacher_classes_details_screen.dart';
+import 'teacher_classes_details_screen.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/utils/app_images.dart';

@@ -2,11 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/controller/auth/auth_cubit.dart';
-import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
-import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
-import 'package:teatcher_app/core/style/theme.dart';
-import 'package:teatcher_app/modules/teachers/teacher_layout_screen.dart';
+import 'controller/auth/auth_cubit.dart';
+import 'controller/layout/parents/parent_cubit.dart';
+import 'controller/layout/schools/schools_cubit.dart';
+import 'core/style/theme.dart';
+import 'modules/teachers/teacher_layout_screen.dart';
 
 import 'controller/layout/admins/layout_cubit.dart';
 import 'controller/layout/teachers/teacher_cubit.dart';

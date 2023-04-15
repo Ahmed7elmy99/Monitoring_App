@@ -1,5 +1,4 @@
-import 'package:teatcher_app/models/admin_models.dart';
-
+import '../../models/admin_models.dart';
 import '../../models/parent_model.dart';
 import '../../models/school_model.dart';
 import '../../models/supervisors_model.dart';

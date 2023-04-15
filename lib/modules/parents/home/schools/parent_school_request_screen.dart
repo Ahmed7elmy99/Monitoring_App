@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../../../controller/layout/parents/parent_cubit.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';

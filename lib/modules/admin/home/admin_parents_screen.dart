@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/admin/home/widgets/build_item_parent_widget.dart';
+import 'widgets/build_item_parent_widget.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/utils/app_size.dart';

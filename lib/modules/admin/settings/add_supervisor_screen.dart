@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 import '../widgets/app_textformfiled_widget.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
+import '../../../core/utils/const_data.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/utils/app_images.dart';

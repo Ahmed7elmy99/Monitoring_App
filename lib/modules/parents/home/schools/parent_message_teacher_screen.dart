@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/controller/layout/parents/parent_cubit.dart';
-import 'package:teatcher_app/core/utils/app_size.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
+import '../../../../controller/layout/parents/parent_cubit.dart';
+import '../../../../core/utils/app_size.dart';
+import '../../../../core/utils/const_data.dart';
 
 import '../../../../core/style/app_color.dart';
 import '../../../../core/style/icon_broken.dart';

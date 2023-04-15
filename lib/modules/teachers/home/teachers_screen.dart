@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/controller/layout/teachers/teacher_cubit.dart';
+import '../../../controller/layout/teachers/teacher_cubit.dart';
 
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';

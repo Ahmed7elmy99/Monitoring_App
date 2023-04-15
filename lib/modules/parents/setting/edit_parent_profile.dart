@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/core/utils/const_data.dart';
+import '../../../core/utils/const_data.dart';
 
 import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/style/icon_broken.dart';

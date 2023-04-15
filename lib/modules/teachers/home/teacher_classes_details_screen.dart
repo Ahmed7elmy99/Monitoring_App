@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
-import 'package:teatcher_app/modules/teachers/home/teacher_children_details.dart';
+import '../../../core/utils/screen_config.dart';
+import 'teacher_children_details.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/utils/app_images.dart';

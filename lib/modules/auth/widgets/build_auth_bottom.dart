@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:teatcher_app/core/style/app_color.dart';
-import 'package:teatcher_app/core/utils/screen_config.dart';
+import '../../../core/style/app_color.dart';
+import '../../../core/utils/screen_config.dart';
 
 class BottomComponent extends StatelessWidget {
   final Widget child;
