@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+
 import '../../core/services/cache_helper.dart';
 import '../../core/utils/app_images.dart';
-import '../../models/parent_model.dart';
-
 import '../../core/utils/const_data.dart';
 import '../../models/admin_models.dart';
+import '../../models/parent_model.dart';
 import '../../models/supervisors_model.dart';
 import '../../models/teacher_model.dart';
+import '../../models/tokens_model.dart';
 
 part 'auth_state.dart';
 
@@ -18,7 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
   static AuthCubit get(context) => BlocProvider.of(context);
 
-//
+  TokensModel? tokenModel;
   void userMakLogin({required String email, required String password}) async {
     emit(AuthGetUserAfterLoginLoadingState());
     final auth = FirebaseAuth.instance;
@@ -27,6 +29,14 @@ class AuthCubit extends Cubit<AuthState> {
         .catchError((error) {
       emit(AuthGetUserAfterLoginErrorState(error: error.toString()));
     });
+    FirebaseMessaging fcm = FirebaseMessaging.instance;
+    await fcm.getToken().then((value) {
+      tokenModel = TokensModel(id: userCredential.user!.uid, token: value!);
+    });
+    FirebaseFirestore.instance
+        .collection('tokens')
+        .doc(userCredential.user?.uid)
+        .set(tokenModel!.toMap());
     CacheHelper.saveData(key: 'uid', value: userCredential.user?.uid);
     final userId = userCredential.user?.uid;
     bool isAdminUser = await isAdmin(userId!);

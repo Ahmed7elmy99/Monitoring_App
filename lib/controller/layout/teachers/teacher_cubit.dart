@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/const_data.dart';
@@ -270,6 +272,15 @@ class TeacherCubit extends Cubit<TeacherState> {
             .doc(value.id)
             .update({'id': value.id});
       });
+      FirebaseFirestore.instance
+          .collection('tokens')
+          .doc(childrenModel?.parentId ?? '')
+          .get()
+          .then((value) {
+        if (value.exists) {
+          sendNotificationToParent(value.data()!['token']);
+        }
+      });
     }).catchError((error) {
       print('Error schedules attend: $error');
       emit(
@@ -420,5 +431,25 @@ class TeacherCubit extends Cubit<TeacherState> {
       print('Sign Out Error: $error');
       emit(TeacherSignOutErrorState(error: error.toString()));
     });
+  }
+
+  void sendNotificationToParent(String token) {
+    var response = http.post(
+      Uri.parse("https://fcm.googleapis.com/fcm/send"),
+      headers: <String, String>{
+        "content-type": "application/json",
+        "Authorization": TOKEN_MESSAGE,
+      },
+      body: jsonEncode({
+        "to": token,
+        "notification": {
+          "body":
+              "📌 We have an important update for you! Your child's attendance has just been recorded and we're thrilled to share that they're doing amazing. Log in to the app to see for yourself and keep up the good work!",
+          "title": 'Attendance Recorded👨‍🏫',
+          "sound": "default",
+          "click_action": "FLUTTER_NOTIFICATION_CLICK",
+        }
+      }),
+    );
   }
 }

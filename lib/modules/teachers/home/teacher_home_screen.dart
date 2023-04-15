@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/utils/const_data.dart';
-import '../../../core/utils/screen_config.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../core/utils/dummy_data.dart';
+import '../../../core/utils/screen_config.dart';
 
 class TeacherHomeScreen extends StatelessWidget {
   const TeacherHomeScreen({super.key});
@@ -143,7 +143,7 @@ class TeacherHomeScreen extends StatelessWidget {
           children: [
             Container(
               width: SizeConfig.screenWidth * 0.3,
-              height: SizeConfig.screenHeight * 0.14,
+              height: SizeConfig.screenHeight * 0.13,
               decoration: BoxDecoration(
                 //color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10.0),
@@ -153,7 +153,7 @@ class TeacherHomeScreen extends StatelessWidget {
                   item.image,
                 ),
                 width: SizeConfig.screenWidth * 0.18,
-                height: SizeConfig.screenHeight * 0.09,
+                // height: SizeConfig.screenHeight * 0.09,
                 fit: BoxFit.contain,
               ),
             ),
