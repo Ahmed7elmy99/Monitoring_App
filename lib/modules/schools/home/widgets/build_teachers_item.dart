@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../controller/layout/schools/schools_cubit.dart';
+import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/teacher_model.dart';
-
-import '../../../../core/utils/app_size.dart';
-import '../../../widgets/show_flutter_toast.dart';
 
 class BuildItemTeachersWidget extends StatefulWidget {
   final TeacherModel model;
@@ -90,19 +89,11 @@ class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
           ),
           BlocConsumer<SchoolsCubit, SchoolsState>(
             listener: (context, state) {
-              if (state is SchoolsBanTeacherSuccessState) {
-                showFlutterToast(
-                  message: banController.text == 'true'
-                      ? 'Teacher Banned'
-                      : 'Teacher Unbanned',
-                  toastColor:
-                      banController.text == 'true' ? Colors.red : Colors.green,
-                );
-              }
+              if (state is SchoolsBanTeacherSuccessState) {}
             },
             builder: (context, state) {
               return Switch(
-                value: banController.text == 'false' ? false : true,
+                value: banController.text == 'true' ? true : false,
                 activeColor: Colors.red,
                 onChanged: (value) {
                   setState(() {
@@ -110,7 +101,7 @@ class _BuildItemTeachersWidgetState extends State<BuildItemTeachersWidget> {
                   });
                   BlocProvider.of<SchoolsCubit>(context).banSchoolTeacher(
                     teacherId: widget.model.id,
-                    teacherBan: banController.text,
+                    teacherBan: value.toString(),
                   );
                 },
               );

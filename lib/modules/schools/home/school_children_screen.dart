@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'school_children_details.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/children_model.dart';
 import '../../widgets/const_widget.dart';
+import 'school_children_details.dart';
 
 class SchoolChildrenScreen extends StatelessWidget {
   const SchoolChildrenScreen({super.key});
@@ -54,6 +54,9 @@ class SchoolChildrenScreen extends StatelessWidget {
       onTap: () {
         BlocProvider.of<SchoolsCubit>(context)
             .getParentForChildren(parentId: model.parentId);
+        BlocProvider.of<SchoolsCubit>(context).getAllReports(childId: model.id);
+        BlocProvider.of<SchoolsCubit>(context)
+            .getAllAttendList(childId: model.id);
         Navigator.push(
           context,
           MaterialPageRoute(

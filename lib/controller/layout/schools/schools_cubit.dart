@@ -6,21 +6,24 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../core/utils/const_data.dart';
-import '../../../models/stop_tracking_child_model.dart';
-import '../../../models/teacher_model.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../models/activity_join_model.dart';
+import '../../../models/attend_model.dart';
 import '../../../models/children_model.dart';
 import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
+import '../../../models/message_model.dart';
 import '../../../models/parent_model.dart';
+import '../../../models/report_model.dart';
 import '../../../models/school_activities_model.dart';
 import '../../../models/school_join_model.dart';
 import '../../../models/school_model.dart';
+import '../../../models/stop_tracking_child_model.dart';
 import '../../../models/supervisors_model.dart';
+import '../../../models/teacher_model.dart';
 import '../../../modules/schools/home/shcools_home_screens.dart';
 import '../../../modules/schools/setting/super_setting_screen.dart';
 
@@ -739,6 +742,46 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     });
   }
 
+  List<ReportModel> schoolsReportsList = [];
+  void getAllReports({required String childId}) async {
+    emit(SchoolsGetAllReportsLoadingState());
+    await FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('children')
+        .doc(childId)
+        .collection('reports')
+        .snapshots()
+        .listen((event) {
+      schoolsReportsList = [];
+      for (var element in event.docs) {
+        schoolsReportsList.add(ReportModel.fromJson(element.data()));
+      }
+      print('Success get all reports🎉');
+      emit(SchoolsGetAllReportsSuccessState());
+    });
+  }
+
+  List<AttendModel> schoolsAttendList = [];
+  void getAllAttendList({required String childId}) async {
+    emit(SchoolsGetAllAttendListLoadingState());
+    await FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('children')
+        .doc(childId)
+        .collection('schedules')
+        .snapshots()
+        .listen((event) {
+      schoolsAttendList = [];
+      for (var element in event.docs) {
+        schoolsAttendList.add(AttendModel.fromJson(element.data()));
+      }
+      print('Success get all attend list🎉');
+      emit(SchoolsGetAllAttendListSuccessState());
+    });
+  }
+
   void addChildrenToClass(
       {required ChildrenModel childrenModel, required String classId}) async {
     emit(SchoolsAddChildrenToClassLoadingState());
@@ -978,6 +1021,70 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }).catchError((error) {
       print('Error un tracking child: $error');
       emit(SchoolsUnTrackingChildErrorState(error.toString()));
+    });
+  }
+
+  void sendMessage({required String message, required String receiverId}) {
+    emit(SchoolSendMessageLoadingState());
+    MessageModel messageModel = MessageModel(
+      senderId: SUPERVISOR_MODEL?.id ?? '',
+      receiverId: receiverId,
+      message: message,
+      dateTime: DateTime.now().toString(),
+    );
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('supervisors')
+        .doc(SUPERVISOR_MODEL?.id)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .add(messageModel.toMap())
+        .then((value) {
+      print('Success send message to supervisor 🎉');
+      emit(SchoolSendMessageSuccessState());
+    }).catchError((error) {
+      print('Error send message: $error');
+      emit(SchoolSendMessageErrorState(error: error.toString()));
+    });
+    FirebaseFirestore.instance.collection('parents').doc(receiverId).get().then(
+      (value) {
+        if (value.exists) {
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(receiverId)
+              .collection('chats')
+              .doc(SUPERVISOR_MODEL?.id)
+              .collection('messages')
+              .add(messageModel.toMap())
+              .then((value) {
+            print('Success send message to parent🎉');
+          });
+        }
+      },
+    );
+  }
+
+  List<MessageModel> messages = [];
+  void getMessages({required String receiverId}) {
+    emit(SchoolGetMessagesLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('supervisors')
+        .doc(SUPERVISOR_MODEL?.id)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+      messages = [];
+      event.docs.forEach((element) {
+        messages.add(MessageModel.fromJson(element.data()));
+      });
+      emit(SchoolGetMessagesSuccessState());
     });
   }
 }

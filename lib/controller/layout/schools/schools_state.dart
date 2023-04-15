@@ -245,3 +245,34 @@ class SchoolsUnTrackingChildErrorState extends SchoolsState {
   final String error;
   SchoolsUnTrackingChildErrorState(this.error);
 }
+
+class SchoolSendMessageLoadingState extends SchoolsState {}
+
+class SchoolSendMessageSuccessState extends SchoolsState {}
+
+class SchoolSendMessageErrorState extends SchoolsState {
+  final String error;
+  SchoolSendMessageErrorState({required this.error});
+}
+
+class SchoolGetMessagesLoadingState extends SchoolsState {}
+
+class SchoolGetMessagesSuccessState extends SchoolsState {}
+
+class SchoolGetMessagesErrorState extends SchoolsState {
+  final String error;
+  SchoolGetMessagesErrorState(this.error);
+}
+
+class SchoolsGetAllReportsLoadingState extends SchoolsState {}
+
+class SchoolsGetAllReportsSuccessState extends SchoolsState {}
+
+class SchoolsGetAllReportsErrorState extends SchoolsState {
+  final String error;
+  SchoolsGetAllReportsErrorState(this.error);
+}
+
+class SchoolsGetAllAttendListLoadingState extends SchoolsState {}
+
+class SchoolsGetAllAttendListSuccessState extends SchoolsState {}
