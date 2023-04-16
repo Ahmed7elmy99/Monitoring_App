@@ -48,26 +48,51 @@ class LayoutCubit extends Cubit<LayoutState> {
     required String isBan,
   }) {
     emit(LayoutCreateAdminAccountLoadingState());
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    )
-        .then((value) {
-      print('Success Create Admin Account🎉');
-      print('value: $value');
-      if (value.user?.uid != null) {
-        addAdminInFirebase(
-          adminUid: value.user!.uid,
-          adminName: name,
-          adminEmail: email,
-          adminPassword: password,
-          adminPhone: phone,
-          adminGen: gender,
-          adminIsBan: isBan,
-        );
+
+    // Check if phone number has been used before
+    FirebaseFirestore.instance
+        .collection('phoneNumbers')
+        .where('phone', isEqualTo: phone)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        // Phone number already exists in collection, so exit function
+        emit(LayoutCreateAdminAccountErrorState(
+            'Phone number has already been used'));
+        return;
       }
-      emit(LayoutCreateAdminAccountSuccessState());
+
+      // Phone number does not exist in collection, so create new admin account
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        print('Success Create Admin Account🎉');
+        print('value: $value');
+        if (value.user?.uid != null) {
+          addAdminInFirebase(
+            adminUid: value.user!.uid,
+            adminName: name,
+            adminEmail: email,
+            adminPassword: password,
+            adminPhone: phone,
+            adminGen: gender,
+            adminIsBan: isBan,
+          );
+          FirebaseFirestore.instance
+              .collection('phoneNumbers')
+              .doc(value.user!.uid)
+              .set({
+            'phone': phone,
+          }).then((value) {
+            print('Phone Number Added Success🎉');
+          }).catchError((error) {
+            print('Phone Number Added Error: $error');
+          });
+        }
+        emit(LayoutCreateAdminAccountSuccessState());
+      }).catchError((error) {
+        emit(LayoutCreateAdminAccountErrorState(error.toString()));
+      });
     }).catchError((error) {
       emit(LayoutCreateAdminAccountErrorState(error.toString()));
     });
@@ -107,14 +132,63 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-//i will update this function agein 📌
   Future<void> updateUserData(
-      {String? adminName, String? adminPhone, String? adminGen}) async {
+      {String? adminName,
+      String? adminPhone,
+      String? adminGen,
+      String? emailAdmin,
+      String? passwordAdmin}) async {
+    User? user = FirebaseAuth.instance.currentUser;
     emit(LayoutUpdateUserDataLoadingState());
+
+    // Check if emailAdmin is not null and is different from the current email
+    if (emailAdmin != null && emailAdmin != ADMIN_MODEL?.email) {
+      // Check if the new email address is already in use
+      List<String> signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(emailAdmin);
+      if (signInMethods.isNotEmpty) {
+        emit(LayoutUpdateUserDataErrorState('This email is already in use'));
+        return; // Exit the function if the email address is already in use
+      }
+
+      // Update the email address if it's not already in use
+      await user!.updateEmail(emailAdmin).then((value) {
+        print('Success update email✨');
+      }).catchError((error) {
+        emit(LayoutUpdateUserDataErrorState(error.toString()));
+        print('Error update email: $error');
+      });
+    }
+    if (adminPhone != null && adminPhone != ADMIN_MODEL?.phone) {
+      QuerySnapshot phoneQuerySnapshot = await FirebaseFirestore.instance
+          .collection('phoneNumbers')
+          .where('phone', isEqualTo: adminPhone)
+          .get();
+
+      if (phoneQuerySnapshot.docs.isNotEmpty) {
+        emit(LayoutUpdateUserDataErrorState(
+            'This phone number is already in use'));
+        return;
+      }
+      await FirebaseFirestore.instance
+          .collection('phoneNumbers')
+          .doc(ADMIN_MODEL?.id)
+          .set({
+        'phone': adminPhone,
+      });
+    }
+    if (passwordAdmin != null && passwordAdmin != ADMIN_MODEL?.password) {
+      await user!.updatePassword(passwordAdmin);
+      print('Success update password✨');
+    }
+
+    // Update the user data
     await FirebaseFirestore.instance
         .collection('admins')
         .doc(ADMIN_MODEL?.id)
         .update({
+      'email': emailAdmin == null ? ADMIN_MODEL?.email : emailAdmin,
+      'password': passwordAdmin == null ? ADMIN_MODEL?.password : passwordAdmin,
       'name': adminName == null ? ADMIN_MODEL?.name : adminName,
       'phone': adminPhone == null ? ADMIN_MODEL?.phone : adminPhone,
       'gender': adminGen == null ? ADMIN_MODEL?.gender : adminGen,
@@ -220,34 +294,54 @@ class LayoutCubit extends Cubit<LayoutState> {
     required String schoolWebsite,
   }) {
     emit(LayoutAddSchoolLoadingState());
-    SchoolModel schoolModel = SchoolModel(
-      id: ADMIN_MODEL!.id,
-      description: schoolDescription,
-      name: schoolName,
-      location: schoolLocation,
-      phone: schoolPhone,
-      establishedBy: establishmentType,
-      establishedIn: establishmentDate,
-      website: schoolWebsite,
-      image: AppImages.defaultSchool,
-      ban: 'false',
-      createdAt: DateTime.now().toString(),
-    );
     FirebaseFirestore.instance
-        .collection('schools')
-        .add(schoolModel.toMap())
-        .then((value) {
-      schoolId = value.id;
-      FirebaseFirestore.instance.collection('schools').doc(value.id).update({
-        'id': value.id,
-      }).then((event) {
-        print('Success add school🎉');
+        .collection('phoneNumbers')
+        .where('phone', isEqualTo: schoolPhone)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        emit(LayoutAddSchoolErrorState('Phone number already exists'));
+        return;
+      } else {
+        SchoolModel schoolModel = SchoolModel(
+          id: ADMIN_MODEL!.id,
+          description: schoolDescription,
+          name: schoolName,
+          location: schoolLocation,
+          phone: schoolPhone,
+          establishedBy: establishmentType,
+          establishedIn: establishmentDate,
+          website: schoolWebsite,
+          image: AppImages.defaultSchool,
+          ban: 'false',
+          createdAt: DateTime.now().toString(),
+        );
+        FirebaseFirestore.instance
+            .collection('schools')
+            .add(schoolModel.toMap())
+            .then((value) {
+          FirebaseFirestore.instance
+              .collection('phoneNumbers')
+              .doc(value.id)
+              .set({
+            'phone': schoolPhone,
+          });
+          schoolId = value.id;
+          FirebaseFirestore.instance
+              .collection('schools')
+              .doc(value.id)
+              .update({
+            'id': value.id,
+          }).then((event) {
+            print('Success add school🎉');
 
-        emit(LayoutAddSchoolSuccessState());
-      });
-    }).catchError((error) {
-      print('Error add school: $error');
-      emit(LayoutAddSchoolErrorState(error.toString()));
+            emit(LayoutAddSchoolSuccessState());
+          });
+        }).catchError((error) {
+          print('Error add school: $error');
+          emit(LayoutAddSchoolErrorState(error.toString()));
+        });
+      }
     });
   }
 
@@ -287,32 +381,47 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  void createSuperVisorAccount({
-    required String name,
-    required String email,
-    required String password,
-    required String phone,
-  }) {
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    )
-        .then((value) {
-      print('Success Create supervisor 🎉');
-      print('value: $value');
-      if (value.user?.uid != null) {
-        addSchoolSupervisor(
-          supervisorId: value.user!.uid,
-          supervisorName: name,
-          supervisorEmail: email,
-          supervisorPassword: password,
-          supervisorPhone: phone,
-        );
+  void createSuperVisorAccount(
+      {required String name,
+      required String email,
+      required String password,
+      required String phone}) {
+    FirebaseFirestore.instance
+        .collection('phoneNumbers')
+        .where('phone', isEqualTo: phone)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        emit(LayoutCreateSuperVisorAccountErrorState(
+            'Phone number already exists'));
+        return;
+      } else {
+        FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        )
+            .then((value) {
+          FirebaseFirestore.instance
+              .collection('phoneNumbers')
+              .doc(value.user!.uid)
+              .set({
+            'phone': phone,
+          });
+          if (value.user?.uid != null) {
+            addSchoolSupervisor(
+              supervisorId: value.user!.uid,
+              supervisorName: name,
+              supervisorEmail: email,
+              supervisorPassword: password,
+              supervisorPhone: phone,
+            );
+          }
+        }).catchError((error) {
+          print('Error create supervisor account: $error');
+          emit(LayoutCreateSuperVisorAccountErrorState(error.toString()));
+        });
       }
-    }).catchError((error) {
-      print('Error create supervisor account: $error');
-      emit(LayoutCreateSuperVisorAccountErrorState(error.toString()));
     });
   }
 

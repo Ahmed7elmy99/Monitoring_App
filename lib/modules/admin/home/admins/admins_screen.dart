@@ -17,7 +17,7 @@ class AdminsScreen extends StatelessWidget {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admins Screen'),
+        title: const Text('Admins'),
       ),
       body: BlocConsumer<LayoutCubit, LayoutState>(
         listener: (context, state) {},

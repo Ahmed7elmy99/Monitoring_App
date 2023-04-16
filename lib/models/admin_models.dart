@@ -2,7 +2,7 @@ class AdminModels {
   final String id;
   final String name;
   final String email;
-  final String? password;
+  final String password;
   final String phone;
   String? image;
   final String gender;
@@ -13,7 +13,7 @@ class AdminModels {
     required this.id,
     required this.name,
     required this.email,
-    this.password,
+    required this.password,
     required this.phone,
     this.image,
     required this.gender,

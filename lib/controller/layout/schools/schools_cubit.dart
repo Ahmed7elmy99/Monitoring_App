@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/services/cache_helper.dart';
@@ -357,13 +359,12 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     });
   }
 
-  void createActivityInSchool({
-    required String activityName,
-    required String activityDescription,
-    required String activityDate,
-    required String activityPrice,
-    required String activityDiscount,
-  }) {
+  void createActivityInSchool(
+      {required String activityName,
+      required String activityDescription,
+      required String activityDate,
+      required String activityPrice,
+      required String activityDiscount}) {
     emit(SchoolsAddActivityLoadingState());
     SchoolActivitiesModel schoolActivitiesModel = SchoolActivitiesModel(
       id: SCHOOL_MODEL!.id,
@@ -390,6 +391,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
           .update({
         'id': value.id,
       }).then((value) {
+        sendNotificationsToParents();
         emit(SchoolsAddActivitySuccessState());
       }).catchError((error) {
         emit(SchoolsAddActivityErrorState(error.toString()));
@@ -1086,5 +1088,48 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       });
       emit(SchoolGetMessagesSuccessState());
     });
+  }
+
+  void sendNotificationsToParents() async {
+    // Get all the parent documents from the parent collection
+    var parentDocs =
+        await FirebaseFirestore.instance.collection('parents').get();
+    // Get all the token documents from the token collection
+    var tokenDocs = await FirebaseFirestore.instance.collection('tokens').get();
+    // Convert the token documents to a map for easier lookup later
+    var tokensMap = Map.fromIterable(tokenDocs.docs,
+        key: (doc) => doc['id'], value: (doc) => doc['token']);
+
+    // Loop through each parent document
+    parentDocs.docs.forEach((parentDoc) {
+      var parentId = parentDoc.id;
+      if (tokensMap.containsKey(parentId)) {
+        var token = tokensMap[parentId];
+        // Send a notification to the parent's token
+        sendNotificationToParent(token);
+      } else {
+        print('No token found for parent $parentId');
+      }
+    });
+  }
+
+  void sendNotificationToParent(String token) async {
+    var response = await http.post(
+      Uri.parse("https://fcm.googleapis.com/fcm/send"),
+      headers: <String, String>{
+        "content-type": "application/json",
+        "Authorization": TOKEN_MESSAGE,
+      },
+      body: jsonEncode({
+        "to": token,
+        "notification": {
+          "body":
+              "👋 A new activity has been added. Log in to your account to view the details and participate.",
+          "title": "New Activity Added🎉"
+        },
+      }),
+    );
+    // Check the response for errors or other information
+    print(response.body);
   }
 }

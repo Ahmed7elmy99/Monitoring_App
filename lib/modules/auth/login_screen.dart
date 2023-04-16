@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/routes/app_routes.dart';
-import '../../core/utils/app_images.dart';
-import '../../core/utils/screen_config.dart';
-import 'widgets/build_auth_bottom.dart';
-import 'widgets/build_text_form_filed.dart';
-import '../widgets/show_flutter_toast.dart';
 
 import '../../controller/auth/auth_cubit.dart';
+import '../../core/routes/app_routes.dart';
+import '../../core/utils/app_images.dart';
 import '../../core/utils/app_size.dart';
+import '../../core/utils/screen_config.dart';
 import '../widgets/const_widget.dart';
+import '../widgets/show_flutter_toast.dart';
+import 'widgets/build_auth_bottom.dart';
+import 'widgets/build_text_form_filed.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -23,16 +23,20 @@ class LoginScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthGetUserAfterLoginSuccessState) {
           if (state.message == 'admin') {
-            Navigator.pushReplacementNamed(context, Routers.ADMIN_LAYOUT);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              Routers.ADMIN_LAYOUT,
+              (route) => false,
+            );
           } else if (state.message == 'parent') {
-            Navigator.pushReplacementNamed(
-                context, Routers.PARENTS_LAYOUT_SCREEN);
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routers.PARENTS_LAYOUT_SCREEN, (route) => false);
           } else if (state.message == 'teacher') {
-            Navigator.pushReplacementNamed(
-                context, Routers.TEACHERS_LAYOUT_SCREEN);
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routers.TEACHERS_LAYOUT_SCREEN, (route) => false);
           } else if (state.message == 'supervisor') {
-            Navigator.pushReplacementNamed(
-                context, Routers.SUPERVISORS_LAYOUT_SCREEN);
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routers.SUPERVISORS_LAYOUT_SCREEN, (route) => false);
           }
         }
         if (state is AuthGetUserAfterLoginErrorState) {

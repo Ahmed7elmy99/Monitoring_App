@@ -142,7 +142,7 @@ class ParentHomeScreen extends StatelessWidget {
           children: [
             Container(
               width: SizeConfig.screenWidth * 0.3,
-              height: SizeConfig.screenHeight * 0.15,
+              height: SizeConfig.screenHeight * 0.13,
               decoration: BoxDecoration(
                 //color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10.0),
@@ -152,7 +152,7 @@ class ParentHomeScreen extends StatelessWidget {
                   item.image,
                 ),
                 width: SizeConfig.screenWidth * 0.18,
-                height: SizeConfig.screenHeight * 0.09,
+                // height: SizeConfig.screenHeight * 0.09,
                 fit: BoxFit.contain,
               ),
             ),
