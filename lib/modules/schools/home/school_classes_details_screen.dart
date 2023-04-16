@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:teatcher_app/modules/schools/home/school_acctivities_child_detailes.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -110,7 +111,7 @@ class SchoolClassDetailsScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               ClassJoinModel model =
                                   schoolsCubit.childrenClassJoin[index];
-                              return _buildChildrenItem(model);
+                              return _buildChildrenItem(context, model);
                             },
                           ),
                         )
@@ -133,9 +134,21 @@ class SchoolClassDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChildrenItem(ClassJoinModel model) {
+  Widget _buildChildrenItem(BuildContext context, ClassJoinModel model) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        BlocProvider.of<SchoolsCubit>(context)
+            .getChildForRequest(childId: model.childId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider.value(
+              value: BlocProvider.of<SchoolsCubit>(context),
+              child: const SchoolActivitiesChildDetails(),
+            ),
+          ),
+        );
+      },
       child: Container(
         width: SizeConfig.screenWidth * 0.27,
         margin: const EdgeInsets.only(right: 10.0),

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../../core/utils/const_data.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
-import '../../admin/widgets/save_changes_bottom.dart';
-import '../../widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
+import '../../admin/widgets/app_textformfiled_widget.dart';
+import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 class EditSchoolInformation extends StatefulWidget {
   const EditSchoolInformation({super.key});
@@ -173,8 +173,11 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
                       hintText: "Enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Phone";
+                        if (!startsWith05(value!)) {
+                          return 'Phone number must start with 05';
+                        }
+                        if (!contains8Digits(value)) {
+                          return 'Phone number must contain 8 digits';
                         }
                         return null;
                       },
@@ -301,6 +304,20 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
         },
       ),
     );
+  }
+
+  bool startsWith05(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return number.startsWith('05');
+  }
+
+  bool contains8Digits(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return RegExp(r'^\d{8}$').hasMatch(number.substring(2));
   }
 
   Future<void> _showPicker(BuildContext context) async {

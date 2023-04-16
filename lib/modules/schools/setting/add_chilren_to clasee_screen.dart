@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/children_model.dart';
-import '../../../models/class_model.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
+import '../../../models/children_model.dart';
+import '../../../models/class_model.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
@@ -107,6 +107,7 @@ class _AddChildrenToClassState extends State<AddChildrenToClass> {
                               items: schoolsCubit.schoolsChildrenNotInClassList
                                   .map((child) => DropdownMenuItem(
                                         value: child,
+                                        key: ValueKey(child.id),
                                         child: Text(child.name),
                                       ))
                                   .toList(),

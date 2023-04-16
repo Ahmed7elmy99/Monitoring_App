@@ -11,9 +11,9 @@ import '../../../widgets/const_widget.dart';
 import '../../../widgets/luanch_url.dart';
 import '../../../widgets/show_flutter_toast.dart';
 
-class SchoolActivitiesDetailsScreen extends StatelessWidget {
+class SchoolActivitiesJoinDetailsScreen extends StatelessWidget {
   final ActivityJoinModel activityJoinModel;
-  const SchoolActivitiesDetailsScreen(
+  const SchoolActivitiesJoinDetailsScreen(
       {super.key, required this.activityJoinModel});
 
   @override
@@ -30,6 +30,14 @@ class SchoolActivitiesDetailsScreen extends StatelessWidget {
               message: 'Success Accept Request Join',
               toastColor: Colors.green,
             );
+            Navigator.pop(context);
+          }
+          if (state is SchoolsRejectedActivityRequestSuccessState) {
+            showFlutterToast(
+              message: 'Success Rejected Request Join',
+              toastColor: Colors.red,
+            );
+            Navigator.pop(context);
           }
         },
         builder: (context, state) {
@@ -182,7 +190,9 @@ class SchoolActivitiesDetailsScreen extends StatelessWidget {
                           ],
                         ),
                         AppSize.sv_10,
-                        state is SchoolsAcceptActivitiesJoinRequestLoadingState
+                        state is SchoolsAcceptActivitiesJoinRequestLoadingState ||
+                                state
+                                    is SchoolsRejectedActivityRequestLoadingState
                             ? CircularProgressComponent()
                             : Row(
                                 children: [
@@ -222,7 +232,11 @@ class SchoolActivitiesDetailsScreen extends StatelessWidget {
                                           SizeConfig.screenHeight * 0.06,
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        schoolsCubit.rejectedActivityRequest(
+                                          activitiesReq: activityJoinModel,
+                                        );
+                                      },
                                       child: const Text('Reject'),
                                     ),
                                   ),
