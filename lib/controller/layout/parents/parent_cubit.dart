@@ -83,9 +83,45 @@ class ParentCubit extends Cubit<ParentState> {
     }
   }
 
-  void updateParentProfileData(
-      {String? name, String? phone, String? age, String? gender}) async {
-    emit(ParentUpdateProfileImageLoadingState());
+  void updateParentProfileData({
+    String? name,
+    String? phone,
+    String? age,
+    String? gender,
+    String? email,
+    String? password,
+  }) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    emit(ParentUpdateProfileDataLoadingState());
+    if (email != null && email != PARENT_MODEL?.email) {
+      List<String> signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      if (signInMethods.isNotEmpty) {
+        emit(ParentUpdateProfileDataErrorState(
+            error: 'This email is already in use'));
+        return; // Exit the function if the email address is already in use
+      }
+      await user!.updateEmail(email);
+    }
+    if (password != null && password != PARENT_MODEL?.password) {
+      await user!.updatePassword(password);
+      print('Success update password✨');
+    }
+    if (phone != null && phone != PARENT_MODEL?.phone) {
+      final phoneNumbers =
+          await FirebaseFirestore.instance.collection('phoneNumbers').get();
+      if (checkPhone(phone, phoneNumbers.docs)) {
+        emit(ParentUpdateProfileDataErrorState(
+            error: 'This phone number is already in use'));
+        return;
+      }
+      await FirebaseFirestore.instance
+          .collection('phoneNumbers')
+          .doc(PARENT_MODEL?.id)
+          .set({
+        'phone': phone,
+      });
+    }
     await FirebaseFirestore.instance
         .collection('parents')
         .doc(PARENT_MODEL!.id)
@@ -93,14 +129,29 @@ class ParentCubit extends Cubit<ParentState> {
       'name': name == null ? PARENT_MODEL!.name : name,
       'phone': phone == null ? PARENT_MODEL!.phone : phone,
       'age': age == null ? PARENT_MODEL!.age : age,
+      'email': email == null ? PARENT_MODEL!.email : email,
+      'password': password == null ? PARENT_MODEL!.password : password,
       'gender': gender,
     }).then((value) {
-      print('Update parent profile Success🎉');
-      emit(ParentUpdateProfileImageSuccessState());
+      getCurrentParentData();
+      emit(ParentUpdateProfileDataSuccessState());
     }).catchError((error) {
       print('Error: $error');
-      emit(ParentUpdateProfileImageErrorState());
+      emit(ParentUpdateProfileDataErrorState(
+          error: 'Update parent profile Error'));
     });
+  }
+
+  bool checkPhone(String phone, List<dynamic>? documents) {
+    if (documents == null) {
+      return false;
+    }
+    for (var doc in documents) {
+      if (doc.data()?['phone'] == phone) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> signOutParent() async {
@@ -142,8 +193,15 @@ class ParentCubit extends Cubit<ParentState> {
     required int age,
     required String gender,
     required String certificate,
-  }) {
+  }) async {
     emit(ParentAddChildrenLoadingState());
+    final phoneNumbers =
+        await FirebaseFirestore.instance.collection('phoneNumbers').get();
+    if (checkPhone(phone, phoneNumbers.docs)) {
+      emit(ParentAddChildrenErrorState(
+          error: 'This phone number is already in use'));
+      return;
+    }
     ChildrenModel childrenModel = ChildrenModel(
       id: '333333',
       parentId: PARENT_MODEL!.id,
@@ -166,6 +224,9 @@ class ParentCubit extends Cubit<ParentState> {
         .collection('children')
         .add(childrenModel.toMap())
         .then((value) {
+      FirebaseFirestore.instance.collection('phoneNumbers').doc(value.id).set({
+        'phone': phone,
+      });
       FirebaseFirestore.instance
           .collection('parents')
           .doc(PARENT_MODEL!.id)
@@ -303,10 +364,8 @@ class ParentCubit extends Cubit<ParentState> {
     });
   }
 
-  void crateActivityJoin({
-    required String activityId,
-    required ChildrenModel childModel,
-  }) {
+  void crateActivityJoin(
+      {required String activityId, required ChildrenModel childModel}) {
     emit(ParentCreateActivityJoinLoadingState());
     ActivityJoinModel activityJoinModel = ActivityJoinModel(
       id: '333333',
@@ -321,14 +380,6 @@ class ParentCubit extends Cubit<ParentState> {
         .add(activityJoinModel.toMap())
         .then((value) {
       FirebaseFirestore.instance
-          .collection('parents')
-          .doc(childModel.parentId)
-          .collection('children')
-          .doc(childModel.id)
-          .update({
-        'activityId': 'pending',
-      });
-      FirebaseFirestore.instance
           .collection('schools')
           .doc(childModel.schoolId)
           .collection('activitiesJoin')
@@ -336,6 +387,14 @@ class ParentCubit extends Cubit<ParentState> {
           .update({
         'id': value.id,
       }).then((value) {
+        FirebaseFirestore.instance
+            .collection('parents')
+            .doc(childModel.parentId)
+            .collection('children')
+            .doc(childModel.id)
+            .update({
+          'activityId': 'pending',
+        });
         emit(ParentCreateActivityJoinSuccessState());
       }).catchError((error) {
         emit(ParentCreateActivityJoinErrorState(error: error.toString()));
@@ -491,8 +550,20 @@ class ParentCubit extends Cubit<ParentState> {
     int? age,
     String? gender,
     String? certificate,
-  }) {
+  }) async {
     emit(ParentUpdateProfileLoadingState());
+    if (phone != null) {
+      final phoneNumbers =
+          await FirebaseFirestore.instance.collection('phoneNumbers').get();
+      if (checkPhone(phone, phoneNumbers.docs)) {
+        emit(ParentUpdateProfileErrorState(
+            error: 'This phone number is already in use'));
+        return;
+      }
+      await FirebaseFirestore.instance.collection('phoneNumbers').doc(id).set({
+        'phone': phone,
+      });
+    }
     FirebaseFirestore.instance
         .collection('parents')
         .doc(PARENT_MODEL!.id)

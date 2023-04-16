@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/utils/screen_config.dart';
-import 'school_activity_join_details.dart';
-import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
+import '../../../../core/utils/screen_config.dart';
 import '../../../../models/activity_join_model.dart';
 import '../../../widgets/const_widget.dart';
+import '../../../widgets/show_flutter_toast.dart';
+import 'school_activity_join_details.dart';
 
 class SchoolActivitiesJoinScreen extends StatelessWidget {
   const SchoolActivitiesJoinScreen({super.key});
@@ -63,7 +63,7 @@ class SchoolActivitiesJoinScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SchoolActivitiesDetailsScreen(
+              builder: (context) => SchoolActivitiesJoinDetailsScreen(
                 activityJoinModel: model,
               ),
             ),

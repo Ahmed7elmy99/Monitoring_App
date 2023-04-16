@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/routes/app_routes.dart';
-import '../../core/utils/screen_config.dart';
-import '../widgets/show_flutter_toast.dart';
 
 import '../../controller/auth/auth_cubit.dart';
+import '../../core/routes/app_routes.dart';
 import '../../core/utils/app_images.dart';
 import '../../core/utils/app_size.dart';
+import '../../core/utils/screen_config.dart';
 import '../admin/widgets/app_textformfiled_widget.dart';
 import '../admin/widgets/save_changes_bottom.dart';
 import '../widgets/const_widget.dart';
+import '../widgets/show_flutter_toast.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -140,7 +140,7 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                                 AppSize.sv_10,
                                 AppTextFormFiledWidget(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.phone,
                                   controller: phoneController,
                                   hintText: "Enter your phone",
                                   prefix: Icons.call,

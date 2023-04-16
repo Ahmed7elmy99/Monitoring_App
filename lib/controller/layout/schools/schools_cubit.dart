@@ -910,6 +910,12 @@ class SchoolsCubit extends Cubit<SchoolsState> {
   }
 
   void acceptActivitiesJoinRequest({required ActivityJoinModel activitiesReq}) {
+    ActivityJoinModel aceptedActivitiesReq = ActivityJoinModel(
+      id: activitiesReq.id,
+      childId: activitiesReq.childId,
+      schoolActivityId: activitiesReq.schoolActivityId,
+      activityStatus: 'accepted',
+    );
     emit(SchoolsAcceptActivitiesJoinRequestLoadingState());
     FirebaseFirestore.instance
         .collection('schools')
@@ -925,8 +931,9 @@ class SchoolsCubit extends Cubit<SchoolsState> {
           .collection('activities')
           .doc(activitiesReq.schoolActivityId)
           .collection('children')
-          .add(activitiesReq.toMap())
+          .add(aceptedActivitiesReq.toMap())
           .then((value) {
+//
         FirebaseFirestore.instance
             .collection('schools')
             .doc(SUPERVISOR_MODEL?.schoolsId)
@@ -934,23 +941,59 @@ class SchoolsCubit extends Cubit<SchoolsState> {
             .doc(activitiesReq.schoolActivityId)
             .collection('children')
             .doc(value.id)
-            .update({
-          'id': value.id,
-          'activityStatus': 'accepted',
-        }).then((value) {
+            .update({'id': value.id}).then((value) {
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(childrenRequestModel?.parentId)
+              .collection('children')
+              .doc(activitiesReq.childId)
+              .update({'activityId': 'accepted'});
           FirebaseFirestore.instance
               .collection('parents')
               .doc(childrenRequestModel?.parentId)
               .collection('children')
               .doc(activitiesReq.childId)
               .collection('activitiesJoin')
-              .add(activitiesReq.toMap());
+              .add(aceptedActivitiesReq.toMap())
+              .then((value) {
+            FirebaseFirestore.instance
+                .collection('parents')
+                .doc(childrenRequestModel?.parentId)
+                .collection('children')
+                .doc(activitiesReq.childId)
+                .collection('activitiesJoin')
+                .doc(value.id)
+                .update({'id': value.id});
+          });
         });
       });
       emit(SchoolsAcceptActivitiesJoinRequestSuccessState());
     }).catchError((error) {
       print('Error accept activities join request: $error');
       emit(SchoolsAcceptActivitiesJoinRequestErrorState(error.toString()));
+    });
+  }
+
+  void rejectedActivityRequest({required ActivityJoinModel activitiesReq}) {
+    emit(SchoolsRejectedActivityRequestLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('activitiesJoin')
+        .doc(activitiesReq.id)
+        .update({
+      'activityStatus': 'rejected',
+    }).then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childrenRequestModel?.parentId)
+          .collection('children')
+          .doc(activitiesReq.childId)
+          .update({'activityId': 'rejected'});
+      emit(SchoolsRejectedActivityRequestSuccessState());
+    }).catchError((error) {
+      print('Error rejected activity request: $error');
+      emit(SchoolsRejectedActivityRequestErrorState(error.toString()));
     });
   }
 
@@ -972,6 +1015,28 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }).onError((error, stackTrace) {
       print('Error get all activities: $error');
       emit(SchoolsGetAllActivitiesErrorState(error.toString()));
+    });
+  }
+
+  List<ActivityJoinModel> activitiesJoinList = [];
+  void getAllChildrenInActivities({required String activityId}) {
+    emit(SchoolsGetAllChildrenInActivitiesLoadingState());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(SUPERVISOR_MODEL?.schoolsId)
+        .collection('activities')
+        .doc(activityId)
+        .collection('children')
+        .snapshots()
+        .listen((value) {
+      activitiesJoinList = [];
+      for (var element in value.docs) {
+        activitiesJoinList.add(ActivityJoinModel.fromJson(element.data()));
+      }
+      emit(SchoolsGetAllChildrenInActivitiesSuccessState());
+    }).onError((error, stackTrace) {
+      print('Error get all children in activities: $error');
+      emit(SchoolsGetAllChildrenInActivitiesErrorState(error.toString()));
     });
   }
 

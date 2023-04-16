@@ -162,40 +162,65 @@ class AuthCubit extends Cubit<AuthState> {
     required String gender,
   }) {
     emit(AuthRegisterUserLoadingState());
-    FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    )
-        .then((value) {
-      CacheHelper.saveData(key: 'uid', value: value.user!.uid);
-      CacheHelper.saveData(key: 'user', value: 'parent');
-      ParentModel parentModel = ParentModel(
-        id: value.user!.uid,
-        name: name,
-        email: email,
-        password: password,
-        gender: gender,
-        age: '',
-        phone: phone,
-        image: AppImages.defaultImage2,
-        ban: 'false',
-        createdAt: DateTime.now().toString(),
-      );
-      FirebaseFirestore.instance
-          .collection('parents')
-          .doc(value.user?.uid)
-          .set(parentModel.toMap())
-          .then((value) {
-        PARENT_MODEL = ParentModel.fromJson(parentModel.toMap());
-        print('User Register Success 😎');
-        emit(AuthRegisterUserSuccessState());
-      }).catchError((error) {
-        print('Error: $error');
-        emit(AuthRegisterUserErrorState(error.toString()));
-      });
-    }).catchError((error) {
-      emit(AuthRegisterUserErrorState(error.toString()));
+    FirebaseFirestore.instance.collection('phoneNumbers').get().then((value) {
+      if (checkPhone(phone, value.docs)) {
+        emit(AuthRegisterUserErrorState('Phone number is already used'));
+        return;
+      } else {
+        FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        )
+            .then((value) {
+          FirebaseFirestore.instance
+              .collection('phoneNumbers')
+              .doc(value.user!.uid)
+              .set({
+            'phone': phone,
+          });
+          CacheHelper.saveData(key: 'uid', value: value.user!.uid);
+          CacheHelper.saveData(key: 'user', value: 'parent');
+          ParentModel parentModel = ParentModel(
+            id: value.user!.uid,
+            name: name,
+            email: email,
+            password: password,
+            gender: gender,
+            age: '',
+            phone: phone,
+            image: AppImages.defaultImage2,
+            ban: 'false',
+            createdAt: DateTime.now().toString(),
+          );
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(value.user?.uid)
+              .set(parentModel.toMap())
+              .then((value) {
+            PARENT_MODEL = ParentModel.fromJson(parentModel.toMap());
+            print('User Register Success 😎');
+            emit(AuthRegisterUserSuccessState());
+          }).catchError((error) {
+            print('Error: $error');
+            emit(AuthRegisterUserErrorState(error.toString()));
+          });
+        }).catchError((error) {
+          emit(AuthRegisterUserErrorState(error.toString()));
+        });
+      }
     });
+  }
+
+  bool checkPhone(String phone, List<dynamic>? documents) {
+    if (documents == null) {
+      return false;
+    }
+    for (var doc in documents) {
+      if (doc.data()?['phone'] == phone) {
+        return true;
+      }
+    }
+    return false;
   }
 }

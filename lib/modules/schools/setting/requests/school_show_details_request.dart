@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/utils/screen_config.dart';
-import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_size.dart';
+import '../../../../core/utils/screen_config.dart';
 import '../../../../models/school_join_model.dart';
 import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/const_widget.dart';
 import '../../../widgets/luanch_url.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
 class SchoolShowDetailsRequestScreen extends StatelessWidget {
   final SchoolRequestModel requestModel;
@@ -29,6 +29,7 @@ class SchoolShowDetailsRequestScreen extends StatelessWidget {
               message: 'Request Accepted',
               toastColor: Colors.green,
             );
+            Navigator.pop(context);
           }
         },
         builder: (context, state) {

@@ -120,3 +120,12 @@ class ParentGetAllChildAttendLoadingState extends ParentState {}
 class ParentGetAllChildAttendSuccessState extends ParentState {}
 
 class ParentGetAllChildAttendErrorState extends ParentState {}
+
+class ParentUpdateProfileDataLoadingState extends ParentState {}
+
+class ParentUpdateProfileDataSuccessState extends ParentState {}
+
+class ParentUpdateProfileDataErrorState extends ParentState {
+  final String error;
+  ParentUpdateProfileDataErrorState({required this.error});
+}

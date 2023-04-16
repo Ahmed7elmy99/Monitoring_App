@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -20,6 +21,8 @@ class EditParentProfileScreen extends StatefulWidget {
 
 class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController genderController = TextEditingController();
@@ -28,6 +31,8 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
   void initState() {
     super.initState();
     nameController.text = PARENT_MODEL!.name;
+    emailController.text = PARENT_MODEL!.email;
+    passwordController.text = PARENT_MODEL!.password;
     phoneController.text = PARENT_MODEL!.phone;
     ageController.text = PARENT_MODEL!.age;
     genderController.text = PARENT_MODEL!.gender;
@@ -41,7 +46,20 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
         title: const Text('Edit Profile'),
       ),
       body: BlocConsumer<ParentCubit, ParentState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ParentUpdateProfileDataSuccessState) {
+            showFlutterToast(
+              message: 'Profile updated successfully ',
+              toastColor: Colors.green,
+            );
+          }
+          if (state is ParentUpdateProfileDataErrorState) {
+            showFlutterToast(
+              message: state.error,
+              toastColor: Colors.red,
+            );
+          }
+        },
         builder: (context, state) {
           ParentCubit parentCubit = ParentCubit.get(context);
           return SingleChildScrollView(
@@ -102,7 +120,7 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: nameController,
                       hintText: "Enter your full name",
@@ -114,7 +132,58 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
+                    const Text(
+                      "Email",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    AppTextFormFiledWidget(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      hintText: "Enter your email",
+                      prefix: Icons.email,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Email";
+                        } else if (!value.contains('@')) {
+                          return "Please Enter Valid email address";
+                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
+                    const Text(
+                      "Password",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    AppTextFormFiledWidget(
+                      controller: passwordController,
+                      keyboardType: TextInputType.text,
+                      hintText: "Enter your password",
+                      prefix: Icons.lock,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a password';
+                        } else if (value.length < 8) {
+                          return 'Password should be at least 8 characters long';
+                        } else if (!value.contains(new RegExp(r'[A-Z]'))) {
+                          return 'Password should contain at least one uppercase letter';
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
                     const Text(
                       "Phone",
                       style: TextStyle(
@@ -124,8 +193,8 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                     ),
                     AppSize.sv_10,
                     AppTextFormFiledWidget(
-                      controller: phoneController,
                       keyboardType: TextInputType.phone,
+                      controller: phoneController,
                       hintText: "Enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
@@ -138,7 +207,6 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
                     Row(
                       children: [
                         Expanded(
@@ -152,7 +220,7 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_10,
+                              AppSize.sv_5,
                               AppTextFormFiledWidget(
                                 controller: ageController,
                                 hintText: "Enter your age",
@@ -164,7 +232,7 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
+                              AppSize.sv_15,
                             ],
                           ),
                         ),
@@ -180,7 +248,7 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_10,
+                              AppSize.sv_5,
                               AppTextFormFiledWidget(
                                 controller: genderController,
                                 hintText: "Enter your gender",
@@ -192,27 +260,29 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
+                              AppSize.sv_15,
                             ],
                           ),
                         )
                       ],
                     ),
-                    AppSize.sv_20,
-                    state is ParentUpdateProfileImageLoadingState
+                    AppSize.sv_15,
+                    state is ParentUpdateProfileDataLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
+                            textBottom: 'Save Changes',
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 parentCubit.updateParentProfileData(
                                   name: nameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
                                   phone: phoneController.text,
                                   age: ageController.text,
                                   gender: genderController.text,
                                 );
                               }
                             },
-                            textBottom: 'Save Changes',
                           ),
                   ],
                 ),

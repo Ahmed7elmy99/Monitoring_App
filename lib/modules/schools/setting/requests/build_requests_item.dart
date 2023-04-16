@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../models/school_join_model.dart';
-import 'school_show_details_request.dart';
-import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
+import '../../../../models/school_join_model.dart';
+import '../../../widgets/show_flutter_toast.dart';
+import 'school_show_details_request.dart';
 
 class BuildRequestsItemWidget extends StatelessWidget {
   final SchoolRequestModel model;
@@ -29,6 +29,7 @@ class BuildRequestsItemWidget extends StatelessWidget {
         SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
         return InkWell(
           onTap: () {
+            if (model.requestStatus == 'accepted') return;
             schoolsCubit.getChildForRequest(childId: model.childId);
             Navigator.push(
               context,

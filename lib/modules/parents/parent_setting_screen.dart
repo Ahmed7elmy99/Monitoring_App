@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/utils/const_data.dart';
-import '../widgets/show_flutter_toast.dart';
 
 import '../../controller/layout/parents/parent_cubit.dart';
 import '../../core/routes/app_routes.dart';
@@ -9,9 +7,11 @@ import '../../core/style/app_color.dart';
 import '../../core/style/icon_broken.dart';
 import '../../core/utils/app_images.dart';
 import '../../core/utils/app_size.dart';
+import '../../core/utils/const_data.dart';
 import '../../core/utils/screen_config.dart';
 import '../auth/widgets/build_auth_bottom.dart';
 import '../widgets/build_list_title_widget.dart';
+import '../widgets/show_flutter_toast.dart';
 
 class ParentSettingScreen extends StatelessWidget {
   const ParentSettingScreen({super.key});
@@ -129,9 +129,9 @@ class ParentSettingScreen extends StatelessWidget {
                 },
               ),
               BuildListTitleWidget(
-                title: 'Show Requests',
+                title: 'School Requests',
                 leadingIcon: IconBroken.Document,
-                subtitle: 'show all requests to your account',
+                subtitle: 'show all requests to school',
                 onTap: () {
                   parentCubit.getAllRequests();
                   Navigator.pushNamed(
