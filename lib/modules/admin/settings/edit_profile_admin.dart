@@ -21,6 +21,8 @@ class EditAdminProfileScreen extends StatefulWidget {
 
 class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
   TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -28,6 +30,8 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
   void initState() {
     super.initState();
     fullNameController.text = ADMIN_MODEL!.name;
+    emailController.text = ADMIN_MODEL!.email;
+    passwordController.text = ADMIN_MODEL!.password;
     phoneController.text = ADMIN_MODEL!.phone;
     genderController.text = ADMIN_MODEL!.gender;
   }
@@ -41,15 +45,27 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
       ),
       body: BlocConsumer<LayoutCubit, LayoutState>(
         listener: (context, state) {
+          if (state is LayoutUpdateUserDataSuccessState) {
+            showFlutterToast(
+              message: 'Update Data Success !',
+              toastColor: Colors.green,
+            );
+          }
           if (state is LayoutUpdateUserImageErrorState) {
             showFlutterToast(message: state.error, toastColor: Colors.red);
+          }
+          if (state is LayoutUpdateUserDataErrorState) {
+            showFlutterToast(
+              message: state.error,
+              toastColor: Colors.red,
+            );
           }
         },
         builder: (context, state) {
           LayoutCubit layoutCubit = LayoutCubit.get(context);
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: SingleChildScrollView(
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -118,6 +134,55 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                     ),
                     AppSize.sv_20,
                     const Text(
+                      "Email",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_10,
+                    AppTextFormFiledWidget(
+                      controller: emailController,
+                      hintText: "Enter your email",
+                      prefix: Icons.email,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Email";
+                        }
+                        //validate email
+                        if (!value.contains("@")) {
+                          return "Please Enter Valid Email";
+                        }
+
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_20,
+                    const Text(
+                      "Password",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_10,
+                    AppTextFormFiledWidget(
+                      controller: passwordController,
+                      hintText: "Enter your password",
+                      prefix: Icons.lock,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Password";
+                        }
+                        //validate password
+                        if (value.length < 6) {
+                          return "Password must be at least 6 characters";
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_20,
+                    const Text(
                       "Gender",
                       style: TextStyle(
                         fontSize: 16,
@@ -147,11 +212,15 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                     AppSize.sv_10,
                     AppTextFormFiledWidget(
                       controller: phoneController,
+                      keyboardType: TextInputType.phone,
                       hintText: "Enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Phone";
+                        if (!startsWith05(value!)) {
+                          return 'Phone number must start with 05';
+                        }
+                        if (!contains8Digits(value)) {
+                          return 'Phone number must contain 8 digits';
                         }
                         return null;
                       },
@@ -167,6 +236,8 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                                   adminName: fullNameController.text,
                                   adminPhone: phoneController.text,
                                   adminGen: genderController.text,
+                                  emailAdmin: emailController.text,
+                                  passwordAdmin: passwordController.text,
                                 );
                               }
                             },
@@ -179,5 +250,19 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
         },
       ),
     );
+  }
+
+  bool startsWith05(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return number.startsWith('05');
+  }
+
+  bool contains8Digits(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return RegExp(r'^\d{8}$').hasMatch(number.substring(2));
   }
 }
