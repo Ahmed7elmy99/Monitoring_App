@@ -185,13 +185,45 @@ class TeacherCubit extends Cubit<TeacherState> {
 
   void updateTeacherProfile(
       {String? name,
+      String? email,
+      String? password,
       String? university,
       String? subject,
       String? phone,
       String? address,
       String? age,
-      String? gender}) {
+      String? gender}) async {
+    User? user = FirebaseAuth.instance.currentUser;
     emit(TeacherUpdateProfileLoadingState());
+    if (email != null && email != TEACHER_MODEL?.email) {
+      List<String> signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      if (signInMethods.isNotEmpty) {
+        emit(TeacherUpdateProfileErrorState(
+            error: 'This email is already in use'));
+        return; // Exit the function if the email address is already in use
+      }
+      await user!.updateEmail(email);
+    }
+    if (password != null && password != TEACHER_MODEL?.password) {
+      await user!.updatePassword(password);
+      print('Success update password✨');
+    }
+    if (phone != null && phone != TEACHER_MODEL?.phone) {
+      final phoneNumbers =
+          await FirebaseFirestore.instance.collection('phoneNumbers').get();
+      if (checkPhone(phone, phoneNumbers.docs)) {
+        emit(TeacherUpdateProfileErrorState(
+            error: 'This phone number is already in use'));
+        return;
+      }
+      await FirebaseFirestore.instance
+          .collection('phoneNumbers')
+          .doc(TEACHER_MODEL?.id)
+          .set({
+        'phone': phone,
+      });
+    }
     FirebaseFirestore.instance
         .collection('schools')
         .doc(TEACHER_MODEL?.schoolId ?? '')
@@ -213,6 +245,18 @@ class TeacherCubit extends Cubit<TeacherState> {
       print('Error update teacher profile: $error');
       emit(TeacherUpdateProfileErrorState(error: error.toString()));
     });
+  }
+
+  bool checkPhone(String phone, List<dynamic>? documents) {
+    if (documents == null) {
+      return false;
+    }
+    for (var doc in documents) {
+      if (doc.data()?['phone'] == phone) {
+        return true;
+      }
+    }
+    return false;
   }
 
   String studentStatus = 'attend';

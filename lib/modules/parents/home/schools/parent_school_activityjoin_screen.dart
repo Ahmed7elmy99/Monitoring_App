@@ -35,6 +35,7 @@ class _ParentSchoolActivityJoinScreenState
       body: BlocConsumer<ParentCubit, ParentState>(
         listener: (context, state) {
           if (state is ParentCreateActivityJoinSuccessState) {
+            Navigator.of(context).pop();
             showFlutterToast(
               message: 'Activity joined successfully',
               toastColor: Colors.green,

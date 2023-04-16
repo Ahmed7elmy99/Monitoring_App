@@ -179,8 +179,8 @@ class _ParentEditChildrenState extends State<ParentEditChildren> {
                               ),
                               AppSize.sv_10,
                               AppTextFormFiledWidget(
-                                keyboardType: TextInputType.number,
                                 controller: ageController,
+                                keyboardType: TextInputType.phone,
                                 hintText: "enter age of the child",
                                 prefix: Icons.person,
                                 validate: (value) {

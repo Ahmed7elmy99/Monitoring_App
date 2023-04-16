@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/utils/const_data.dart';
-import '../../../core/utils/screen_config.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/routes/app_routes.dart';
@@ -9,8 +7,9 @@ import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../auth/widgets/build_auth_bottom.dart';
-import '../../widgets/build_list_title_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 
 class TeacherSettingScreen extends StatelessWidget {
@@ -118,17 +117,6 @@ class TeacherSettingScreen extends StatelessWidget {
                 ),
               ),
               AppSize.sv_10,
-              BuildListTitleWidget(
-                title: 'New Children',
-                leadingIcon: IconBroken.Profile,
-                subtitle: 'add new children to your account',
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routers.ADD_CHILDREN_SCREEN,
-                  );
-                },
-              ),
               const Spacer(),
               BottomComponent(
                 child: Text(

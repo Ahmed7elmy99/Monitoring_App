@@ -102,6 +102,21 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     String? website,
   }) async {
     emit(SchoolsUpdateProfileLoadingState());
+    if (phone != null) {
+      final phoneNumbers =
+          await FirebaseFirestore.instance.collection('phoneNumbers').get();
+      if (checkPhone(phone, phoneNumbers.docs)) {
+        emit(SchoolsUpdateProfileErrorState(
+            error: 'This phone number is already in use'));
+        return;
+      }
+      await FirebaseFirestore.instance
+          .collection('phoneNumbers')
+          .doc(SCHOOL_MODEL?.id)
+          .set({
+        'phone': phone,
+      });
+    }
     await FirebaseFirestore.instance
         .collection('schools')
         .doc(SCHOOL_MODEL?.id)
@@ -122,7 +137,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       getCurrentSchool();
       emit(SchoolsUpdateProfileSuccessState());
     }).catchError((error) {
-      emit(SchoolsUpdateProfileErrorState());
+      emit(SchoolsUpdateProfileErrorState(error: error.toString()));
     });
   }
 
@@ -206,11 +221,43 @@ class SchoolsCubit extends Cubit<SchoolsState> {
 
   void updateSupervisorProfile({
     String? superName,
+    String? email,
+    String? password,
     String? superPhone,
     String? superAge,
     String? superGender,
-  }) {
+  }) async {
+    User? user = FirebaseAuth.instance.currentUser;
     emit(SchoolsUpdateSupervisorProfileLoadingState());
+    if (email != null && email != SUPERVISOR_MODEL?.email) {
+      List<String> signInMethods =
+          await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+      if (signInMethods.isNotEmpty) {
+        emit(SchoolsUpdateSupervisorProfileErrorState(
+            'This email is already in use'));
+        return; // Exit the function if the email address is already in use
+      }
+      await user!.updateEmail(email);
+    }
+    if (password != null && password != SUPERVISOR_MODEL?.password) {
+      await user!.updatePassword(password);
+      print('Success update password✨');
+    }
+    if (superPhone != null && superPhone != SUPERVISOR_MODEL?.phone) {
+      final phoneNumbers =
+          await FirebaseFirestore.instance.collection('phoneNumbers').get();
+      if (checkPhone(superPhone, phoneNumbers.docs)) {
+        emit(SchoolsUpdateSupervisorProfileErrorState(
+            'This phone number is already in use'));
+        return;
+      }
+      await FirebaseFirestore.instance
+          .collection('phoneNumbers')
+          .doc(SUPERVISOR_MODEL?.id)
+          .set({
+        'phone': superPhone,
+      });
+    }
     FirebaseFirestore.instance
         .collection('schools')
         .doc(SCHOOL_MODEL?.id)
@@ -218,6 +265,8 @@ class SchoolsCubit extends Cubit<SchoolsState> {
         .doc(SUPERVISOR_MODEL?.id)
         .update({
       'name': superName == null ? SUPERVISOR_MODEL?.name : superName,
+      'email': email == null ? SUPERVISOR_MODEL?.email : email,
+      'password': password == null ? SUPERVISOR_MODEL?.password : password,
       'phone': superPhone == null ? SUPERVISOR_MODEL?.phone : superPhone,
       'age': superAge == null ? SUPERVISOR_MODEL?.age : superAge,
       'gender': superGender == null ? SUPERVISOR_MODEL?.gender : superGender,
@@ -229,6 +278,18 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     });
   }
 
+  bool checkPhone(String phone, List<dynamic>? documents) {
+    if (documents == null) {
+      return false;
+    }
+    for (var doc in documents) {
+      if (doc.data()?['phone'] == phone) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   void createTeacherAccount({
     required String name,
     required String email,
@@ -238,7 +299,14 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     required String address,
     required String age,
     required String gender,
-  }) {
+  }) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    final phoneNumbers =
+        await FirebaseFirestore.instance.collection('phoneNumbers').get();
+    if (checkPhone(phone, phoneNumbers.docs)) {
+      emit(SchoolsAddTeacherErrorState('This phone number is already in use'));
+      return;
+    }
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(
       email: email,
@@ -247,6 +315,12 @@ class SchoolsCubit extends Cubit<SchoolsState> {
         .then((value) {
       print(value.user!.uid);
       if (value.user?.uid != null) {
+        FirebaseFirestore.instance
+            .collection('phoneNumbers')
+            .doc(value.user!.uid)
+            .set({
+          'phone': phone,
+        });
         addTeacher(
           teachId: value.user!.uid,
           teachName: name,

@@ -20,6 +20,8 @@ class EditSupervisorScreen extends StatefulWidget {
 
 class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
   TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController genderController = TextEditingController();
@@ -29,6 +31,8 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
   void initState() {
     super.initState();
     fullNameController.text = SUPERVISOR_MODEL!.name;
+    emailController.text = SUPERVISOR_MODEL!.email;
+    passwordController.text = SUPERVISOR_MODEL!.password;
     phoneController.text = SUPERVISOR_MODEL!.phone;
     ageController.text = SUPERVISOR_MODEL!.age;
     genderController.text = SUPERVISOR_MODEL!.gender;
@@ -52,7 +56,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
           }
           if (state is SchoolsUpdateSupervisorProfileErrorState) {
             showFlutterToast(
-              message: 'Error Updating Profile',
+              message: state.error,
               toastColor: Colors.red,
             );
           }
@@ -117,7 +121,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: fullNameController,
                       hintText: "Enter your full name",
@@ -129,7 +133,58 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
+                    const Text(
+                      "Email",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    AppTextFormFiledWidget(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      hintText: "Enter your email",
+                      prefix: Icons.email,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Email";
+                        } else if (!value.contains('@')) {
+                          return "Please Enter Valid email address";
+                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                            .hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
+                    const Text(
+                      "Password",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    AppTextFormFiledWidget(
+                      controller: passwordController,
+                      keyboardType: TextInputType.text,
+                      hintText: "Enter your password",
+                      prefix: Icons.lock,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a password';
+                        } else if (value.length < 6) {
+                          return 'Password should be at least 8 characters long';
+                        } else if (!value.contains(new RegExp(r'[A-Z]'))) {
+                          return 'Password should contain at least one uppercase letter';
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
                     const Text(
                       "Phone",
                       style: TextStyle(
@@ -137,7 +192,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
@@ -153,7 +208,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     Row(
                       children: [
                         Expanded(
@@ -167,7 +222,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_10,
+                              AppSize.sv_5,
                               AppTextFormFiledWidget(
                                 controller: ageController,
                                 hintText: "Enter your age",
@@ -179,7 +234,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
+                              AppSize.sv_15,
                             ],
                           ),
                         ),
@@ -195,7 +250,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_10,
+                              AppSize.sv_5,
                               AppTextFormFiledWidget(
                                 controller: genderController,
                                 hintText: "Enter your gender",
@@ -207,7 +262,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
+                              AppSize.sv_15,
                             ],
                           ),
                         )
@@ -224,6 +279,8 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                                   superPhone: phoneController.text,
                                   superAge: ageController.text,
                                   superGender: genderController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
                                 );
                               }
                             },
