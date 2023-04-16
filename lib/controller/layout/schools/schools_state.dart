@@ -15,7 +15,10 @@ class SchoolsUpdateProfileLoadingState extends SchoolsState {}
 
 class SchoolsUpdateProfileSuccessState extends SchoolsState {}
 
-class SchoolsUpdateProfileErrorState extends SchoolsState {}
+class SchoolsUpdateProfileErrorState extends SchoolsState {
+  final String error;
+  SchoolsUpdateProfileErrorState({required this.error});
+}
 
 class SchoolsUpdateProfileImageLoadingState extends SchoolsState {}
 

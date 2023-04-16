@@ -59,7 +59,7 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
           }
           if (state is SchoolsUpdateProfileErrorState) {
             showFlutterToast(
-              message: "Error updating school information",
+              message: state.error,
               toastColor: Colors.red,
             );
           }

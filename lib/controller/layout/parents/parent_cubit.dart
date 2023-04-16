@@ -564,7 +564,7 @@ class ParentCubit extends Cubit<ParentState> {
         'phone': phone,
       });
     }
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('parents')
         .doc(PARENT_MODEL!.id)
         .collection('children')

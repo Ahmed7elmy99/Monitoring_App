@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/utils/const_data.dart';
-import '../../widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 class TeacherEditProfileScreen extends StatefulWidget {
   const TeacherEditProfileScreen({super.key});
@@ -21,6 +21,8 @@ class TeacherEditProfileScreen extends StatefulWidget {
 
 class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
   TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   TextEditingController universityController = TextEditingController();
   TextEditingController subjectController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -34,6 +36,8 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
     // TODO: implement initState
     super.initState();
     fullNameController.text = TEACHER_MODEL?.name ?? '';
+    emailController.text = TEACHER_MODEL?.email ?? '';
+    passwordController.text = TEACHER_MODEL?.password ?? '';
     universityController.text = TEACHER_MODEL?.university ?? '';
     subjectController.text = TEACHER_MODEL?.subject ?? '';
     phoneController.text = TEACHER_MODEL?.phone ?? '';
@@ -95,7 +99,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: fullNameController,
                       hintText: "Enter teacher full name",
@@ -107,7 +111,51 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
+                    const Text(
+                      "Email",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    AppTextFormFiledWidget(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      hintText: "Enter your email",
+                      prefix: Icons.email_rounded,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Email";
+                        }
+                        if (!value.contains('@')) {
+                          return "Please Enter Valid Email";
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
+                    const Text(
+                      "Password",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_5,
+                    AppTextFormFiledWidget(
+                      controller: passwordController,
+                      hintText: "Enter your password",
+                      prefix: Icons.lock,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter Password";
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
                     const Text(
                       "University",
                       style: TextStyle(
@@ -115,7 +163,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: universityController,
                       keyboardType: TextInputType.text,
@@ -129,7 +177,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Subject",
                       style: TextStyle(
@@ -137,7 +185,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: subjectController,
                       keyboardType: TextInputType.text,
@@ -150,7 +198,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Location",
                       style: TextStyle(
@@ -158,7 +206,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: addressController,
                       keyboardType: TextInputType.text,
@@ -171,7 +219,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Phone",
                       style: TextStyle(
@@ -179,20 +227,23 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_5,
                     AppTextFormFiledWidget(
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
                       hintText: "Enter your phone",
                       prefix: Icons.call,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Phone";
+                        if (!startsWith05(value!)) {
+                          return 'Phone number must start with 05';
+                        }
+                        if (!contains8Digits(value)) {
+                          return 'Phone number must contain 8 digits';
                         }
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     Row(
                       children: [
                         Expanded(
@@ -206,7 +257,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_10,
+                              AppSize.sv_5,
                               AppTextFormFiledWidget(
                                 controller: ageController,
                                 hintText: "Enter your age",
@@ -218,11 +269,11 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
+                              AppSize.sv_15,
                             ],
                           ),
                         ),
-                        AppSize.sh_10,
+                        AppSize.sh_5,
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +285,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_10,
+                              AppSize.sv_5,
                               AppTextFormFiledWidget(
                                 controller: genderController,
                                 hintText: "Enter your gender",
@@ -246,13 +297,13 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
+                              AppSize.sv_15,
                             ],
                           ),
                         )
                       ],
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     state is TeacherUpdateProfileLoadingState
                         ? CircularProgressComponent()
                         : SaveChangesBottom(
@@ -261,6 +312,8 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                               if (_formKey.currentState!.validate()) {
                                 teacherCubit.updateTeacherProfile(
                                   name: fullNameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
                                   university: universityController.text,
                                   subject: subjectController.text,
                                   phone: phoneController.text,
@@ -279,5 +332,19 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
         },
       ),
     );
+  }
+
+  bool startsWith05(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return number.startsWith('05');
+  }
+
+  bool contains8Digits(String number) {
+    if (number.isEmpty) {
+      return false;
+    }
+    return RegExp(r'^\d{8}$').hasMatch(number.substring(2));
   }
 }
