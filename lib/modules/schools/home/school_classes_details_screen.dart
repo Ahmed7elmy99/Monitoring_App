@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/modules/schools/home/school_acctivities_child_detailes.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -12,6 +11,7 @@ import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
 import '../../widgets/build_cover_text.dart';
 import '../setting/create_class_screen.dart';
+import 'school_acctivities_child_detailes.dart';
 
 class SchoolClassDetailsScreen extends StatelessWidget {
   final ClassModel classModel;

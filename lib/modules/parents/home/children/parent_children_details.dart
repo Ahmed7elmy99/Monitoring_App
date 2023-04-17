@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/modules/parents/home/children/parent_children_attend_screen.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/style/icon_broken.dart';
@@ -13,6 +12,7 @@ import '../../../../models/report_model.dart';
 import '../../../admin/widgets/save_changes_bottom.dart';
 import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/luanch_url.dart';
+import 'parent_children_attend_screen.dart';
 import 'parent_edit_children_screen.dart';
 
 class ParentChildrenDetailsScreen extends StatelessWidget {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -10,6 +9,7 @@ import '../../../core/utils/screen_config.dart';
 import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 class EditParentProfileScreen extends StatefulWidget {
   const EditParentProfileScreen({super.key});

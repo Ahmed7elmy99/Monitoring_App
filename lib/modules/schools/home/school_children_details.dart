@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/modules/schools/home/school_message_parent_screen.dart';
-import 'package:teatcher_app/modules/schools/home/widgets/school_children_attend_screen.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/style/icon_broken.dart';
@@ -15,6 +13,8 @@ import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/build_cover_text.dart';
 import '../../widgets/luanch_url.dart';
 import '../../widgets/show_flutter_toast.dart';
+import 'school_message_parent_screen.dart';
+import 'widgets/school_children_attend_screen.dart';
 
 class SchoolChildrenDetailsScreen extends StatefulWidget {
   final ChildrenModel childrenModel;
