@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../models/supervisors_model.dart';
-import '../../../widgets/show_flutter_toast.dart';
 
 import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/children_model.dart';
 import '../../../../models/school_model.dart';
+import '../../../../models/supervisors_model.dart';
 import '../../../../models/teacher_model.dart';
 import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/luanch_url.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
 class SchoolDetailsScreen extends StatefulWidget {
   final SchoolModel schoolModel;
@@ -247,6 +247,8 @@ class _SchoolDetailsScreenState extends State<SchoolDetailsScreen> {
                           width: SizeConfig.screenWidth,
                           height: SizeConfig.screenHeight * 0.15,
                           child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 5),
                             scrollDirection: Axis.horizontal,
                             itemCount: layoutCubit.childrenList.length,
                             itemBuilder: (context, index) {
@@ -366,8 +368,8 @@ class _SchoolDetailsScreenState extends State<SchoolDetailsScreen> {
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 3,
-            blurRadius: 7,
+            spreadRadius: 1,
+            blurRadius: 5,
             offset: const Offset(0, 3), // changes position of shadow
           ),
         ],
@@ -400,15 +402,15 @@ class _SchoolDetailsScreenState extends State<SchoolDetailsScreen> {
     return Container(
       width: SizeConfig.screenWidth * 0.27,
       margin: const EdgeInsets.only(right: 10.0),
-      padding: const EdgeInsets.all(8.0),
+      //padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 3,
-            blurRadius: 7,
+            spreadRadius: 1,
+            blurRadius: 5,
             offset: const Offset(0, 3), // changes position of shadow
           ),
         ],

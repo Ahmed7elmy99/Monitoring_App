@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
-import '../../../core/utils/app_images.dart';
+import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
@@ -33,7 +33,6 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fullNameController.text = TEACHER_MODEL?.name ?? '';
     emailController.text = TEACHER_MODEL?.email ?? '';
@@ -79,17 +78,43 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 20),
-                        width: SizeConfig.screenWidth * 0.6,
-                        height: SizeConfig.screenHeight * 0.3,
-                        decoration: const BoxDecoration(
-                          //color: Colors.grey,
-                          image: DecorationImage(
-                            image: AssetImage(AppImages.teacherLogo),
-                            fit: BoxFit.cover,
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          Container(
+                            width: SizeConfig.screenWidth * 0.25,
+                            height: SizeConfig.screenHeight * 0.12,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: teacherCubit.uploadImageFile == null
+                                    ? NetworkImage(
+                                        TEACHER_MODEL!.image,
+                                      )
+                                    : FileImage(teacherCubit.uploadImageFile!)
+                                        as ImageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
+                          InkWell(
+                            onTap: () => teacherCubit.getImageFromGallery(),
+                            child: Container(
+                              width: SizeConfig.screenWidth * 0.08,
+                              height: SizeConfig.screenHeight * 0.04,
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                IconBroken.Camera,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const Text(

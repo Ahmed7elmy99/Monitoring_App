@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
@@ -1172,6 +1173,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       receiverId: receiverId,
       message: message,
       dateTime: DateTime.now().toString(),
+      time: DateFormat.jm().format(DateTime.now()),
     );
     FirebaseFirestore.instance
         .collection('schools')
