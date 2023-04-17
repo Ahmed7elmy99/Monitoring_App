@@ -22,6 +22,10 @@ class LoginScreen extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthGetUserAfterLoginSuccessState) {
+          showFlutterToast(
+            message: 'Login Successfully ${state.message}',
+            toastColor: Colors.green,
+          );
           if (state.message == 'admin') {
             Navigator.pushNamedAndRemoveUntil(
               context,

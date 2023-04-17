@@ -29,6 +29,8 @@ class AuthCubit extends Cubit<AuthState> {
         .catchError((error) {
       emit(AuthGetUserAfterLoginErrorState(error: error.toString()));
     });
+
+    //for messaging
     FirebaseMessaging fcm = FirebaseMessaging.instance;
     await fcm.getToken().then((value) {
       tokenModel = TokensModel(id: userCredential.user!.uid, token: value!);
@@ -37,22 +39,24 @@ class AuthCubit extends Cubit<AuthState> {
         .collection('tokens')
         .doc(userCredential.user?.uid)
         .set(tokenModel!.toMap());
+
+    ///
     CacheHelper.saveData(key: 'uid', value: userCredential.user?.uid);
     final userId = userCredential.user?.uid;
-    bool isAdminUser = await isAdmin(userId!);
-    bool isParentUser = await isParent(userId);
-    bool isTeacherUser = await isTeacher(userId);
-    bool isSupervisorUser = await isSupervisor(userId);
-    if (isAdminUser == true) {
+    // bool isAdminUser = await isAdmin(userId!);
+    // bool isParentUser = await isParent(userId);
+    // bool isTeacherUser = await isTeacher(userId);
+    // bool isSupervisorUser = await isSupervisor(userId);
+    if (await isAdmin(userId!)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'admin'));
       print('User is an admin😎');
-    } else if (isParentUser == true) {
+    } else if (await isParent(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'parent'));
       print('User is a parent😎');
-    } else if (isTeacherUser == true) {
+    } else if (await isTeacher(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'teacher'));
       print('User is a teacher😎');
-    } else if (isSupervisorUser == true) {
+    } else if (await isSupervisor(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'supervisor'));
       print('User is a supervisor😎');
     } else {}
@@ -60,7 +64,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<bool> isAdmin(String userId) async {
     final adminRef =
-        FirebaseFirestore.instance.collection('admins').doc(userId);
+        await FirebaseFirestore.instance.collection('admins').doc(userId);
     final adminDocExit = await adminRef.get().then((value) => value.exists);
     final adminDoc = await adminRef.get();
     if (adminDocExit == true) {
@@ -97,15 +101,10 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isTeacher(String userId) async {
-    final schoolsRef = FirebaseFirestore.instance.collection('schools');
-    final schoolsQuerySnapshot = await schoolsRef.get();
+    final schoolsQuerySnapshot =
+        await FirebaseFirestore.instance.collection('schools').get();
 
     for (final schoolDoc in schoolsQuerySnapshot.docs) {
-      final String ban = schoolDoc.data()['ban'];
-      if (ban == 'true') {
-        emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
-        break;
-      }
       final teacherRef = schoolDoc.reference.collection('teachers').doc(userId);
       final teacherDocExit =
           await teacherRef.get().then((value) => value.exists);
@@ -115,9 +114,14 @@ class AuthCubit extends Cubit<AuthState> {
           emit(AuthGetUserAfterLoginErrorState(error: 'Teacher is banned'));
           return false;
         } else {
-          CacheHelper.saveData(key: 'user', value: 'teacher');
-          TEACHER_MODEL = TeacherModel.fromJson(teacherDoc.data()!);
-          return true;
+          if (schoolDoc.data()['ban'] == 'true') {
+            emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
+            return false;
+          } else {
+            CacheHelper.saveData(key: 'user', value: 'teacher');
+            TEACHER_MODEL = TeacherModel.fromJson(teacherDoc.data()!);
+            return true;
+          }
         }
       }
     }
@@ -125,14 +129,13 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isSupervisor(String userId) async {
-    final schoolsRef = FirebaseFirestore.instance.collection('schools');
-    final schoolsQuerySnapshot = await schoolsRef.get();
+    final schoolsQuerySnapshot =
+        await FirebaseFirestore.instance.collection('schools').get();
     for (final schoolDoc in schoolsQuerySnapshot.docs) {
-      final ban = schoolDoc.data()['ban'];
-      if (ban == 'true') {
-        emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
-        break;
-      }
+      // if (ban == 'true') {
+      //   emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
+      //   break;
+      // }
       final supervisorRef =
           schoolDoc.reference.collection('supervisors').doc(userId);
       final supervisorDocExit =
@@ -143,11 +146,14 @@ class AuthCubit extends Cubit<AuthState> {
           emit(AuthGetUserAfterLoginErrorState(error: 'Supervisor is banned'));
           return false;
         } else {
-          CacheHelper.saveData(
-              key: 'schoolId', value: '${supervisorDoc.data()!['schoolsId']}');
-          CacheHelper.saveData(key: 'user', value: 'supervisor');
-          SUPERVISOR_MODEL = SupervisorsModel.fromJson(supervisorDoc.data()!);
-          return true;
+          if (schoolDoc.data()['ban'] == 'true') {
+            emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
+            return false;
+          } else {
+            CacheHelper.saveData(key: 'user', value: 'supervisor');
+            SUPERVISOR_MODEL = SupervisorsModel.fromJson(supervisorDoc.data()!);
+            return true;
+          }
         }
       }
     }

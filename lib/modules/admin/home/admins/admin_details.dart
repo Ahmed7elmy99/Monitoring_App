@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../controller/layout/admins/layout_cubit.dart';
-import '../../../../models/admin_models.dart';
-import '../../../widgets/show_flutter_toast.dart';
 
+import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/const_data.dart';
 import '../../../../core/utils/screen_config.dart';
+import '../../../../models/admin_models.dart';
+import '../../../widgets/show_flutter_toast.dart';
 
 class AdminDetailsScreen extends StatefulWidget {
   final AdminModels model;
@@ -121,7 +121,7 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
                                   });
                                   layoutCubit.updateAdminsBan(
                                     adminId: widget.model.id,
-                                    adminBan: banController.text,
+                                    adminBan: banController.text.toString(),
                                   );
                                 }
                               },
