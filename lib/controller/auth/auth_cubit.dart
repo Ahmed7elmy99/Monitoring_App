@@ -159,11 +159,8 @@ class AuthCubit extends Cubit<AuthState> {
             emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
             return false;
           } else {
-            CacheHelper.saveData(key: 'schoolId', value: '${schoolDoc.id}}');
+            CacheHelper.saveData(key: 'schoolId', value: '${schoolDoc.id}');
             CacheHelper.saveData(key: 'user', value: 'supervisor');
-            print(
-                'User is a supervisor id😎${CacheHelper.getData(key: 'uid')}');
-            print('User is a school ${CacheHelper.getData(key: 'schoolId')}');
             SCHOOL_MODEL = SchoolModel.fromJson(schoolDoc.data());
             SUPERVISOR_MODEL = SupervisorsModel.fromJson(supervisorDoc.data()!);
             return true;
