@@ -38,9 +38,10 @@ class AddSchoolScreen extends StatelessWidget {
               toastColor: Colors.green,
             );
 
-            Navigator.pushNamed(
+            Navigator.pushNamedAndRemoveUntil(
               context,
               Routers.ADD_SUPERVISOR,
+              (route) => false,
             );
           }
           if (state is LayoutAddSchoolErrorState) {
@@ -237,21 +238,29 @@ class AddSchoolScreen extends StatelessWidget {
                     state is LayoutAddSchoolLoadingState
                         ? const CircularProgressComponent()
                         : SaveChangesBottom(
-                            textBottom: "Next Step",
+                            textBottom: "Next Step ",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                layoutCubit.addSchoolInFirebase(
-                                  schoolName: fullNameController.text,
-                                  schoolDescription: descriptionController.text,
-                                  schoolPhone: phoneController.text,
-                                  schoolLocation:
-                                      locationController.text.toLowerCase(),
-                                  establishmentDate:
-                                      establishedInController.text,
-                                  establishmentType:
-                                      establishedByController.text,
-                                  schoolWebsite: websiteController.text,
-                                );
+                                if (establishedInController.text.isEmpty) {
+                                  showFlutterToast(
+                                    message: "Please Enter date of established",
+                                    toastColor: Colors.red,
+                                  );
+                                } else {
+                                  layoutCubit.addSchoolInFirebase(
+                                    schoolName: fullNameController.text,
+                                    schoolDescription:
+                                        descriptionController.text,
+                                    schoolPhone: phoneController.text,
+                                    schoolLocation:
+                                        locationController.text.toLowerCase(),
+                                    establishmentDate:
+                                        establishedInController.text,
+                                    establishmentType:
+                                        establishedByController.text,
+                                    schoolWebsite: websiteController.text,
+                                  );
+                                }
                               }
                             },
                           ),
@@ -284,8 +293,8 @@ class AddSchoolScreen extends StatelessWidget {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2050),
+      firstDate: DateTime(1910),
+      lastDate: DateTime(2024),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -307,7 +316,7 @@ class AddSchoolScreen extends StatelessWidget {
     );
     if (pickedDate != null) {
       print(pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-      formattedDate = DateFormat.yMMMMEEEEd().format(pickedDate);
+      formattedDate = DateFormat.y().format(pickedDate);
       establishedInController.text = formattedDate;
       print(
           formattedDate); //formatted date output using intl package =>  2021-03-16

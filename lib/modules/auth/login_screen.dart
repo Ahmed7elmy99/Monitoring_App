@@ -107,7 +107,8 @@ class LoginScreen extends StatelessWidget {
                               keyboardType: TextInputType.text,
                               hintText: 'Password',
                               prefixIcon: Icons.lock,
-                              // obscureText: true,
+                              suffixIcon: Icons.visibility,
+                              obscureText: true,
                               validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'Please enter your password';
@@ -151,9 +152,10 @@ class LoginScreen extends StatelessWidget {
                                 AppSize.sh_10,
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamedAndRemoveUntil(
                                       context,
                                       Routers.REGISTER_SCREEN,
+                                      (route) => false,
                                     );
                                   },
                                   child: const Text(

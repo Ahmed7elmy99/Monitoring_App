@@ -12,6 +12,8 @@ import '../../../../models/teacher_model.dart';
 import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/luanch_url.dart';
 import '../../../widgets/show_flutter_toast.dart';
+import 'admin_super_details.dart';
+import 'admin_teacher_details_screen.dart';
 
 class SchoolDetailsScreen extends StatefulWidget {
   final SchoolModel schoolModel;
@@ -300,141 +302,184 @@ class _SchoolDetailsScreenState extends State<SchoolDetailsScreen> {
 
   Widget _buildSchoolSupervisorItem(BuildContext context,
       {required SupervisorsModel item}) {
-    return Container(
-      width: SizeConfig.screenWidth,
-      height: SizeConfig.screenHeight * 0.09,
-      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: const Offset(0, 1),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AdminSuperDetailsScreen(superModel: item),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 25.0,
-            backgroundImage: NetworkImage(
-              item.image,
+        );
+      },
+      child: Container(
+        width: SizeConfig.screenWidth,
+        height: SizeConfig.screenHeight * 0.09,
+        margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 1,
+              offset: const Offset(0, 1),
             ),
-          ),
-          AppSize.sh_10,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.almarai(
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
+          ],
+        ),
+        child: Row(
+          children: [
+            Hero(
+              tag: item.id,
+              child: CircleAvatar(
+                radius: 25.0,
+                backgroundImage: NetworkImage(
+                  item.image,
                 ),
               ),
-              AppSize.sv_5,
-              Text(
-                item.email,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.almarai(
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black45,
+            ),
+            AppSize.sh_10,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.almarai(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                AppSize.sv_5,
+                Text(
+                  item.email,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.almarai(
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black45,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTeacherCard(BuildContext context, TeacherModel teacherModel) {
-    return Container(
-      width: SizeConfig.screenWidth * 0.27,
-      margin: const EdgeInsets.only(right: 10.0),
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundImage: NetworkImage(teacherModel.image),
-          ),
-          AppSize.sv_5,
-          Text(
-            teacherModel.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.almarai(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w400,
-              color: Colors.black54,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AdminTeacherDetailsScreen(
+              teacherModel: teacherModel,
             ),
           ),
-        ],
+        );
+      },
+      child: Container(
+        width: SizeConfig.screenWidth * 0.27,
+        margin: const EdgeInsets.only(right: 10.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Hero(
+              tag: teacherModel.id,
+              child: CircleAvatar(
+                radius: 28,
+                backgroundImage: NetworkImage(teacherModel.image),
+              ),
+            ),
+            AppSize.sv_5,
+            Text(
+              teacherModel.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.almarai(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildChildrenCard(BuildContext context, ChildrenModel childrenModel) {
-    return Container(
-      width: SizeConfig.screenWidth * 0.27,
-      margin: const EdgeInsets.only(right: 10.0),
-      //padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundImage: NetworkImage(childrenModel.image),
-          ),
-          AppSize.sv_5,
-          Text(
-            childrenModel.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.almarai(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w400,
-              color: Colors.black54,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AdminTeacherDetailsScreen(
+              childModel: childrenModel,
             ),
           ),
-        ],
+        );
+      },
+      child: Container(
+        width: SizeConfig.screenWidth * 0.27,
+        margin: const EdgeInsets.only(right: 10.0),
+        //padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Hero(
+              tag: childrenModel.id,
+              child: CircleAvatar(
+                radius: 28,
+                backgroundImage: NetworkImage(childrenModel.image),
+              ),
+            ),
+            AppSize.sv_5,
+            Text(
+              childrenModel.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.almarai(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -145,7 +145,7 @@ class AdminsScreen extends StatelessWidget {
                           ],
                         ),
                         child: const Icon(
-                          Icons.arrow_forward_ios,
+                          Icons.info_outline,
                           color: Colors.white,
                         ),
                       ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../controller/layout/admins/layout_cubit.dart';
 
+import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/parent_model.dart';
 import '../../../widgets/show_flutter_toast.dart';
+import 'admin_parent_details.dart';
 
 class BuildItemParentWidget extends StatefulWidget {
   final ParentModel model;
@@ -46,45 +47,63 @@ class _BuildItemParentWidgetState extends State<BuildItemParentWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: NetworkImage(widget.model.image),
+          Hero(
+            key: ValueKey(widget.model.id),
+            tag: widget.model.id,
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey[300],
+              backgroundImage: NetworkImage(widget.model.image),
+            ),
           ),
           AppSize.sh_10,
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.model.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminShowParentDetailsScreen(
+                      model: widget.model,
+                    ),
                   ),
-                ),
-                AppSize.sv_2,
-                Text(
-                  widget.model.email,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
+                );
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.model.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  banController.text == 'false' ? '' : 'Banned',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: '${widget.model.ban}' == 'false'
-                        ? Colors.green
-                        : Colors.red,
+                  AppSize.sv_2,
+                  Text(
+                    widget.model.email,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-              ],
+                  AppSize.sv_5,
+                  Text(
+                    banController.text == 'false' ? '' : 'Banned',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: '${banController.text}' == 'false'
+                          ? Colors.transparent
+                          : Colors.red,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           BlocConsumer<LayoutCubit, LayoutState>(

@@ -76,15 +76,13 @@ class SchoolsCubit extends Cubit<SchoolsState> {
   void getCurrentSchool() async {
     await FirebaseFirestore.instance
         .collection('schools')
-        .doc(
-          CacheHelper.getData(key: 'schoolId') == null
-              ? ''
-              : CacheHelper.getData(key: 'schoolId'),
-        )
+        .doc(CacheHelper.getData(key: 'schoolId') == null
+            ? ''
+            : CacheHelper.getData(key: 'schoolId'))
         .get()
         .then((value) {
       if (value.exists) {
-        print("School name is: ${value.data()!['name']}");
+        print("School name is: 🙂 ${value.data()!['name']}");
         SCHOOL_MODEL = SchoolModel.fromJson(value.data()!);
         emit(SchoolsGetSupervisorSuccessState());
       }
@@ -359,7 +357,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       password: teachPassword,
       university: teachUniversity,
       subject: '',
-      image: AppImages.defaultImage2,
+      image: AppImages.defaultTeacher,
       phone: teachPhone,
       gender: teachGender,
       age: teachAge,
@@ -527,7 +525,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       gender: 'male',
       age: '0',
       ban: 'false',
-      image: AppImages.defaultImage,
+      image: AppImages.defaultSupervisor,
       createdAt: DateTime.now().toString(),
     );
     FirebaseFirestore.instance
@@ -580,7 +578,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       emit(SchoolsGetAllTeachersLoadingState());
       FirebaseFirestore.instance
           .collection('schools')
-          .doc(SCHOOL_MODEL?.id)
+          .doc(SUPERVISOR_MODEL?.schoolsId)
           .collection('teachers')
           .snapshots()
           .listen((value) {

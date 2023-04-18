@@ -34,7 +34,11 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Admin Details'),
+          title: Text(
+            '${widget.model.name} Details',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         body: BlocConsumer<LayoutCubit, LayoutState>(
           listener: (context, state) {

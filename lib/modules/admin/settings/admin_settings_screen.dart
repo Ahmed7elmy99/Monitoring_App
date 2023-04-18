@@ -73,8 +73,8 @@ class AdminSettingsScreen extends StatelessWidget {
                             width: SizeConfig.screenWidth * 0.2,
                             height: SizeConfig.screenHeight * 0.12,
                             decoration: BoxDecoration(
-                              color: Colors.white10,
-                              borderRadius: BorderRadius.circular(8.0),
+                              color: Colors.grey.shade200,
+                              shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.fill,
                                 image: NetworkImage(ADMIN_MODEL?.image ??

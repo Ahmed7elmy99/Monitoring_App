@@ -172,7 +172,7 @@ class SchoolClassDetailsScreen extends StatelessWidget {
             CircleAvatar(
               radius: 28,
               backgroundColor: Colors.white,
-              backgroundImage: AssetImage(AppImages.childrenIcon),
+              backgroundImage: AssetImage(AppImages.defaultChildren),
             ),
             AppSize.sv_5,
           ],

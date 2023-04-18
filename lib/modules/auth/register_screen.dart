@@ -90,12 +90,6 @@ class RegisterScreen extends StatelessWidget {
                         validate: (value) {
                           if (value!.isEmpty) {
                             return "Please Enter Email";
-                          } else if (!value.contains('@')) {
-                            return "Please Enter Valid email address";
-                          } else if (!RegExp(
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                              .hasMatch(value)) {
-                            return 'Please enter a valid email address';
                           }
                           return null;
                         },
@@ -113,13 +107,11 @@ class RegisterScreen extends StatelessWidget {
                         controller: passwordController,
                         hintText: "Enter your password",
                         prefix: Icons.lock,
+                        suffix: Icons.visibility,
+                        isPassword: true,
                         validate: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter a password';
-                          } else if (value.length < 8) {
-                            return 'Password should be at least 8 characters long';
-                          } else if (!value.contains(new RegExp(r'[A-Z]'))) {
-                            return 'Password should contain at least one uppercase letter';
                           }
                           return null;
                         },
@@ -243,9 +235,10 @@ class RegisterScreen extends StatelessWidget {
                           AppSize.sh_10,
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(
+                              Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 Routers.LOGIN,
+                                (route) => false,
                               );
                             },
                             child: const Text(
