@@ -66,9 +66,9 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
         },
         builder: (context, state) {
           SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: SingleChildScrollView(
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Form(
                 key: _formKey,
                 child: Column(

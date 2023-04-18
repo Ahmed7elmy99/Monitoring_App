@@ -76,16 +76,16 @@ class SchoolsCubit extends Cubit<SchoolsState> {
   void getCurrentSchool() async {
     await FirebaseFirestore.instance
         .collection('schools')
-        .doc(CacheHelper.getData(key: 'schoolId') == null
-            ? ''
-            : CacheHelper.getData(key: 'schoolId'))
+        .doc(
+          CacheHelper.getData(key: 'schoolId') == null
+              ? ''
+              : CacheHelper.getData(key: 'schoolId'),
+        )
         .get()
         .then((value) {
-      if (value.exists) {
-        print("School name is: 🙂 ${value.data()!['name']}");
-        SCHOOL_MODEL = SchoolModel.fromJson(value.data()!);
-        emit(SchoolsGetSupervisorSuccessState());
-      }
+      print("School name is: 🙂 ${value.data()!['name']}");
+      SCHOOL_MODEL = SchoolModel.fromJson(value.data()!);
+      emit(SchoolsGetSupervisorSuccessState());
     }).catchError((error) {
       print(error.toString());
     });
@@ -619,7 +619,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     try {
       FirebaseFirestore.instance
           .collection('schools')
-          .doc(SCHOOL_MODEL?.id)
+          .doc(SUPERVISOR_MODEL?.schoolsId)
           .collection('classes')
           .snapshots()
           .listen((value) {
@@ -645,7 +645,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     try {
       FirebaseFirestore.instance
           .collection('schools')
-          .doc(SCHOOL_MODEL?.id)
+          .doc(SUPERVISOR_MODEL?.schoolsId)
           .collection('classes')
           .doc(classId)
           .collection('children')
@@ -690,9 +690,9 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       CacheHelper.saveData(key: 'uid', value: '');
       CacheHelper.saveData(key: 'schoolId', value: '');
       CacheHelper.saveData(key: 'user', value: '');
-      _currentIndex = 0;
       print('Sign Out Success🎉');
       emit(SchoolSignOutSuccessState());
+      _currentIndex = 0;
     }).catchError((error) {
       print('Sign Out Error: $error');
       emit(SchoolSignOutErrorState(error.toString()));

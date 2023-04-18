@@ -104,8 +104,9 @@ class SchoolClassDetailsScreen extends StatelessWidget {
                   schoolsCubit.childrenClassJoin.isNotEmpty
                       ? Container(
                           width: SizeConfig.screenWidth,
-                          height: SizeConfig.screenHeight * 0.11,
+                          height: SizeConfig.screenHeight * 0.12,
                           child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
                             scrollDirection: Axis.horizontal,
                             itemCount: schoolsCubit.childrenClassJoin.length,
                             itemBuilder: (context, index) {
@@ -159,8 +160,8 @@ class SchoolClassDetailsScreen extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 3,
-              blurRadius: 7,
+              spreadRadius: 1,
+              blurRadius: 5,
               offset: const Offset(0, 3), // changes position of shadow
             ),
           ],
@@ -172,7 +173,7 @@ class SchoolClassDetailsScreen extends StatelessWidget {
             CircleAvatar(
               radius: 28,
               backgroundColor: Colors.white,
-              backgroundImage: AssetImage(AppImages.defaultChildren),
+              backgroundImage: AssetImage(AppImages.childrenIcon),
             ),
             AppSize.sv_5,
           ],
