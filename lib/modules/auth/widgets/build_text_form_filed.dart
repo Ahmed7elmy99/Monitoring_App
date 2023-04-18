@@ -1,43 +1,64 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/style/app_color.dart';
 
-class TextFormFiledComponent extends StatelessWidget {
+class TextFormFiledComponent extends StatefulWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final String hintText;
   final IconData? prefixIcon;
-  final bool obscureText;
+  final IconData? suffixIcon;
+  bool obscureText;
   final FormFieldValidator<String>? validate;
 
-  const TextFormFiledComponent({
+  TextFormFiledComponent({
     super.key,
     this.controller,
     this.keyboardType,
     required this.hintText,
     this.prefixIcon,
+    this.suffixIcon,
     this.obscureText = false,
     required this.validate,
   });
 
   @override
+  State<TextFormFiledComponent> createState() => _TextFormFiledComponentState();
+}
+
+class _TextFormFiledComponentState extends State<TextFormFiledComponent> {
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: validate,
+      controller: widget.controller,
+      keyboardType: widget.keyboardType,
+      obscureText: widget.obscureText,
+      validator: widget.validate,
       cursorColor: Theme.of(context).primaryColor,
       style: Theme.of(context).textTheme.bodyLarge,
       decoration: InputDecoration(
         isDense: true,
-        hintText: hintText,
+        hintText: widget.hintText,
         hintStyle:
             TextStyle(color: Colors.grey[400], fontSize: 16.0, height: 1.0),
-        prefixIcon: prefixIcon != null
+        prefixIcon: widget.prefixIcon != null
             ? Icon(
-                prefixIcon,
+                widget.prefixIcon,
                 size: 20.0,
                 color: AppColor.primerColor.withOpacity(0.7),
+              )
+            : null,
+        suffixIcon: widget.suffixIcon != null
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    widget.obscureText = !widget.obscureText;
+                  });
+                },
+                icon: Icon(
+                  widget.obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: AppColor.primer,
+                ),
               )
             : null,
         border: OutlineInputBorder(

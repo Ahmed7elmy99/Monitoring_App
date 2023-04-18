@@ -100,3 +100,19 @@ class TeacherGetMessagesErrorState extends TeacherState {
   final String error;
   TeacherGetMessagesErrorState({required this.error});
 }
+
+class TeacherGetImageSuccessState extends TeacherState {}
+
+class TeacherGetImageErrorState extends TeacherState {
+  final String error;
+  TeacherGetImageErrorState({required this.error});
+}
+
+class TeacherUpdateUserImageLoadingState extends TeacherState {}
+
+class TeacherUpdateUserImageSuccessState extends TeacherState {}
+
+class TeacherUpdateUserImageErrorState extends TeacherState {
+  final String error;
+  TeacherUpdateUserImageErrorState({required this.error});
+}

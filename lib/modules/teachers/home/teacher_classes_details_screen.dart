@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/utils/screen_config.dart';
-import 'teacher_children_details.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../../models/class_join_Model.dart';
 import '../../../models/class_model.dart';
 import '../../widgets/build_cover_text.dart';
+import 'teacher_children_details.dart';
 
 class TeacherClassesDetailsScreen extends StatelessWidget {
   final ClassModel classModel;
@@ -89,8 +89,9 @@ class TeacherClassesDetailsScreen extends StatelessWidget {
                   teacherCubit.childrenClassJoin.isNotEmpty
                       ? Container(
                           width: SizeConfig.screenWidth,
-                          height: SizeConfig.screenHeight * 0.11,
+                          height: SizeConfig.screenHeight * 0.13,
                           child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
                             scrollDirection: Axis.horizontal,
                             itemCount: teacherCubit.childrenClassJoin.length,
                             itemBuilder: (context, index) {
@@ -133,7 +134,7 @@ class TeacherClassesDetailsScreen extends StatelessWidget {
         );
       },
       child: Container(
-        width: SizeConfig.screenWidth * 0.27,
+        width: SizeConfig.screenWidth * 0.22,
         margin: const EdgeInsets.only(right: 10.0),
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
@@ -142,8 +143,8 @@ class TeacherClassesDetailsScreen extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 3,
-              blurRadius: 7,
+              spreadRadius: 1,
+              blurRadius: 5,
               offset: const Offset(0, 3), // changes position of shadow
             ),
           ],

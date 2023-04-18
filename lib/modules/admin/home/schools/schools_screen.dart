@@ -2,12 +2,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'school_details_screen.dart';
 
 import '../../../../controller/layout/admins/layout_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/school_model.dart';
+import 'school_details_screen.dart';
 
 class SchoolsScreen extends StatelessWidget {
   const SchoolsScreen({super.key});
@@ -153,7 +153,7 @@ class SchoolsScreen extends StatelessWidget {
                           ],
                         ),
                         child: const Icon(
-                          Icons.arrow_forward_ios,
+                          Icons.info_outline,
                           color: Colors.white,
                         ),
                       ),

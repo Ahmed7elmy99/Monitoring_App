@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../widgets/const_widget.dart';
@@ -24,16 +25,12 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
   TextEditingController phoneController = TextEditingController();
 
   TextEditingController genderController = TextEditingController();
-  TextEditingController banController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  String _value = 'male';
-  String _banValue = 'false';
   @override
   void initState() {
     super.initState();
-    genderController.text = _value;
-    banController.text = _banValue;
+    genderController.text = 'male';
   }
 
   @override
@@ -72,11 +69,21 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Form(
                 key: _formKey,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Center(
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage:
+                            const NetworkImage(AppImages.defaultAdmin),
+                      ),
+                    ),
                     const Text(
                       "Name",
                       style: TextStyle(
@@ -96,7 +103,7 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Email",
                       style: TextStyle(
@@ -114,13 +121,11 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                         if (value!.isEmpty) {
                           return "Please Enter Email";
                         }
-                        if (!value.contains('@')) {
-                          return "Please Enter Valid Email";
-                        }
+
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Password",
                       style: TextStyle(
@@ -133,6 +138,8 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                       controller: passwordController,
                       hintText: "Enter your password",
                       prefix: Icons.lock,
+                      isPassword: true,
+                      suffix: Icons.visibility,
                       validate: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Password";
@@ -140,7 +147,7 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Phone",
                       style: TextStyle(
@@ -164,110 +171,61 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
+                    const Text(
+                      "Gender",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_10,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Container(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  "Gender",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                AppSize.sv_10,
-                                DropdownButton<String>(
-                                  items: <String>[
-                                    'male',
-                                    'female',
-                                  ].map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    },
-                                  ).toList(),
-                                  value: _value,
-                                  icon: Icon(
-                                    Icons.arrow_drop_down,
-                                    size: 20.0,
-                                  ),
-                                  elevation: 16,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(fontWeight: FontWeight.w500),
-                                  underline: Container(
-                                    height: 0,
-                                    color: Colors.transparent,
-                                  ),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _value = newValue!;
-                                      genderController.text = _value;
-                                    });
-                                  },
-                                ),
-                              ],
+                        Container(
+                          width: SizeConfig.screenWidth * 0.88,
+                          height: SizeConfig.screenHeight * 0.065,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1,
                             ),
                           ),
-                        ),
-                        AppSize.sh_20,
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Ban",
-                                textAlign: TextAlign.left,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              hint: const Text(
+                                "Select status",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              DropdownButton<String>(
-                                items: <String>[
-                                  'true',
-                                  'false',
-                                ].map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  },
-                                ).toList(),
-                                value: _banValue,
-                                icon: Icon(
-                                  Icons.arrow_drop_down,
-                                  size: 20.0,
-                                ),
-                                elevation: 16,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(fontWeight: FontWeight.w500),
-                                underline: Container(
-                                  height: 0,
-                                  color: Colors.transparent,
-                                ),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _banValue = newValue!;
-                                    banController.text = _banValue;
-                                  });
-                                },
-                              ),
-                            ],
+                              value: genderController.text,
+                              onChanged: (value) {
+                                setState(() {
+                                  genderController.text = value.toString();
+                                });
+                              },
+                              items: layoutCubit.genderList.map((value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     AppSize.sv_20,
@@ -283,7 +241,6 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
                                   password: passwordController.text,
                                   gender: genderController.text,
                                   phone: phoneController.text,
-                                  isBan: banController.text,
                                 );
                               }
                             },

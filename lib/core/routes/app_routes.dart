@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../modules/admin/settings/add_admin_screen.dart';
-import '../../modules/admin/settings/add_supervisor_screen.dart';
 
 import '../../modules/admin/admin_layout_screen.dart';
-import '../../modules/admin/home/admin_parents_screen.dart';
 import '../../modules/admin/home/admins/admins_screen.dart';
+import '../../modules/admin/home/parents/admin_parents_screen.dart';
 import '../../modules/admin/home/schools/schools_screen.dart';
+import '../../modules/admin/settings/add_admin_screen.dart';
 import '../../modules/admin/settings/add_school_screen.dart';
+import '../../modules/admin/settings/add_supervisor_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
 import '../../modules/auth/register_screen.dart';

@@ -105,9 +105,6 @@ class AddSupervisorScreen extends StatelessWidget {
                         if (value!.isEmpty) {
                           return "Please Enter Email";
                         }
-                        if (!value.contains('@')) {
-                          return "Please Enter Valid Email";
-                        }
                         return null;
                       },
                     ),
@@ -123,6 +120,8 @@ class AddSupervisorScreen extends StatelessWidget {
                     AppTextFormFiledWidget(
                       controller: passwordController,
                       hintText: "Enter your password",
+                      isPassword: true,
+                      suffix: Icons.visibility,
                       prefix: Icons.lock,
                       validate: (value) {
                         if (value!.isEmpty) {

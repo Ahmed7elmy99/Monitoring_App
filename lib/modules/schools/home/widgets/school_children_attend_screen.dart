@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/models/attend_model.dart';
 
 import '../../../../controller/layout/schools/schools_cubit.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
+import '../../../../models/attend_model.dart';
 
 class SchoolChildrenAttendScreen extends StatelessWidget {
   const SchoolChildrenAttendScreen({super.key});

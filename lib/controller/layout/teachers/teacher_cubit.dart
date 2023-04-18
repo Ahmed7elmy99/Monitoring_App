@@ -8,8 +8,11 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/services/cache_helper.dart';
+import '../../../core/utils/app_strings.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../models/attend_model.dart';
 import '../../../models/children_model.dart';
@@ -406,6 +409,7 @@ class TeacherCubit extends Cubit<TeacherState> {
       receiverId: receiverId,
       message: message,
       dateTime: DateTime.now().toString(),
+      time: DateFormat.jm().format(DateTime.now()),
     );
     FirebaseFirestore.instance
         .collection('schools')
@@ -487,13 +491,59 @@ class TeacherCubit extends Cubit<TeacherState> {
       body: jsonEncode({
         "to": token,
         "notification": {
-          "body":
-              "📌 We have an important update for you! Your child's attendance has just been recorded and we're thrilled to share that they're doing amazing. Log in to the app to see for yourself and keep up the good work!",
+          "body": AppStrings.ADD_NEW_ACTIVITY,
           "title": 'Attendance Recorded👨‍🏫',
           "sound": "default",
           "click_action": "FLUTTER_NOTIFICATION_CLICK",
         }
       }),
     );
+  }
+
+  File? uploadImageFile;
+  String? profileImageUrl;
+  void getImageFromGallery() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+    if (image != null) {
+      uploadImageFile = File(image.path);
+      profileImageUrl = image.path;
+      updateProfileImage();
+      emit(TeacherGetImageSuccessState());
+    } else {
+      print('No image selected.');
+      emit(TeacherGetImageErrorState(
+          error: 'No image selected. Please select an image.'));
+    }
+  }
+
+  void updateProfileImage() {
+    emit(TeacherUpdateUserImageLoadingState());
+    firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('images/${TEACHER_MODEL?.id ?? ''}')
+        .putFile(uploadImageFile!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        profileImageUrl = value;
+        uploadImageFile = null;
+        FirebaseFirestore.instance
+            .collection('schools')
+            .doc(TEACHER_MODEL?.schoolId ?? '')
+            .collection('teachers')
+            .doc(TEACHER_MODEL?.id ?? '')
+            .update({
+          'image': profileImageUrl,
+        });
+        getCurrentTeacher();
+        emit(TeacherUpdateUserImageSuccessState());
+      }).catchError((error) {
+        print('Error get image url: $error');
+        emit(TeacherUpdateUserImageErrorState(error: error.toString()));
+      });
+    });
   }
 }

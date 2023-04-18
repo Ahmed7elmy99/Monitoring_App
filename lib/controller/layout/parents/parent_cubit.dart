@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/services/cache_helper.dart';
 import '../../../core/utils/app_images.dart';
@@ -599,6 +600,7 @@ class ParentCubit extends Cubit<ParentState> {
       receiverId: receiverId,
       message: message,
       dateTime: DateTime.now().toString(),
+      time: DateFormat.jm().format(DateTime.now()),
     );
     FirebaseFirestore.instance
         .collection('parents')

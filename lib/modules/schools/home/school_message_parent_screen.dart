@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:teatcher_app/controller/layout/schools/schools_cubit.dart';
+import '../../../controller/layout/schools/schools_cubit.dart';
 
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../models/message_model.dart';
+import '../../widgets/build_my_message.dart';
 
 class SchoolMessageParentScreen extends StatelessWidget {
   SchoolMessageParentScreen({super.key});
@@ -34,8 +34,16 @@ class SchoolMessageParentScreen extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) {
                             MessageModel message = schoolsCubit.messages[index];
                             if (SUPERVISOR_MODEL!.id == message.senderId)
-                              return buildMyMessage(message);
-                            return buildMessage(message);
+                              return BuildMyMessageWidget(
+                                  model: message,
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  backgroundColor:
+                                      AppColor.primer.withOpacity(0.2));
+                            return BuildMyMessageWidget(
+                              model: message,
+                              alignment: AlignmentDirectional.centerStart,
+                              backgroundColor: Colors.grey.withOpacity(0.2),
+                            );
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return AppSize.sv_10;
@@ -97,63 +105,6 @@ class SchoolMessageParentScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget buildMessage(MessageModel model) {
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadiusDirectional.only(
-            bottomEnd: Radius.circular(
-              10.0,
-            ),
-            topStart: Radius.circular(
-              10.0,
-            ),
-            topEnd: Radius.circular(
-              10.0,
-            ),
-          ),
-        ),
-        padding: EdgeInsets.symmetric(
-          vertical: 5,
-          horizontal: 10,
-        ),
-        child: Text(
-          model.message,
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildMyMessage(MessageModel model) {
-    return Align(
-      alignment: AlignmentDirectional.centerEnd,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColor.primer.withOpacity(0.2),
-          borderRadius: BorderRadiusDirectional.only(
-            bottomStart: Radius.circular(10.0),
-            topStart: Radius.circular(10.0),
-            topEnd: Radius.circular(10.0),
-          ),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-        child: Text(
-          model.message,
-          style: GoogleFonts.almarai(
-            fontSize: 16.0,
-            fontWeight: FontWeight.w400,
-            color: Colors.black,
-          ),
-        ),
-      ),
     );
   }
 }

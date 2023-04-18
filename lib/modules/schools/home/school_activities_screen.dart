@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:teatcher_app/modules/schools/home/school_activities_details_screen.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';
@@ -8,6 +7,7 @@ import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/school_activities_model.dart';
 import '../../widgets/const_widget.dart';
+import 'school_activities_details_screen.dart';
 
 class SchoolActivitiesScreen extends StatelessWidget {
   const SchoolActivitiesScreen({super.key});

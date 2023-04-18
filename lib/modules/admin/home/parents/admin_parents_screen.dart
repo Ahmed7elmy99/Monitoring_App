@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'widgets/build_item_parent_widget.dart';
 
-import '../../../controller/layout/admins/layout_cubit.dart';
-import '../../../core/utils/app_size.dart';
-import '../../../models/parent_model.dart';
-import '../../widgets/const_widget.dart';
+import '../../../../controller/layout/admins/layout_cubit.dart';
+import '../../../../core/utils/app_size.dart';
+import '../../../../models/parent_model.dart';
+import '../../../widgets/const_widget.dart';
+import 'build_item_parent_widget.dart';
 
 class AdminParentsScreen extends StatelessWidget {
   const AdminParentsScreen({super.key});
@@ -25,7 +25,7 @@ class AdminParentsScreen extends StatelessWidget {
               : layoutCubit.parentList.isEmpty
                   ? Center(
                       child: Text(
-                        'No Teachers',
+                        'No Parents',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

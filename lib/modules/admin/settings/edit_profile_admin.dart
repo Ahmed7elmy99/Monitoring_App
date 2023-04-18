@@ -31,7 +31,6 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
     super.initState();
     fullNameController.text = ADMIN_MODEL!.name;
     emailController.text = ADMIN_MODEL!.email;
-    passwordController.text = ADMIN_MODEL!.password;
     phoneController.text = ADMIN_MODEL!.phone;
     genderController.text = ADMIN_MODEL!.gender;
   }
@@ -132,7 +131,7 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Email",
                       style: TextStyle(
@@ -149,15 +148,10 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                         if (value!.isEmpty) {
                           return "Please Enter Email";
                         }
-                        //validate email
-                        if (!value.contains("@")) {
-                          return "Please Enter Valid Email";
-                        }
-
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Password",
                       style: TextStyle(
@@ -169,63 +163,113 @@ class _EditAdminProfileScreenState extends State<EditAdminProfileScreen> {
                     AppTextFormFiledWidget(
                       controller: passwordController,
                       hintText: "Enter your password",
+                      isPassword: true,
+                      suffix: Icons.visibility,
                       prefix: Icons.lock,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Password";
-                        }
-                        //validate password
-                        if (value.length < 6) {
-                          return "Password must be at least 6 characters";
-                        }
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
-                    const Text(
-                      "Gender",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    AppSize.sv_15,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Phone",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              AppSize.sv_10,
+                              AppTextFormFiledWidget(
+                                controller: phoneController,
+                                keyboardType: TextInputType.phone,
+                                hintText: "Enter your phone",
+                                prefix: Icons.call,
+                                validate: (value) {
+                                  if (!startsWith05(value!)) {
+                                    return 'Phone number must start with 05';
+                                  }
+                                  if (!contains8Digits(value)) {
+                                    return 'Phone number must contain 8 digits';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        AppSize.sh_15,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Gender",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              AppSize.sv_10,
+                              Container(
+                                width: SizeConfig.screenWidth * 0.4,
+                                height: SizeConfig.screenHeight * 0.065,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: const Text(
+                                      "Select status",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    value: genderController.text,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        genderController.text =
+                                            value.toString();
+                                      });
+                                      // layoutCubit
+                                      //     .changeGender(value.toString());
+                                    },
+                                    items: layoutCubit.genderList.map((value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    AppSize.sv_10,
-                    AppTextFormFiledWidget(
-                      controller: genderController,
-                      hintText: "Enter your gender",
-                      prefix: Icons.person,
-                      validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter your gender";
-                        }
-                        return null;
-                      },
-                    ),
-                    AppSize.sv_20,
-                    const Text(
-                      "Phone",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    AppSize.sv_10,
-                    AppTextFormFiledWidget(
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                      hintText: "Enter your phone",
-                      prefix: Icons.call,
-                      validate: (value) {
-                        if (!startsWith05(value!)) {
-                          return 'Phone number must start with 05';
-                        }
-                        if (!contains8Digits(value)) {
-                          return 'Phone number must contain 8 digits';
-                        }
-                        return null;
-                      },
-                    ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     state is LayoutUpdateUserDataSuccessState
                         ? const CircularProgressComponent()
                         : SaveChangesBottom(

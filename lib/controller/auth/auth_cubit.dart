@@ -10,6 +10,7 @@ import '../../core/utils/app_images.dart';
 import '../../core/utils/const_data.dart';
 import '../../models/admin_models.dart';
 import '../../models/parent_model.dart';
+import '../../models/school_model.dart';
 import '../../models/supervisors_model.dart';
 import '../../models/teacher_model.dart';
 import '../../models/tokens_model.dart';
@@ -21,38 +22,52 @@ class AuthCubit extends Cubit<AuthState> {
   static AuthCubit get(context) => BlocProvider.of(context);
 
   TokensModel? tokenModel;
+  String userId = '';
   void userMakLogin({required String email, required String password}) async {
     emit(AuthGetUserAfterLoginLoadingState());
-    final auth = FirebaseAuth.instance;
-    final userCredential = await auth
+    await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
-        .catchError((error) {
-      emit(AuthGetUserAfterLoginErrorState(error: error.toString()));
+        .then((value) {
+      userId = value.user!.uid;
+      CacheHelper.saveData(key: 'uid', value: '${value.user!.uid}');
+      // emit(AuthGetUserAfterLoginSuccessState(message: 'success'));
+    }).catchError((error) {
+      //filter error
+      if (error.code == 'user-not-found') {
+        emit(AuthGetUserAfterLoginErrorState(
+            error: 'No user found for that email.'));
+      } else if (error.code == 'wrong-password') {
+        emit(AuthGetUserAfterLoginErrorState(error: 'Invalid Account'));
+      } else if (error.code == 'invalid-email') {
+        emit(AuthGetUserAfterLoginErrorState(error: 'Invalid Email'));
+      } else if (error.code == 'user-disabled') {
+        emit(AuthGetUserAfterLoginErrorState(error: 'User is disabled'));
+      } else if (error.code == 'too-many-requests') {
+        emit(AuthGetUserAfterLoginErrorState(
+            error: 'Too many requests. Try again later.'));
+      } else {
+        emit(AuthGetUserAfterLoginErrorState(error: error.message));
+      }
     });
+
     FirebaseMessaging fcm = FirebaseMessaging.instance;
     await fcm.getToken().then((value) {
-      tokenModel = TokensModel(id: userCredential.user!.uid, token: value!);
+      tokenModel = TokensModel(id: userId, token: value!);
     });
     FirebaseFirestore.instance
         .collection('tokens')
-        .doc(userCredential.user?.uid)
+        .doc(userId)
         .set(tokenModel!.toMap());
-    CacheHelper.saveData(key: 'uid', value: userCredential.user?.uid);
-    final userId = userCredential.user?.uid;
-    bool isAdminUser = await isAdmin(userId!);
-    bool isParentUser = await isParent(userId);
-    bool isTeacherUser = await isTeacher(userId);
-    bool isSupervisorUser = await isSupervisor(userId);
-    if (isAdminUser == true) {
+    if (await isAdmin(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'admin'));
       print('User is an admin😎');
-    } else if (isParentUser == true) {
+    } else if (await isParent(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'parent'));
       print('User is a parent😎');
-    } else if (isTeacherUser == true) {
+    } else if (await isTeacher(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'teacher'));
       print('User is a teacher😎');
-    } else if (isSupervisorUser == true) {
+    } else if (await isSupervisor(userId)) {
       emit(AuthGetUserAfterLoginSuccessState(message: 'supervisor'));
       print('User is a supervisor😎');
     } else {}
@@ -60,7 +75,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<bool> isAdmin(String userId) async {
     final adminRef =
-        FirebaseFirestore.instance.collection('admins').doc(userId);
+        await FirebaseFirestore.instance.collection('admins').doc(userId);
     final adminDocExit = await adminRef.get().then((value) => value.exists);
     final adminDoc = await adminRef.get();
     if (adminDocExit == true) {
@@ -82,7 +97,7 @@ class AuthCubit extends Cubit<AuthState> {
         FirebaseFirestore.instance.collection('parents').doc(userId);
     final parentDocExit = await parentRef.get().then((value) => value.exists);
     final parentDoc = await parentRef.get();
-    if (parentDocExit == true) {
+    if (parentDocExit) {
       if (parentDoc.data()!['ban'] == 'true') {
         emit(AuthGetUserAfterLoginErrorState(error: 'Parent is banned'));
         return false;
@@ -97,15 +112,10 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isTeacher(String userId) async {
-    final schoolsRef = FirebaseFirestore.instance.collection('schools');
-    final schoolsQuerySnapshot = await schoolsRef.get();
+    final schoolsQuerySnapshot =
+        await FirebaseFirestore.instance.collection('schools').get();
 
     for (final schoolDoc in schoolsQuerySnapshot.docs) {
-      final String ban = schoolDoc.data()['ban'];
-      if (ban == 'true') {
-        emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
-        break;
-      }
       final teacherRef = schoolDoc.reference.collection('teachers').doc(userId);
       final teacherDocExit =
           await teacherRef.get().then((value) => value.exists);
@@ -115,9 +125,16 @@ class AuthCubit extends Cubit<AuthState> {
           emit(AuthGetUserAfterLoginErrorState(error: 'Teacher is banned'));
           return false;
         } else {
-          CacheHelper.saveData(key: 'user', value: 'teacher');
-          TEACHER_MODEL = TeacherModel.fromJson(teacherDoc.data()!);
-          return true;
+          if (schoolDoc.data()['ban'] == 'true') {
+            emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
+            return false;
+          } else {
+            CacheHelper.saveData(key: 'schoolId', value: '${schoolDoc.id}}');
+            CacheHelper.saveData(key: 'user', value: 'teacher');
+            SCHOOL_MODEL = SchoolModel.fromJson(schoolDoc.data());
+            TEACHER_MODEL = TeacherModel.fromJson(teacherDoc.data()!);
+            return true;
+          }
         }
       }
     }
@@ -125,14 +142,9 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isSupervisor(String userId) async {
-    final schoolsRef = FirebaseFirestore.instance.collection('schools');
-    final schoolsQuerySnapshot = await schoolsRef.get();
+    final schoolsQuerySnapshot =
+        await FirebaseFirestore.instance.collection('schools').get();
     for (final schoolDoc in schoolsQuerySnapshot.docs) {
-      final ban = schoolDoc.data()['ban'];
-      if (ban == 'true') {
-        emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
-        break;
-      }
       final supervisorRef =
           schoolDoc.reference.collection('supervisors').doc(userId);
       final supervisorDocExit =
@@ -143,11 +155,19 @@ class AuthCubit extends Cubit<AuthState> {
           emit(AuthGetUserAfterLoginErrorState(error: 'Supervisor is banned'));
           return false;
         } else {
-          CacheHelper.saveData(
-              key: 'schoolId', value: '${supervisorDoc.data()!['schoolsId']}');
-          CacheHelper.saveData(key: 'user', value: 'supervisor');
-          SUPERVISOR_MODEL = SupervisorsModel.fromJson(supervisorDoc.data()!);
-          return true;
+          if (schoolDoc.data()['ban'] == 'true') {
+            emit(AuthGetUserAfterLoginErrorState(error: 'School is banned'));
+            return false;
+          } else {
+            CacheHelper.saveData(key: 'schoolId', value: '${schoolDoc.id}}');
+            CacheHelper.saveData(key: 'user', value: 'supervisor');
+            print(
+                'User is a supervisor id😎${CacheHelper.getData(key: 'uid')}');
+            print('User is a school ${CacheHelper.getData(key: 'schoolId')}');
+            SCHOOL_MODEL = SchoolModel.fromJson(schoolDoc.data());
+            SUPERVISOR_MODEL = SupervisorsModel.fromJson(supervisorDoc.data()!);
+            return true;
+          }
         }
       }
     }
@@ -189,7 +209,7 @@ class AuthCubit extends Cubit<AuthState> {
             gender: gender,
             age: '',
             phone: phone,
-            image: AppImages.defaultImage2,
+            image: AppImages.defaultImage,
             ban: 'false',
             createdAt: DateTime.now().toString(),
           );

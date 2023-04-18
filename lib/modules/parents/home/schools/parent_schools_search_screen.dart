@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'parent_school_details_screen.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/utils/app_size.dart';
@@ -8,6 +7,7 @@ import '../../../../core/utils/screen_config.dart';
 import '../../../../models/school_model.dart';
 import '../../../admin/widgets/app_textformfiled_widget.dart';
 import '../../../widgets/const_widget.dart';
+import 'parent_school_details_screen.dart';
 
 class ParentSchoolsSearchScreen extends StatelessWidget {
   ParentSchoolsSearchScreen({super.key});
@@ -160,11 +160,15 @@ class ParentSchoolsSearchScreen extends StatelessWidget {
                         size: 14,
                         color: Colors.teal,
                       ),
-                      Text(
-                        school.location,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                      Expanded(
+                        child: Text(
+                          school.location,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ],

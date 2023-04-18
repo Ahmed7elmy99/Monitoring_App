@@ -39,14 +39,12 @@ class LayoutCubit extends Cubit<LayoutState> {
     emit(LayoutChangeBottomNavBarState());
   }
 
-  void createAdminAccount({
-    required String name,
-    required String email,
-    required String password,
-    required String phone,
-    required String gender,
-    required String isBan,
-  }) {
+  void createAdminAccount(
+      {required String name,
+      required String email,
+      required String password,
+      required String phone,
+      required String gender}) {
     emit(LayoutCreateAdminAccountLoadingState());
 
     // Check if phone number has been used before
@@ -76,7 +74,7 @@ class LayoutCubit extends Cubit<LayoutState> {
             adminPassword: password,
             adminPhone: phone,
             adminGen: gender,
-            adminIsBan: isBan,
+            adminIsBan: 'false',
           );
           FirebaseFirestore.instance
               .collection('phoneNumbers')
@@ -114,7 +112,7 @@ class LayoutCubit extends Cubit<LayoutState> {
       email: adminEmail,
       password: adminPassword,
       phone: adminPhone,
-      image: AppImages.defaultImage2,
+      image: AppImages.defaultAdmin,
       gender: adminGen,
       createdAt: DateTime.now().toString(),
       ban: adminIsBan,
@@ -140,8 +138,6 @@ class LayoutCubit extends Cubit<LayoutState> {
       String? passwordAdmin}) async {
     User? user = FirebaseAuth.instance.currentUser;
     emit(LayoutUpdateUserDataLoadingState());
-
-    // Check if emailAdmin is not null and is different from the current email
     if (emailAdmin != null && emailAdmin != ADMIN_MODEL?.email) {
       // Check if the new email address is already in use
       List<String> signInMethods =
@@ -177,9 +173,22 @@ class LayoutCubit extends Cubit<LayoutState> {
         'phone': adminPhone,
       });
     }
-    if (passwordAdmin != null && passwordAdmin != ADMIN_MODEL?.password) {
-      await user!.updatePassword(passwordAdmin);
-      print('Success update password✨');
+    if (passwordAdmin != null &&
+        passwordAdmin != ADMIN_MODEL?.password &&
+        passwordAdmin != '') {
+      await user!.updatePassword(passwordAdmin).then((value) {
+        print('Success update password✨');
+      }).catchError((error) {
+        if (error.code == 'weak-password') {
+          emit(LayoutUpdateUserDataErrorState(
+              'The password provided is too weak.'));
+        } else if (error.code == 'requires-recent-login') {
+          emit(LayoutUpdateUserDataErrorState(
+              'This operation is sensitive and requires recent authentication. Log in again before retrying this request.'));
+        } else {
+          emit(LayoutUpdateUserDataErrorState(error.toString()));
+        }
+      });
     }
 
     // Update the user data
@@ -188,7 +197,7 @@ class LayoutCubit extends Cubit<LayoutState> {
         .doc(ADMIN_MODEL?.id)
         .update({
       'email': emailAdmin == null ? ADMIN_MODEL?.email : emailAdmin,
-      'password': passwordAdmin == null ? ADMIN_MODEL?.password : passwordAdmin,
+      'password': passwordAdmin == '' ? ADMIN_MODEL?.password : passwordAdmin,
       'name': adminName == null ? ADMIN_MODEL?.name : adminName,
       'phone': adminPhone == null ? ADMIN_MODEL?.phone : adminPhone,
       'gender': adminGen == null ? ADMIN_MODEL?.gender : adminGen,
@@ -376,8 +385,21 @@ class LayoutCubit extends Cubit<LayoutState> {
       print('Success add school supervisor🎉');
       emit(LayoutAddSchoolSupervisorSuccessState());
     }).catchError((error) {
+      //fromat error from firebase
       print('Error add school supervisor: $error');
-      emit(LayoutAddSchoolSupervisorErrorState(error.toString()));
+      if (error.code == 'permission-denied') {
+        emit(LayoutAddSchoolSupervisorErrorState('Permission denied'));
+      } else if (error.code == 'invalid-argument') {
+        emit(LayoutAddSchoolSupervisorErrorState('Invalid argument'));
+      } else if (error.code == 'not-found') {
+        emit(LayoutAddSchoolSupervisorErrorState('Not found'));
+      } else if (error.code == 'already-exists') {
+        emit(LayoutAddSchoolSupervisorErrorState('Already exists'));
+      } else if (error.code == 'resource-exhausted') {
+        emit(LayoutAddSchoolSupervisorErrorState('Resource exhausted'));
+      } else {
+        emit(LayoutAddSchoolSupervisorErrorState(error.toString()));
+      }
     });
   }
 
@@ -418,8 +440,19 @@ class LayoutCubit extends Cubit<LayoutState> {
             );
           }
         }).catchError((error) {
-          print('Error create supervisor account: $error');
-          emit(LayoutCreateSuperVisorAccountErrorState(error.toString()));
+          if (error.code == 'email-already-in-use') {
+            emit(LayoutCreateSuperVisorAccountErrorState(
+                'Email already in use'));
+          } else if (error.code == 'invalid-email') {
+            emit(LayoutCreateSuperVisorAccountErrorState('Invalid email'));
+          } else if (error.code == 'operation-not-allowed') {
+            emit(LayoutCreateSuperVisorAccountErrorState(
+                'Operation not allowed'));
+          } else if (error.code == 'weak-password') {
+            emit(LayoutCreateSuperVisorAccountErrorState('Weak password'));
+          } else {
+            emit(LayoutCreateSuperVisorAccountErrorState(error.toString()));
+          }
         });
       }
     });
@@ -573,6 +606,11 @@ class LayoutCubit extends Cubit<LayoutState> {
       emit(AdminBanParentErrorState(error: error.toString()));
     });
   }
+
+  List<String> genderList = [
+    'male',
+    'female',
+  ];
 
   Future signOut() async {
     await FirebaseAuth.instance.signOut().then((value) {
