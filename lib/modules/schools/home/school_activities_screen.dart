@@ -115,20 +115,6 @@ class SchoolActivitiesScreen extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Text(
-                    model.activityType,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: model.activityType == 'pending'
-                          ? Colors.blue
-                          : model.activityType == 'accepted'
-                              ? Colors.green
-                              : Colors.red,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
                 ],
               ),
             ),

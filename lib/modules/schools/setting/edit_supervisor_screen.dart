@@ -32,7 +32,6 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
     super.initState();
     fullNameController.text = SUPERVISOR_MODEL!.name;
     emailController.text = SUPERVISOR_MODEL!.email;
-    passwordController.text = SUPERVISOR_MODEL!.password;
     phoneController.text = SUPERVISOR_MODEL!.phone;
     ageController.text = SUPERVISOR_MODEL!.age;
     genderController.text = SUPERVISOR_MODEL!.gender;
@@ -82,11 +81,11 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                               color: Colors.grey[200],
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: schoolsCubit.uploadImageFile == null
+                                image: schoolsCubit.superProfileFile == null
                                     ? NetworkImage(
-                                        SCHOOL_MODEL!.image,
+                                        SUPERVISOR_MODEL!.image,
                                       )
-                                    : FileImage(schoolsCubit.uploadImageFile!)
+                                    : FileImage(schoolsCubit.superProfileFile!)
                                         as ImageProvider,
                                 fit: BoxFit.cover,
                               ),
@@ -94,8 +93,7 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              schoolsCubit.updateSupervisorImage(
-                                  uid: SUPERVISOR_MODEL!.id);
+                              schoolsCubit.updateSupervisorImage();
                             },
                             child: Container(
                               width: SizeConfig.screenWidth * 0.08,
@@ -150,11 +148,6 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                       validate: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Email";
-                        } else if (!value.contains('@')) {
-                          return "Please Enter Valid email address";
-                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                            .hasMatch(value)) {
-                          return 'Please enter a valid email address';
                         }
                         return null;
                       },
@@ -171,16 +164,11 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                     AppTextFormFiledWidget(
                       controller: passwordController,
                       keyboardType: TextInputType.text,
+                      isPassword: true,
+                      suffix: Icons.remove_red_eye_outlined,
                       hintText: "Enter your password",
                       prefix: Icons.lock,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter a password';
-                        } else if (value.length < 6) {
-                          return 'Password should be at least 8 characters long';
-                        } else if (!value.contains(new RegExp(r'[A-Z]'))) {
-                          return 'Password should contain at least one uppercase letter';
-                        }
                         return null;
                       },
                     ),
@@ -251,16 +239,50 @@ class _EditSupervisorScreenState extends State<EditSupervisorScreen> {
                                 ),
                               ),
                               AppSize.sv_5,
-                              AppTextFormFiledWidget(
-                                controller: genderController,
-                                hintText: "Enter your gender",
-                                prefix: Icons.person,
-                                validate: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please Enter your gender";
-                                  }
-                                  return null;
-                                },
+                              Container(
+                                width: SizeConfig.screenWidth * 0.4,
+                                height: SizeConfig.screenHeight * 0.065,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: const Text(
+                                      "Select status",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    value: genderController.text,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        genderController.text =
+                                            value.toString();
+                                      });
+                                    },
+                                    items: ['male', 'female'].map((value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                               ),
                               AppSize.sv_15,
                             ],

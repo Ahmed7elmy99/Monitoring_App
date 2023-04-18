@@ -104,7 +104,9 @@ class ParentCubit extends Cubit<ParentState> {
       }
       await user!.updateEmail(email);
     }
-    if (password != null && password != PARENT_MODEL?.password) {
+    if (password != null &&
+        password != PARENT_MODEL?.password &&
+        password != '') {
       await user!.updatePassword(password);
       print('Success update password✨');
     }
@@ -131,7 +133,7 @@ class ParentCubit extends Cubit<ParentState> {
       'phone': phone == null ? PARENT_MODEL!.phone : phone,
       'age': age == null ? PARENT_MODEL!.age : age,
       'email': email == null ? PARENT_MODEL!.email : email,
-      'password': password == null ? PARENT_MODEL!.password : password,
+      'password': password == '' ? PARENT_MODEL!.password : password,
       'gender': gender,
     }).then((value) {
       getCurrentParentData();

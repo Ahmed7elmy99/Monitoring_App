@@ -184,7 +184,7 @@ class LayoutCubit extends Cubit<LayoutState> {
               'The password provided is too weak.'));
         } else if (error.code == 'requires-recent-login') {
           emit(LayoutUpdateUserDataErrorState(
-              'This operation is sensitive and requires recent authentication. Log in again before retrying this request.'));
+              'Log in again before retrying this request.'));
         } else {
           emit(LayoutUpdateUserDataErrorState(error.toString()));
         }
@@ -210,7 +210,6 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  XFile? profileImage;
   File? uploadImageFile;
   String? profileImageUrl;
   void getImageFromGallery({required String uid}) async {
@@ -220,9 +219,7 @@ class LayoutCubit extends Cubit<LayoutState> {
       imageQuality: 50,
     );
     if (image != null) {
-      profileImage = image;
       uploadImageFile = File(image.path);
-      profileImageUrl = image.path;
       updateProfileImage(userId: uid);
       emit(LayoutGetImageSuccessState());
     } else {

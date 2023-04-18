@@ -101,7 +101,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     String? website,
   }) async {
     emit(SchoolsUpdateProfileLoadingState());
-    if (phone != null) {
+    if (phone != null && phone != SCHOOL_MODEL?.phone) {
       final phoneNumbers =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (checkPhone(phone, phoneNumbers.docs)) {
@@ -140,25 +140,23 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     });
   }
 
-  File? uploadImageFile;
-  String? profileImageUrl;
-  void getImageFromGallery({required String uid}) async {
+  File? schoolProfileFile;
+  void updateSchoolProfileImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 50,
     );
     if (image != null) {
-      uploadImageFile = File(image.path);
-      profileImageUrl = image.path;
+      schoolProfileFile = File(image.path);
+
       await firebase_storage.FirebaseStorage.instance
           .ref()
-          .child('images/$uid')
-          .putFile(uploadImageFile!)
+          .child('images/${SCHOOL_MODEL!.id}')
+          .putFile(schoolProfileFile!)
           .then((value) {
         value.ref.getDownloadURL().then((value) {
-          profileImageUrl = value;
-          uploadImageFile = null;
+          schoolProfileFile = null;
           FirebaseFirestore.instance
               .collection('schools')
               .doc(SCHOOL_MODEL?.id)
@@ -180,28 +178,28 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }
   }
 
-  void updateSupervisorImage({required String uid}) async {
+  File? superProfileFile;
+  void updateSupervisorImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 50,
     );
     if (image != null) {
-      uploadImageFile = File(image.path);
-      profileImageUrl = image.path;
+      superProfileFile = File(image.path);
+      emit(SchoolsUpdateSupervisorImageLoadingState());
       await firebase_storage.FirebaseStorage.instance
           .ref()
-          .child('images/$uid')
-          .putFile(uploadImageFile!)
+          .child('images/${SUPERVISOR_MODEL!.id}')
+          .putFile(superProfileFile!)
           .then((value) {
         value.ref.getDownloadURL().then((value) {
-          profileImageUrl = value;
-          uploadImageFile = null;
+          superProfileFile = null;
           FirebaseFirestore.instance
               .collection('schools')
               .doc(SCHOOL_MODEL?.id)
               .collection('supervisors')
-              .doc(uid)
+              .doc(SUPERVISOR_MODEL!.id)
               .update({
             'image': value,
           }).then((value) {
@@ -238,8 +236,17 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       }
       await user!.updateEmail(email);
     }
-    if (password != null && password != SUPERVISOR_MODEL?.password) {
-      await user!.updatePassword(password);
+    if (password != null &&
+        password != SUPERVISOR_MODEL?.password &&
+        password != '') {
+      await user!.updatePassword(password).catchError((error) {
+        if (error.code == 'weak-password') {
+          emit(SchoolsUpdateSupervisorProfileErrorState(
+              'The password provided is too weak.'));
+        } else {
+          emit(SchoolsUpdateSupervisorProfileErrorState(error.toString()));
+        }
+      });
       print('Success update password✨');
     }
     if (superPhone != null && superPhone != SUPERVISOR_MODEL?.phone) {
@@ -265,7 +272,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
         .update({
       'name': superName == null ? SUPERVISOR_MODEL?.name : superName,
       'email': email == null ? SUPERVISOR_MODEL?.email : email,
-      'password': password == null ? SUPERVISOR_MODEL?.password : password,
+      'password': password == '' ? SUPERVISOR_MODEL?.password : password,
       'phone': superPhone == null ? SUPERVISOR_MODEL?.phone : superPhone,
       'age': superAge == null ? SUPERVISOR_MODEL?.age : superAge,
       'gender': superGender == null ? SUPERVISOR_MODEL?.gender : superGender,
@@ -690,7 +697,6 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       CacheHelper.saveData(key: 'uid', value: '');
       CacheHelper.saveData(key: 'schoolId', value: '');
       CacheHelper.saveData(key: 'user', value: '');
-      print('Sign Out Success🎉');
       emit(SchoolSignOutSuccessState());
       _currentIndex = 0;
     }).catchError((error) {

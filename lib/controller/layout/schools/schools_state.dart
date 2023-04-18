@@ -29,6 +29,8 @@ class SchoolsUpdateProfileImageErrorState extends SchoolsState {
   SchoolsUpdateProfileImageErrorState(this.error);
 }
 
+class SchoolsUpdateSupervisorImageLoadingState extends SchoolsState {}
+
 class SchoolsUpdateSupervisorImageSuccessState extends SchoolsState {}
 
 class SchoolsUpdateSupervisorImageErrorState extends SchoolsState {
