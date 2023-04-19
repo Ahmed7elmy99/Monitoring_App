@@ -206,11 +206,32 @@ class TeacherCubit extends Cubit<TeacherState> {
             error: 'This email is already in use'));
         return; // Exit the function if the email address is already in use
       }
-      await user!.updateEmail(email);
+      await user!.updateEmail(email).then((value) {
+        print('Success update email✨');
+      }).catchError((error) {
+        if (error.code == 'requires-recent-login') {
+          emit(TeacherUpdateProfileErrorState(error: 'Please re-login'));
+          return;
+        } else {
+          emit(TeacherUpdateProfileErrorState(error: error.toString()));
+          return;
+        }
+      });
     }
-    if (password != null && password != TEACHER_MODEL?.password) {
-      await user!.updatePassword(password);
-      print('Success update password✨');
+    if (password != null &&
+        password != TEACHER_MODEL?.password &&
+        password != '') {
+      await user!.updatePassword(password).then((value) {
+        print('Success update password✨');
+      }).catchError((error) {
+        if (error.code == 'requires-recent-login') {
+          emit(TeacherUpdateProfileErrorState(error: 'Please re-login'));
+          return;
+        } else {
+          emit(TeacherUpdateProfileErrorState(error: error.toString()));
+          return;
+        }
+      });
     }
     if (phone != null && phone != TEACHER_MODEL?.phone) {
       final phoneNumbers =
@@ -240,6 +261,8 @@ class TeacherCubit extends Cubit<TeacherState> {
       'address': address ?? TEACHER_MODEL?.address,
       'age': age ?? TEACHER_MODEL?.age,
       'gender': gender ?? TEACHER_MODEL?.gender,
+      'email': email ?? TEACHER_MODEL?.email,
+      'password': password == '' ? TEACHER_MODEL?.password : password,
     }).then((value) {
       getCurrentTeacher();
       print('Success update teacher profile🎉');
@@ -468,14 +491,16 @@ class TeacherCubit extends Cubit<TeacherState> {
   }
 
   Future<void> signOutTeacher() async {
-    await FirebaseAuth.instance.signOut().then((value) {
-      CacheHelper.saveData(key: 'uid', value: '');
-      CacheHelper.saveData(key: 'schoolId', value: '');
-      CacheHelper.saveData(key: 'user', value: '');
-      currentIndex = 0;
-      print('Sign Out Success🎉');
+    await CacheHelper.saveData(key: 'uid', value: '');
+    await CacheHelper.saveData(key: 'schoolId', value: '');
+    await CacheHelper.removeData(key: 'user').then((value) {
       emit(TeacherSignOutSuccessState());
+      currentIndex = 0;
     }).catchError((error) {
+      print('Sign Out Error: $error');
+      emit(TeacherSignOutErrorState(error: error.toString()));
+    });
+    await FirebaseAuth.instance.signOut().catchError((error) {
       print('Sign Out Error: $error');
       emit(TeacherSignOutErrorState(error: error.toString()));
     });

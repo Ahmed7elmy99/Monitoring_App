@@ -6,19 +6,41 @@ import '../../../core/routes/app_routes.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
+import '../../../models/school_model.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
-import '../widgets/app_textformfiled_widget.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../widgets/save_changes_bottom.dart';
 
-class AddSupervisorScreen extends StatelessWidget {
-  AddSupervisorScreen({super.key});
+class AddSupervisorScreen extends StatefulWidget {
+  final SchoolModel schlModel;
+  AddSupervisorScreen({super.key, required this.schlModel});
+
+  @override
+  State<AddSupervisorScreen> createState() => _AddSupervisorScreenState();
+}
+
+class _AddSupervisorScreenState extends State<AddSupervisorScreen> {
   TextEditingController fullNameController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+
   TextEditingController phoneController = TextEditingController();
 
+  TextEditingController ageController = TextEditingController();
+
+  TextEditingController genderController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    genderController.text = 'male';
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -36,6 +58,9 @@ class AddSupervisorScreen extends StatelessWidget {
               Routers.ADMIN_LAYOUT,
               (route) => false,
             );
+          }
+          if (state is LayoutAddSchoolErrorState) {
+            showFlutterToast(message: state.error, toastColor: Colors.red);
           }
           if (state is LayoutAddSchoolSupervisorErrorState) {
             showFlutterToast(message: state.error, toastColor: Colors.red);
@@ -154,18 +179,115 @@ class AddSupervisorScreen extends StatelessWidget {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
-                    state is LayoutAddSchoolSupervisorLoadingState
+                    AppSize.sv_15,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Age",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              AppSize.sv_10,
+                              AppTextFormFiledWidget(
+                                keyboardType: TextInputType.number,
+                                controller: ageController,
+                                hintText: "enter age of the child",
+                                prefix: Icons.person,
+                                validate: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Please Enter age of the child";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        AppSize.sh_10,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Gender",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              AppSize.sv_10,
+                              Container(
+                                width: SizeConfig.screenWidth * 0.4,
+                                height: SizeConfig.screenHeight * 0.065,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: const Text(
+                                      "Select status",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    value: genderController.text,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        genderController.text =
+                                            value.toString();
+                                      });
+                                    },
+                                    items: ['male', 'female'].map((value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    AppSize.sv_15,
+                    state is LayoutAddSchoolSupervisorLoadingState ||
+                            state is LayoutAddSchoolLoadingState
                         ? const CircularProgressComponent()
                         : SaveChangesBottom(
                             textBottom: "Add School Supervisor",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                layoutCubit.createSuperVisorAccount(
-                                  name: fullNameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  phone: phoneController.text,
+                                layoutCubit.addSchoolInFirebase(
+                                  schoolModel: widget.schlModel,
+                                  superName: fullNameController.text,
+                                  superEmail: emailController.text,
+                                  superPassword: passwordController.text,
+                                  superPhone: phoneController.text,
+                                  superAge: ageController.text,
+                                  superGender: genderController.text,
                                 );
                               }
                             },

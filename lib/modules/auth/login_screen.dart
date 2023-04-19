@@ -34,10 +34,16 @@ class LoginScreen extends StatelessWidget {
             );
           } else if (state.message == 'parent') {
             Navigator.pushNamedAndRemoveUntil(
-                context, Routers.PARENTS_LAYOUT_SCREEN, (route) => false);
+              context,
+              Routers.PARENTS_LAYOUT_SCREEN,
+              (route) => false,
+            );
           } else if (state.message == 'teacher') {
             Navigator.pushNamedAndRemoveUntil(
-                context, Routers.TEACHERS_LAYOUT_SCREEN, (route) => false);
+              context,
+              Routers.TEACHERS_LAYOUT_SCREEN,
+              (route) => false,
+            );
           } else if (state.message == 'supervisor') {
             Navigator.pushNamedAndRemoveUntil(
                 context, Routers.SUPERVISORS_LAYOUT_SCREEN, (route) => false);

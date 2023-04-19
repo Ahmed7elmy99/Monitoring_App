@@ -5,7 +5,7 @@ import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/school_model.dart';
-import '../../../admin/widgets/app_textformfiled_widget.dart';
+import '../../../widgets/app_textformfiled_widget.dart';
 import '../../../widgets/const_widget.dart';
 import 'parent_school_details_screen.dart';
 

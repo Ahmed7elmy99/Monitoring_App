@@ -6,8 +6,8 @@ import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/class_model.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 

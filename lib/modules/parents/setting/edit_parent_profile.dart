@@ -6,8 +6,8 @@ import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 
@@ -32,7 +32,6 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
     super.initState();
     nameController.text = PARENT_MODEL!.name;
     emailController.text = PARENT_MODEL!.email;
-    passwordController.text = PARENT_MODEL!.password;
     phoneController.text = PARENT_MODEL!.phone;
     ageController.text = PARENT_MODEL!.age;
     genderController.text = PARENT_MODEL!.gender;
@@ -149,11 +148,6 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                       validate: (value) {
                         if (value!.isEmpty) {
                           return "Please Enter Email";
-                        } else if (!value.contains('@')) {
-                          return "Please Enter Valid email address";
-                        } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                            .hasMatch(value)) {
-                          return 'Please enter a valid email address';
                         }
                         return null;
                       },
@@ -170,16 +164,11 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                     AppTextFormFiledWidget(
                       controller: passwordController,
                       keyboardType: TextInputType.text,
+                      isPassword: true,
+                      suffix: Icons.visibility,
                       hintText: "Enter your password",
                       prefix: Icons.lock,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter a password';
-                        } else if (value.length < 8) {
-                          return 'Password should be at least 8 characters long';
-                        } else if (!value.contains(new RegExp(r'[A-Z]'))) {
-                          return 'Password should contain at least one uppercase letter';
-                        }
                         return null;
                       },
                     ),
@@ -249,16 +238,50 @@ class _EditParentProfileScreenState extends State<EditParentProfileScreen> {
                                 ),
                               ),
                               AppSize.sv_5,
-                              AppTextFormFiledWidget(
-                                controller: genderController,
-                                hintText: "Enter your gender",
-                                prefix: Icons.person,
-                                validate: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please Enter your gender";
-                                  }
-                                  return null;
-                                },
+                              Container(
+                                width: SizeConfig.screenWidth * 0.4,
+                                height: SizeConfig.screenHeight * 0.065,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: const Text(
+                                      "Select status",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    value: genderController.text,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        genderController.text =
+                                            value.toString();
+                                      });
+                                    },
+                                    items: ['male', 'female'].map((value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                               ),
                               AppSize.sv_15,
                             ],

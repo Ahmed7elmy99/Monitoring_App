@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/routes/app_routes.dart';
-import '../../../core/utils/app_images.dart';
-import '../../../core/utils/const_data.dart';
-import '../../../core/utils/screen_config.dart';
-import '../../widgets/show_flutter_toast.dart';
-
 import '../../../core/style/app_color.dart';
 import '../../../core/style/icon_broken.dart';
+import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
+import '../../../core/utils/const_data.dart';
+import '../../../core/utils/screen_config.dart';
 import '../../auth/widgets/build_auth_bottom.dart';
+import '../../widgets/show_flutter_toast.dart';
 import 'add_chilren_to clasee_screen.dart';
 
 class SupervisorSettingsScreen extends StatelessWidget {
@@ -26,9 +26,10 @@ class SupervisorSettingsScreen extends StatelessWidget {
             message: 'Supervisor Sign out successfully',
             toastColor: Colors.green,
           );
-          Navigator.pushReplacementNamed(
+          Navigator.pushNamedAndRemoveUntil(
             context,
             Routers.LOGIN,
+            (route) => false,
           );
         }
         if (state is SchoolSignOutErrorState) {
@@ -62,7 +63,7 @@ class SupervisorSettingsScreen extends StatelessWidget {
                             height: SizeConfig.screenHeight * 0.12,
                             decoration: BoxDecoration(
                               color: Colors.white10,
-                              borderRadius: BorderRadius.circular(8.0),
+                              shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.fill,
                                 image: NetworkImage(SUPERVISOR_MODEL?.image ??
@@ -118,19 +119,6 @@ class SupervisorSettingsScreen extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     Routers.SCHOOL_EDIT_PROFILE,
-                  );
-                },
-              ),
-              _buildListItem(
-                context,
-                title: 'School Supervisor',
-                leadingIcon: IconBroken.Profile,
-                subtitle: 'Edit supervisor profile information',
-                onTap: () {
-                  cubit.getAllSupervisors();
-                  Navigator.pushNamed(
-                    context,
-                    Routers.SCHOOL_SUPERVISOR,
                   );
                 },
               ),

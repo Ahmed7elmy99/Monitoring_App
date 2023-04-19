@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../widgets/show_flutter_toast.dart';
 
 import '../../../controller/layout/teachers/teacher_cubit.dart';
 import '../../../core/style/app_color.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../widgets/const_widget.dart';
+import '../../widgets/show_flutter_toast.dart';
 
 class TeacherAttendanceScreen extends StatelessWidget {
   TeacherAttendanceScreen({super.key});
@@ -26,6 +26,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
       body: BlocConsumer<TeacherCubit, TeacherState>(
         listener: (context, state) {
           if (state is TeacherSchedulesAttendSuccessState) {
+            Navigator.pop(context);
             showFlutterToast(
               message: "Attendance added successfully",
               toastColor: Colors.green,
@@ -139,7 +140,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
                     state is TeacherSchedulesAttendLoadingState
                         ? const CircularProgressComponent()
                         : SaveChangesBottom(
-                            textBottom: "Next Step",
+                            textBottom: "Add Attendance",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 teacherCubit.schedulesAttend(

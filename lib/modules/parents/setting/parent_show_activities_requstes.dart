@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../controller/layout/schools/schools_cubit.dart';
+import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../../models/school_activities_model.dart';
+import '../../../models/activity_join_model.dart';
 import '../../widgets/const_widget.dart';
-import 'school_activities_details_screen.dart';
 
-class SchoolActivitiesScreen extends StatelessWidget {
-  const SchoolActivitiesScreen({super.key});
+class ParentShowActivitiesRequests extends StatelessWidget {
+  const ParentShowActivitiesRequests({super.key});
 
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('School Activities'),
-        ),
-        body: BlocConsumer<SchoolsCubit, SchoolsState>(
+      appBar: AppBar(
+        title: Text('Activities Requests'),
+      ),
+      body: Center(
+        child: BlocConsumer<ParentCubit, ParentState>(
           listener: (context, state) {},
           builder: (context, state) {
-            SchoolsCubit schoolsCubit = SchoolsCubit.get(context);
-            return state is SchoolsGetAllActivitiesLoadingState
+            ParentCubit parentCubit = ParentCubit.get(context);
+            return state is ParentGetAllActivitiesRequestsLoadingState
                 ? CircularProgressComponent()
-                : schoolsCubit.schoolsActivitiesList.isEmpty
+                : parentCubit.parentActivityJoinList.isEmpty
                     ? Center(
                         child: Text(
-                          'No Children Yet',
+                          'No Requests Found',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -38,35 +38,25 @@ class SchoolActivitiesScreen extends StatelessWidget {
                     : ListView.separated(
                         padding: const EdgeInsets.all(10.0),
                         itemBuilder: (context, index) {
-                          SchoolActivitiesModel item =
-                              schoolsCubit.schoolsActivitiesList[index];
-                          return _buildRequestsItemWidget(context, model: item);
+                          ActivityJoinModel item =
+                              parentCubit.parentActivityJoinList[index];
+                          return _buildItemList(context, item);
                         },
                         separatorBuilder: (context, index) => AppSize.sv_10,
-                        itemCount: schoolsCubit.schoolsActivitiesList.length,
+                        itemCount: parentCubit.parentActivityJoinList.length,
                       );
           },
-        ));
+        ),
+      ),
+    );
   }
 
-  Widget _buildRequestsItemWidget(BuildContext context,
-      {required SchoolActivitiesModel model}) {
+  Widget _buildItemList(BuildContext context, ActivityJoinModel item) {
     return InkWell(
-      onTap: () {
-        BlocProvider.of<SchoolsCubit>(context)
-            .getAllChildrenInActivities(activityId: model.id);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SchoolActivitiesDetailsScreen(
-              schoolActivitiesModel: model,
-            ),
-          ),
-        );
-      },
+      onTap: () {},
       child: Container(
         width: SizeConfig.screenWidth,
-        height: SizeConfig.screenWidth * 0.27,
+        height: SizeConfig.screenWidth * 0.24,
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
         margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
         decoration: BoxDecoration(
@@ -84,10 +74,12 @@ class SchoolActivitiesScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey[200],
-              backgroundImage: AssetImage(AppImages.activityIcon01),
+            Hero(
+              tag: item.id,
+              child: CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.white,
+                  backgroundImage: AssetImage(AppImages.requestIcon)),
             ),
             AppSize.sh_10,
             Expanded(
@@ -96,22 +88,26 @@ class SchoolActivitiesScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    model.name,
+                    item.id,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  AppSize.sv_2,
+                  AppSize.sh_10,
                   Text(
-                    model.description,
-                    maxLines: 2,
+                    item.activityStatus,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey,
+                      color: item.activityStatus == 'pending'
+                          ? Colors.grey
+                          : item.activityStatus == 'accepted'
+                              ? Colors.green
+                              : Colors.red,
                       fontWeight: FontWeight.w400,
                     ),
                   ),

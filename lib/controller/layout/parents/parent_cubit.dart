@@ -104,7 +104,9 @@ class ParentCubit extends Cubit<ParentState> {
       }
       await user!.updateEmail(email);
     }
-    if (password != null && password != PARENT_MODEL?.password) {
+    if (password != null &&
+        password != PARENT_MODEL?.password &&
+        password != '') {
       await user!.updatePassword(password);
       print('Success update password✨');
     }
@@ -131,7 +133,7 @@ class ParentCubit extends Cubit<ParentState> {
       'phone': phone == null ? PARENT_MODEL!.phone : phone,
       'age': age == null ? PARENT_MODEL!.age : age,
       'email': email == null ? PARENT_MODEL!.email : email,
-      'password': password == null ? PARENT_MODEL!.password : password,
+      'password': password == '' ? PARENT_MODEL!.password : password,
       'gender': gender,
     }).then((value) {
       getCurrentParentData();
@@ -156,14 +158,16 @@ class ParentCubit extends Cubit<ParentState> {
   }
 
   Future<void> signOutParent() async {
-    await FirebaseAuth.instance.signOut().then((value) {
-      CacheHelper.saveData(key: 'uid', value: '');
-      CacheHelper.saveData(key: 'schoolId', value: '');
-      CacheHelper.saveData(key: 'user', value: '');
-      currentIndex = 0;
-      print('Sign Out Success🎉');
+    await CacheHelper.saveData(key: 'uid', value: '');
+    await CacheHelper.saveData(key: 'schoolId', value: '');
+    await CacheHelper.removeData(key: 'user').then((value) {
+      print('Remove User Data Success📌');
       emit(ParentSignOutSuccessState());
+      currentIndex = 0;
     }).catchError((error) {
+      print('Remove User Data Error: $error');
+    });
+    FirebaseAuth.instance.signOut().catchError((error) {
       print('Sign Out Error: $error');
       emit(ParentSignOutErrorState());
     });
@@ -325,14 +329,17 @@ class ParentCubit extends Cubit<ParentState> {
   List<SchoolModel> parentSchoolByLocationList = [];
   void getSchoolByLocation({required String location}) async {
     emit(ParentGetSchoolByLocationLoadingState());
-    await FirebaseFirestore.instance
-        .collection('schools')
-        .where('location', isGreaterThanOrEqualTo: location)
-        .get()
-        .then((value) {
+    await FirebaseFirestore.instance.collection('schools').get().then((value) {
       parentSchoolByLocationList = [];
       value.docs.forEach((element) {
-        parentSchoolByLocationList.add(SchoolModel.fromJson(element.data()));
+        if (location == '') {
+          parentSchoolByLocationList.clear();
+        }
+        if (element.data()['ban'] != 'true') {
+          if (element.data()['location'].toString().contains(location))
+            parentSchoolByLocationList
+                .add(SchoolModel.fromJson(element.data()));
+        }
       });
       emit(ParentGetSchoolByLocationSuccessState());
     }).catchError((error) {
@@ -380,6 +387,17 @@ class ParentCubit extends Cubit<ParentState> {
         .collection('activitiesJoin')
         .add(activityJoinModel.toMap())
         .then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childModel.parentId)
+          .collection('activitiesJoin')
+          .doc(value.id)
+          .set({
+        'id': value.id,
+        'activityStatus': 'pending',
+        'schoolActivityId': activityId,
+        'childId': childModel.id,
+      });
       FirebaseFirestore.instance
           .collection('schools')
           .doc(childModel.schoolId)
@@ -501,6 +519,23 @@ class ParentCubit extends Cubit<ParentState> {
     });
   }
 
+  List<ActivityJoinModel> parentActivityJoinList = [];
+  void getAllActivitiesRequests() {
+    emit(ParentGetAllActivitiesRequestsLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('activitiesJoin')
+        .snapshots()
+        .listen((event) {
+      parentActivityJoinList = [];
+      event.docs.forEach((element) {
+        parentActivityJoinList.add(ActivityJoinModel.fromJson(element.data()));
+        emit(ParentGetAllActivitiesRequestsSuccessState());
+      });
+    });
+  }
+
   String childrenImageUrl = '';
   File? childrenImageFile;
   void updateChildrenProfileImage({required String userId}) async {
@@ -548,22 +583,28 @@ class ParentCubit extends Cubit<ParentState> {
     String? name,
     String? education,
     String? phone,
+    bool? isPhoneChanged = false,
     int? age,
     String? gender,
     String? certificate,
   }) async {
     emit(ParentUpdateProfileLoadingState());
-    if (phone != null) {
-      final phoneNumbers =
-          await FirebaseFirestore.instance.collection('phoneNumbers').get();
-      if (checkPhone(phone, phoneNumbers.docs)) {
-        emit(ParentUpdateProfileErrorState(
-            error: 'This phone number is already in use'));
-        return;
+    if (isPhoneChanged!) {
+      if (phone != null) {
+        final phoneNumbers =
+            await FirebaseFirestore.instance.collection('phoneNumbers').get();
+        if (checkPhone(phone, phoneNumbers.docs)) {
+          emit(ParentUpdateProfileErrorState(
+              error: 'This phone number is already in use'));
+          return;
+        }
+        await FirebaseFirestore.instance
+            .collection('phoneNumbers')
+            .doc(id)
+            .set({
+          'phone': phone,
+        });
       }
-      await FirebaseFirestore.instance.collection('phoneNumbers').doc(id).set({
-        'phone': phone,
-      });
     }
     await FirebaseFirestore.instance
         .collection('parents')

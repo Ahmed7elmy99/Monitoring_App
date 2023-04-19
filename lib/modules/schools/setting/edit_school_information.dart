@@ -8,7 +8,7 @@ import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
@@ -85,11 +85,11 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
                               color: Colors.grey[200],
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: schoolsCubit.uploadImageFile == null
+                                image: schoolsCubit.schoolProfileFile == null
                                     ? NetworkImage(
                                         SCHOOL_MODEL!.image,
                                       )
-                                    : FileImage(schoolsCubit.uploadImageFile!)
+                                    : FileImage(schoolsCubit.schoolProfileFile!)
                                         as ImageProvider,
                                 fit: BoxFit.cover,
                               ),
@@ -97,8 +97,7 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
                           ),
                           InkWell(
                             onTap: () {
-                              schoolsCubit.getImageFromGallery(
-                                  uid: SCHOOL_MODEL!.id);
+                              schoolsCubit.updateSchoolProfileImage();
                             },
                             child: Container(
                               width: SizeConfig.screenWidth * 0.08,
@@ -325,8 +324,8 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2050),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -348,7 +347,7 @@ class _EditSchoolInformationState extends State<EditSchoolInformation> {
     );
     if (pickedDate != null) {
       print(pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-      formattedDate = DateFormat.yMMMMEEEEd().format(pickedDate);
+      formattedDate = DateFormat.y().format(pickedDate);
       establishedInController.text = formattedDate;
       print(
           formattedDate); //formatted date output using intl package =>  2021-03-16
