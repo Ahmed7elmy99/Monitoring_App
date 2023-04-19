@@ -1030,6 +1030,12 @@ class SchoolsCubit extends Cubit<SchoolsState> {
           FirebaseFirestore.instance
               .collection('parents')
               .doc(childrenRequestModel?.parentId)
+              .collection('activitiesJoin')
+              .doc(activitiesReq.id)
+              .update({'activityStatus': 'accepted'});
+          FirebaseFirestore.instance
+              .collection('parents')
+              .doc(childrenRequestModel?.parentId)
               .collection('children')
               .doc(activitiesReq.childId)
               .collection('activitiesJoin')
@@ -1063,6 +1069,14 @@ class SchoolsCubit extends Cubit<SchoolsState> {
         .update({
       'activityStatus': 'rejected',
     }).then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childrenRequestModel?.parentId)
+          .collection('activitiesJoin')
+          .doc(activitiesReq.id)
+          .update({
+        'activityStatus': 'rejected',
+      });
       FirebaseFirestore.instance
           .collection('parents')
           .doc(childrenRequestModel?.parentId)

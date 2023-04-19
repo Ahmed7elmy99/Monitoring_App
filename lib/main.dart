@@ -29,7 +29,6 @@ void main() async {
 }
 
 Widget checkUser() {
-  print('the value of user is📌 : ${CacheHelper.getData(key: 'user')}');
   String user = CacheHelper.getData(key: 'user') ?? '';
   if (user == 'supervisor') {
     return SupervisorLayoutScreen();

@@ -148,10 +148,10 @@ class ParentSettingScreen extends StatelessWidget {
                 leadingIcon: IconBroken.Document,
                 subtitle: 'show all activities requests',
                 onTap: () {
-                  parentCubit.getAllRequests();
+                  parentCubit.getAllActivitiesRequests();
                   Navigator.pushNamed(
                     context,
-                    Routers.PARENTS_SHOW_REQUESTS_SCREEN,
+                    Routers.PARENTS_ACTIVITY_JOIN_SCREEN,
                   );
                 },
               ),

@@ -129,3 +129,7 @@ class ParentUpdateProfileDataErrorState extends ParentState {
   final String error;
   ParentUpdateProfileDataErrorState({required this.error});
 }
+
+class ParentGetAllActivitiesRequestsLoadingState extends ParentState {}
+
+class ParentGetAllActivitiesRequestsSuccessState extends ParentState {}

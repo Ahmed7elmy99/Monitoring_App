@@ -335,8 +335,11 @@ class ParentCubit extends Cubit<ParentState> {
         if (location == '') {
           parentSchoolByLocationList.clear();
         }
-        if (element.data()['location'].toString().contains(location))
-          parentSchoolByLocationList.add(SchoolModel.fromJson(element.data()));
+        if (element.data()['ban'] != 'true') {
+          if (element.data()['location'].toString().contains(location))
+            parentSchoolByLocationList
+                .add(SchoolModel.fromJson(element.data()));
+        }
       });
       emit(ParentGetSchoolByLocationSuccessState());
     }).catchError((error) {
@@ -384,6 +387,17 @@ class ParentCubit extends Cubit<ParentState> {
         .collection('activitiesJoin')
         .add(activityJoinModel.toMap())
         .then((value) {
+      FirebaseFirestore.instance
+          .collection('parents')
+          .doc(childModel.parentId)
+          .collection('activitiesJoin')
+          .doc(value.id)
+          .set({
+        'id': value.id,
+        'activityStatus': 'pending',
+        'schoolActivityId': activityId,
+        'childId': childModel.id,
+      });
       FirebaseFirestore.instance
           .collection('schools')
           .doc(childModel.schoolId)
@@ -502,6 +516,23 @@ class ParentCubit extends Cubit<ParentState> {
             .add(SchoolRequestModel.fromJson(element.data()));
       });
       emit(ParentGetAllRequestsSuccessState());
+    });
+  }
+
+  List<ActivityJoinModel> parentActivityJoinList = [];
+  void getAllActivitiesRequests() {
+    emit(ParentGetAllActivitiesRequestsLoadingState());
+    FirebaseFirestore.instance
+        .collection('parents')
+        .doc(PARENT_MODEL!.id)
+        .collection('activitiesJoin')
+        .snapshots()
+        .listen((event) {
+      parentActivityJoinList = [];
+      event.docs.forEach((element) {
+        parentActivityJoinList.add(ActivityJoinModel.fromJson(element.data()));
+        emit(ParentGetAllActivitiesRequestsSuccessState());
+      });
     });
   }
 

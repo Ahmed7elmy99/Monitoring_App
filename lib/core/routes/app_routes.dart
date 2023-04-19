@@ -16,6 +16,7 @@ import '../../modules/parents/home/schools/parent_schools_screen.dart';
 import '../../modules/parents/parents_layout_screen.dart';
 import '../../modules/parents/setting/add_children_screen.dart';
 import '../../modules/parents/setting/edit_parent_profile.dart';
+import '../../modules/parents/setting/parent_show_activities_requstes.dart';
 import '../../modules/parents/setting/parent_show_requests.dart';
 import '../../modules/schools/home/add_school_supervisor.dart';
 import '../../modules/schools/home/school_activities_screen.dart';
@@ -74,6 +75,8 @@ class Routers {
   static const String PARENTS_CHILDREN_SCREEN = '/Parents_Children_Screen';
   static const String PARENTS_SHOW_REQUESTS_SCREEN =
       '/Parents_Show_Requests_Screen';
+  static const String PARENTS_ACTIVITY_JOIN_SCREEN =
+      '/Parents_Activity_Join_Screen';
   static const String PARENTS_SCHOOL_TEACHERS_SCREEN =
       '/Parents_School_Teachers_Screen';
   static const String PARENTS_SCHOOL_ACTIVITY_JOIN_SCREEN =
@@ -207,6 +210,10 @@ class RoutersGenerated {
       case Routers.PARENTS_SHOW_REQUESTS_SCREEN:
         return MaterialPageRoute(
           builder: (_) => const ParentShowRequestsScreen(),
+        );
+      case Routers.PARENTS_ACTIVITY_JOIN_SCREEN:
+        return MaterialPageRoute(
+          builder: (_) => const ParentShowActivitiesRequests(),
         );
       case Routers.PARENTS_SCHOOL_TEACHERS_SCREEN:
         return MaterialPageRoute(
