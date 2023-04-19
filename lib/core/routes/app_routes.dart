@@ -6,7 +6,6 @@ import '../../modules/admin/home/parents/admin_parents_screen.dart';
 import '../../modules/admin/home/schools/schools_screen.dart';
 import '../../modules/admin/settings/add_admin_screen.dart';
 import '../../modules/admin/settings/add_school_screen.dart';
-import '../../modules/admin/settings/add_supervisor_screen.dart';
 import '../../modules/admin/settings/edit_profile_admin.dart';
 import '../../modules/auth/login_screen.dart';
 import '../../modules/auth/register_screen.dart';
@@ -50,7 +49,6 @@ class Routers {
   static const String ADMIN_PARENTS_SCREEN = '/Admin_Parents_Screen';
   static const String SCHOOL = '/School_Screen';
   static const String ADD_SCHOOL = '/Add_School_Screen';
-  static const String ADD_SUPERVISOR = '/Add_Supervisor_Screen';
   static const String SUPERVISORS_LAYOUT_SCREEN = '/Supervisors_Layout_Screen';
   static const String SUPERVISORS_EDIT_PROFILE =
       '/Supervisors_Edit_Profile_Screen';
@@ -120,11 +118,6 @@ class RoutersGenerated {
       case Routers.ADD_SCHOOL:
         return MaterialPageRoute(
           builder: (_) => AddSchoolScreen(),
-        );
-      case Routers.ADD_SUPERVISOR:
-        return _buildPageRoute(
-          child: AddSupervisorScreen(),
-          settings: settings,
         );
       case Routers.SUPERVISORS_LAYOUT_SCREEN:
         return MaterialPageRoute(

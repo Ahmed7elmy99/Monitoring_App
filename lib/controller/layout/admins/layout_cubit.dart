@@ -291,37 +291,24 @@ class LayoutCubit extends Cubit<LayoutState> {
 
   String? schoolId;
   void addSchoolInFirebase({
-    required String schoolName,
-    required String schoolDescription,
-    required String schoolPhone,
-    required String schoolLocation,
-    required String establishmentDate,
-    required String establishmentType,
-    required String schoolWebsite,
+    required SchoolModel schoolModel,
+    required String superName,
+    required String superEmail,
+    required String superPassword,
+    required String superPhone,
+    required String superAge,
+    required String superGender,
   }) {
     emit(LayoutAddSchoolLoadingState());
     FirebaseFirestore.instance
         .collection('phoneNumbers')
-        .where('phone', isEqualTo: schoolPhone)
+        .where('phone', isEqualTo: schoolModel.phone)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
         emit(LayoutAddSchoolErrorState('Phone number already exists'));
         return;
       } else {
-        SchoolModel schoolModel = SchoolModel(
-          id: ADMIN_MODEL!.id,
-          description: schoolDescription,
-          name: schoolName,
-          location: schoolLocation,
-          phone: schoolPhone,
-          establishedBy: establishmentType,
-          establishedIn: establishmentDate,
-          website: schoolWebsite,
-          image: AppImages.defaultSchool,
-          ban: 'false',
-          createdAt: DateTime.now().toString(),
-        );
         FirebaseFirestore.instance
             .collection('schools')
             .add(schoolModel.toMap())
@@ -330,7 +317,7 @@ class LayoutCubit extends Cubit<LayoutState> {
               .collection('phoneNumbers')
               .doc(value.id)
               .set({
-            'phone': schoolPhone,
+            'phone': schoolModel.phone,
           });
           schoolId = value.id;
           FirebaseFirestore.instance
@@ -340,7 +327,14 @@ class LayoutCubit extends Cubit<LayoutState> {
             'id': value.id,
           }).then((event) {
             print('Success add school🎉');
-
+            createSuperVisorAccount(
+              name: superName,
+              email: superEmail,
+              password: superPassword,
+              phone: superPhone,
+              age: superAge,
+              gender: superGender,
+            );
             emit(LayoutAddSchoolSuccessState());
           });
         }).catchError((error) {
@@ -357,6 +351,8 @@ class LayoutCubit extends Cubit<LayoutState> {
     required String supervisorEmail,
     required String supervisorPassword,
     required String supervisorPhone,
+    required String supervisorAge,
+    required String supervisorGender,
   }) {
     emit(LayoutAddSchoolSupervisorLoadingState());
     SupervisorsModel supervisorsModel = SupervisorsModel(
@@ -366,8 +362,8 @@ class LayoutCubit extends Cubit<LayoutState> {
       phone: supervisorPhone,
       email: supervisorEmail,
       password: supervisorPassword,
-      gender: 'male',
-      age: '0',
+      gender: supervisorGender,
+      age: supervisorAge,
       ban: 'false',
       image: AppImages.defaultImage,
       createdAt: DateTime.now().toString(),
@@ -400,11 +396,14 @@ class LayoutCubit extends Cubit<LayoutState> {
     });
   }
 
-  void createSuperVisorAccount(
-      {required String name,
-      required String email,
-      required String password,
-      required String phone}) {
+  void createSuperVisorAccount({
+    required String name,
+    required String email,
+    required String password,
+    required String phone,
+    required String age,
+    required String gender,
+  }) {
     FirebaseFirestore.instance
         .collection('phoneNumbers')
         .where('phone', isEqualTo: phone)
@@ -434,6 +433,8 @@ class LayoutCubit extends Cubit<LayoutState> {
               supervisorEmail: email,
               supervisorPassword: password,
               supervisorPhone: phone,
+              supervisorAge: age,
+              supervisorGender: gender,
             );
           }
         }).catchError((error) {
@@ -610,9 +611,10 @@ class LayoutCubit extends Cubit<LayoutState> {
   ];
 
   Future signOut() async {
+    CacheHelper.saveData(key: 'uid', value: '');
+    CacheHelper.saveData(key: 'user', value: '');
+    CacheHelper.saveData(key: 'schoolId', value: '');
     await FirebaseAuth.instance.signOut().then((value) {
-      CacheHelper.saveData(key: 'uid', value: '');
-      CacheHelper.saveData(key: 'user', value: '');
       emit(AuthAdminSignOutSuccessState());
       currentIndex = 0;
     }).catchError((error) {

@@ -66,10 +66,10 @@ class _AddAdminScreenState extends State<AddAdminScreen> {
         },
         builder: (context, state) {
           LayoutCubit layoutCubit = LayoutCubit.get(context);
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,
                 child: Column(

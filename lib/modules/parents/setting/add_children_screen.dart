@@ -128,7 +128,7 @@ class _AddChildrenScreenState extends State<AddChildrenScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_10,
+                    AppSize.sv_15,
                     Row(
                       children: [
                         Expanded(

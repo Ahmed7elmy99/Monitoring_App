@@ -2,20 +2,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'controller/auth/auth_cubit.dart';
+import 'controller/layout/admins/layout_cubit.dart';
 import 'controller/layout/parents/parent_cubit.dart';
 import 'controller/layout/schools/schools_cubit.dart';
-import 'core/style/theme.dart';
-import 'modules/teachers/teacher_layout_screen.dart';
-
-import 'controller/layout/admins/layout_cubit.dart';
 import 'controller/layout/teachers/teacher_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/cache_helper.dart';
+import 'core/style/theme.dart';
 import 'modules/admin/admin_layout_screen.dart';
 import 'modules/auth/login_screen.dart';
 import 'modules/parents/parents_layout_screen.dart';
 import 'modules/schools/supervisors_layout_screen.dart';
+import 'modules/teachers/teacher_layout_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +38,8 @@ Widget checkUser() {
     return ParentsLayoutScreen();
   } else if (user == 'teacher') {
     return const TeachersLayoutScreen();
+  } else if (user == '') {
+    return LoginScreen();
   } else {
     return LoginScreen();
   }

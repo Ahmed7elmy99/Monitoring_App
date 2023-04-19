@@ -30,23 +30,28 @@ class AuthCubit extends Cubit<AuthState> {
         .then((value) {
       userId = value.user!.uid;
       CacheHelper.saveData(key: 'uid', value: '${value.user!.uid}');
-      // emit(AuthGetUserAfterLoginSuccessState(message: 'success'));
     }).catchError((error) {
       //filter error
       if (error.code == 'user-not-found') {
         emit(AuthGetUserAfterLoginErrorState(
             error: 'No user found for that email.'));
+        return;
       } else if (error.code == 'wrong-password') {
         emit(AuthGetUserAfterLoginErrorState(error: 'Invalid Account'));
+        return;
       } else if (error.code == 'invalid-email') {
         emit(AuthGetUserAfterLoginErrorState(error: 'Invalid Email'));
+        return;
       } else if (error.code == 'user-disabled') {
         emit(AuthGetUserAfterLoginErrorState(error: 'User is disabled'));
+        return;
       } else if (error.code == 'too-many-requests') {
         emit(AuthGetUserAfterLoginErrorState(
             error: 'Too many requests. Try again later.'));
+        return;
       } else {
         emit(AuthGetUserAfterLoginErrorState(error: error.message));
+        return;
       }
     });
 

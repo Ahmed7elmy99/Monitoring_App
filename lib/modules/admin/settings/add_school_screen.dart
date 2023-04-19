@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:teatcher_app/models/school_model.dart';
 
 import '../../../controller/layout/admins/layout_cubit.dart';
-import '../../../core/routes/app_routes.dart';
 import '../../../core/style/app_color.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
@@ -12,6 +12,7 @@ import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 import '../widgets/app_textformfiled_widget.dart';
 import '../widgets/save_changes_bottom.dart';
+import 'add_supervisor_screen.dart';
 
 class AddSchoolScreen extends StatelessWidget {
   AddSchoolScreen({super.key});
@@ -27,30 +28,9 @@ class AddSchoolScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add school'),
-      ),
+      appBar: AppBar(title: const Text('Add school')),
       body: BlocConsumer<LayoutCubit, LayoutState>(
-        listener: (context, state) {
-          if (state is LayoutAddSchoolSuccessState) {
-            showFlutterToast(
-              message: "School added successfully",
-              toastColor: Colors.green,
-            );
-
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              Routers.ADD_SUPERVISOR,
-              (route) => false,
-            );
-          }
-          if (state is LayoutAddSchoolErrorState) {
-            showFlutterToast(
-              message: state.error,
-              toastColor: Colors.red,
-            );
-          }
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           LayoutCubit layoutCubit = LayoutCubit.get(context);
           return SingleChildScrollView(
@@ -247,19 +227,44 @@ class AddSchoolScreen extends StatelessWidget {
                                     toastColor: Colors.red,
                                   );
                                 } else {
-                                  layoutCubit.addSchoolInFirebase(
-                                    schoolName: fullNameController.text,
-                                    schoolDescription:
-                                        descriptionController.text,
-                                    schoolPhone: phoneController.text,
-                                    schoolLocation:
-                                        locationController.text.toLowerCase(),
-                                    establishmentDate:
-                                        establishedInController.text,
-                                    establishmentType:
-                                        establishedByController.text,
-                                    schoolWebsite: websiteController.text,
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddSupervisorScreen(
+                                        schlModel: SchoolModel(
+                                          id: '',
+                                          name: fullNameController.text,
+                                          description:
+                                              descriptionController.text,
+                                          phone: phoneController.text,
+                                          location: locationController.text
+                                              .toLowerCase(),
+                                          image: AppImages.defaultSchool,
+                                          establishedIn:
+                                              establishedInController.text,
+                                          establishedBy:
+                                              establishedByController.text,
+                                          website: websiteController.text,
+                                          ban: 'false',
+                                          createdAt: DateTime.now().toString(),
+                                        ),
+                                      ),
+                                    ),
+                                    (Route<dynamic> route) => false,
                                   );
+                                  // layoutCubit.addSchoolInFirebase(
+                                  //   schoolName: fullNameController.text,
+                                  //   schoolDescription:
+                                  //       descriptionController.text,
+                                  //   schoolPhone: phoneController.text,
+                                  //   schoolLocation:
+                                  //       locationController.text.toLowerCase(),
+                                  //   establishmentDate:
+                                  //       establishedInController.text,
+                                  //   establishmentType:
+                                  //       establishedByController.text,
+                                  //   schoolWebsite: websiteController.text,
+                                  // );
                                 }
                               }
                             },
