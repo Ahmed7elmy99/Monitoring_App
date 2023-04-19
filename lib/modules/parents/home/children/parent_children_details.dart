@@ -189,30 +189,41 @@ class ParentChildrenDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   AppSize.sv_10,
-                  parentCubit.parentReportsList.isNotEmpty
-                      ? Container(
-                          width: SizeConfig.screenWidth,
-                          height: SizeConfig.screenHeight * 0.14,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: parentCubit.parentReportsList.length,
-                            itemBuilder: (context, index) {
-                              ReportModel model =
-                                  parentCubit.parentReportsList[index];
-                              return _buildReportCard(context, model);
-                            },
-                          ),
-                        )
-                      : Center(
+                  childrenModel.schoolId == ''
+                      ? Center(
                           child: Text(
-                            'No reports yet  !!',
+                            'Your child doesn\'t belong to any school yet',
                             style: GoogleFonts.almarai(
                               fontSize: 16.0,
                               fontWeight: FontWeight.w400,
                               color: Colors.grey,
                             ),
                           ),
-                        ),
+                        )
+                      : parentCubit.parentReportsList.isNotEmpty
+                          ? Container(
+                              width: SizeConfig.screenWidth,
+                              height: SizeConfig.screenHeight * 0.14,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: parentCubit.parentReportsList.length,
+                                itemBuilder: (context, index) {
+                                  ReportModel model =
+                                      parentCubit.parentReportsList[index];
+                                  return _buildReportCard(context, model);
+                                },
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                'No reports yet  !!',
+                                style: GoogleFonts.almarai(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
                   AppSize.sv_15,
                   Text(
                     'Schedules',
@@ -223,18 +234,31 @@ class ParentChildrenDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   AppSize.sv_10,
-                  SaveChangesBottom(
-                    onPressed: () {
-                      parentCubit.getAllChildAttend(childId: childrenModel.id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ParentChildrenAttendScreen(),
-                        ),
-                      );
-                    },
-                    textBottom: 'View Schedules',
-                  )
+                  childrenModel.schoolId == ''
+                      ? Center(
+                          child: Text(
+                            'Your child doesn\'t belong to any school yet',
+                            style: GoogleFonts.almarai(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      : SaveChangesBottom(
+                          onPressed: () {
+                            parentCubit.getAllChildAttend(
+                                childId: childrenModel.id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ParentChildrenAttendScreen(),
+                              ),
+                            );
+                          },
+                          textBottom: 'View Schedules',
+                        )
                 ],
               ),
             ),

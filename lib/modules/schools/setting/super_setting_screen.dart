@@ -26,9 +26,10 @@ class SupervisorSettingsScreen extends StatelessWidget {
             message: 'Supervisor Sign out successfully',
             toastColor: Colors.green,
           );
-          Navigator.pushReplacementNamed(
+          Navigator.pushNamedAndRemoveUntil(
             context,
             Routers.LOGIN,
+            (route) => false,
           );
         }
         if (state is SchoolSignOutErrorState) {

@@ -6,8 +6,8 @@ import '../../../../core/style/icon_broken.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
 import '../../../../models/children_model.dart';
-import '../../../admin/widgets/app_textformfiled_widget.dart';
 import '../../../admin/widgets/save_changes_bottom.dart';
+import '../../../widgets/app_textformfiled_widget.dart';
 import '../../../widgets/const_widget.dart';
 import '../../../widgets/show_flutter_toast.dart';
 
@@ -190,7 +190,6 @@ class _ParentEditChildrenState extends State<ParentEditChildren> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
                             ],
                           ),
                         ),
@@ -207,19 +206,51 @@ class _ParentEditChildrenState extends State<ParentEditChildren> {
                                 ),
                               ),
                               AppSize.sv_10,
-                              AppTextFormFiledWidget(
-                                keyboardType: TextInputType.text,
-                                controller: genderController,
-                                hintText: "ender gender of the child",
-                                prefix: Icons.person,
-                                validate: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please enter gender of the child";
-                                  }
-                                  return null;
-                                },
+                              Container(
+                                width: SizeConfig.screenWidth * 0.4,
+                                height: SizeConfig.screenHeight * 0.065,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: const Text(
+                                      "Select status",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    value: genderController.text,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        genderController.text =
+                                            value.toString();
+                                      });
+                                    },
+                                    items: ['male', 'female'].map((value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                               ),
-                              AppSize.sv_20,
                             ],
                           ),
                         )
@@ -274,15 +305,29 @@ class _ParentEditChildrenState extends State<ParentEditChildren> {
                             textBottom: "Update Children",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                parentCubit.updateChildrenProfile(
-                                  id: widget.childrenModel.id,
-                                  name: nameController.text,
-                                  education: educationController.text,
-                                  phone: phoneController.text,
-                                  age: int.parse(ageController.text),
-                                  gender: genderController.text,
-                                  certificate: certificateController.text,
-                                );
+                                if (widget.childrenModel.phone !=
+                                    phoneController.text) {
+                                  parentCubit.updateChildrenProfile(
+                                    id: widget.childrenModel.id,
+                                    name: nameController.text,
+                                    education: educationController.text,
+                                    phone: phoneController.text,
+                                    age: int.parse(ageController.text),
+                                    gender: genderController.text,
+                                    isPhoneChanged: true,
+                                    certificate: certificateController.text,
+                                  );
+                                } else {
+                                  parentCubit.updateChildrenProfile(
+                                    id: widget.childrenModel.id,
+                                    name: nameController.text,
+                                    education: educationController.text,
+                                    phone: phoneController.text,
+                                    age: int.parse(ageController.text),
+                                    gender: genderController.text,
+                                    certificate: certificateController.text,
+                                  );
+                                }
                               }
                             },
                           ),

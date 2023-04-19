@@ -9,7 +9,7 @@ import '../../../core/utils/screen_config.dart';
 import '../../../models/school_model.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
-import '../widgets/app_textformfiled_widget.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../widgets/save_changes_bottom.dart';
 
 class AddSupervisorScreen extends StatefulWidget {

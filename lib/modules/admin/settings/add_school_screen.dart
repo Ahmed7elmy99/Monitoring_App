@@ -8,9 +8,10 @@ import '../../../core/style/app_color.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
+import '../../widgets/app_textformfiled_widget.dart';
+import '../../widgets/build_description_field.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
-import '../widgets/app_textformfiled_widget.dart';
 import '../widgets/save_changes_bottom.dart';
 import 'add_supervisor_screen.dart';
 
@@ -83,9 +84,9 @@ class AddSchoolScreen extends StatelessWidget {
                       ),
                     ),
                     AppSize.sv_10,
-                    AppTextFormFiledWidget(
+                    BuildDescriptionTextFiled(
                       controller: descriptionController,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
                       hintText: "Enter description of school",
                       prefix: Icons.add_box_rounded,
                       validate: (value) {

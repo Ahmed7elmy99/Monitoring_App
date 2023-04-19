@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/style/app_color.dart';
+import '../../core/style/app_color.dart';
 
-class AppTextFormFiledWidget extends StatefulWidget {
+class BuildDescriptionTextFiled extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final IconData? prefix;
@@ -13,7 +13,7 @@ class AppTextFormFiledWidget extends StatefulWidget {
   bool isEnable = true;
   final Function(String)? onChanged;
   final FormFieldValidator<String>? validate;
-  AppTextFormFiledWidget({
+  BuildDescriptionTextFiled({
     super.key,
     required this.controller,
     required this.hintText,
@@ -27,16 +27,19 @@ class AppTextFormFiledWidget extends StatefulWidget {
   });
 
   @override
-  State<AppTextFormFiledWidget> createState() => _AppTextFormFiledWidgetState();
+  State<BuildDescriptionTextFiled> createState() =>
+      _BuildDescriptionTextFiledState();
 }
 
-class _AppTextFormFiledWidgetState extends State<AppTextFormFiledWidget> {
+class _BuildDescriptionTextFiledState extends State<BuildDescriptionTextFiled> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      minLines: 2,
+      maxLines: 8,
       enabled: widget.isEnable,
       controller: widget.controller,
-      keyboardType: widget.keyboardType ?? TextInputType.text,
+      keyboardType: TextInputType.multiline,
       validator: widget.validate,
       onChanged: widget.onChanged,
       obscureText: widget.isPassword,

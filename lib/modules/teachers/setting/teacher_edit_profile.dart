@@ -6,8 +6,9 @@ import '../../../core/style/icon_broken.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/const_data.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../admin/widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/app_textformfiled_widget.dart';
+import '../../widgets/build_description_field.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 
@@ -36,7 +37,6 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
     super.initState();
     fullNameController.text = TEACHER_MODEL?.name ?? '';
     emailController.text = TEACHER_MODEL?.email ?? '';
-    passwordController.text = TEACHER_MODEL?.password ?? '';
     universityController.text = TEACHER_MODEL?.university ?? '';
     subjectController.text = TEACHER_MODEL?.subject ?? '';
     phoneController.text = TEACHER_MODEL?.phone ?? '';
@@ -154,9 +154,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                         if (value!.isEmpty) {
                           return "Please Enter Email";
                         }
-                        if (!value.contains('@')) {
-                          return "Please Enter Valid Email";
-                        }
+
                         return null;
                       },
                     ),
@@ -172,11 +170,10 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                     AppTextFormFiledWidget(
                       controller: passwordController,
                       hintText: "Enter your password",
+                      isPassword: true,
+                      suffix: Icons.visibility,
                       prefix: Icons.lock,
                       validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Please Enter Password";
-                        }
                         return null;
                       },
                     ),
@@ -211,7 +208,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                       ),
                     ),
                     AppSize.sv_5,
-                    AppTextFormFiledWidget(
+                    BuildDescriptionTextFiled(
                       controller: subjectController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter your subject",
@@ -270,6 +267,7 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                     ),
                     AppSize.sv_15,
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Column(
@@ -294,11 +292,10 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_15,
                             ],
                           ),
                         ),
-                        AppSize.sh_5,
+                        AppSize.sh_10,
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,19 +307,52 @@ class _TeacherEditProfileScreenState extends State<TeacherEditProfileScreen> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              AppSize.sv_5,
-                              AppTextFormFiledWidget(
-                                controller: genderController,
-                                hintText: "Enter your gender",
-                                prefix: Icons.person,
-                                validate: (value) {
-                                  if (value!.isEmpty) {
-                                    return "Please Enter your gender";
-                                  }
-                                  return null;
-                                },
+                              AppSize.sv_10,
+                              Container(
+                                width: SizeConfig.screenWidth * 0.4,
+                                height: SizeConfig.screenHeight * 0.065,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    hint: const Text(
+                                      "Select status",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    value: genderController.text,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        genderController.text =
+                                            value.toString();
+                                      });
+                                    },
+                                    items: ['male', 'female'].map((value) {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
                               ),
-                              AppSize.sv_15,
                             ],
                           ),
                         )

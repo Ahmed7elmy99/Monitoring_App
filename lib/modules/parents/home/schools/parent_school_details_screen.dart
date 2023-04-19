@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../models/school_activities_model.dart';
-import 'parent_message_teacher_screen.dart';
-import 'parent_school_request_screen.dart';
+import 'package:teatcher_app/modules/parents/home/schools/parent_school_teacher_details.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_size.dart';
 import '../../../../core/utils/screen_config.dart';
+import '../../../../models/school_activities_model.dart';
 import '../../../../models/school_model.dart';
 import '../../../../models/supervisors_model.dart';
 import '../../../../models/teacher_model.dart';
 import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/luanch_url.dart';
+import 'parent_school_request_screen.dart';
 
 class ParentSchoolsDetailsScreen extends StatelessWidget {
   final SchoolModel schoolModel;
@@ -240,8 +240,9 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                   parentCubit.parentSchoolsActivityList.isNotEmpty
                       ? Container(
                           width: SizeConfig.screenWidth,
-                          height: SizeConfig.screenHeight * 0.11,
+                          height: SizeConfig.screenHeight * 0.135,
                           child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
                             scrollDirection: Axis.horizontal,
                             itemCount:
                                 parentCubit.parentSchoolsActivityList.length,
@@ -262,6 +263,7 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                  AppSize.sv_15,
                 ],
               ),
             ),
@@ -289,10 +291,12 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
   Widget _buildTeacherCard(BuildContext context, TeacherModel teacherModel) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
+        Navigator.push(
           context,
-          Routers.PARENTS_SCHOOL_TEACHERS_SCREEN,
-          arguments: teacherModel,
+          MaterialPageRoute(
+            builder: (context) =>
+                ParentSchoolTeacherDetails(teacherModel: teacherModel),
+          ),
         );
       },
       child: Container(
@@ -315,9 +319,13 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundImage: NetworkImage(teacherModel.image),
+            Hero(
+              tag: teacherModel.id,
+              child: CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.grey.shade300,
+                backgroundImage: NetworkImage(teacherModel.image),
+              ),
             ),
             AppSize.sv_5,
             Text(
@@ -357,8 +365,8 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 3,
-              blurRadius: 7,
+              spreadRadius: 1,
+              blurRadius: 5,
               offset: const Offset(0, 3), // changes position of shadow
             ),
           ],
@@ -367,10 +375,13 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundColor: Colors.transparent,
-              backgroundImage: AssetImage(AppImages.activityIcon02),
+            Hero(
+              tag: model.id,
+              child: CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage(AppImages.activityIcon02),
+              ),
             ),
             AppSize.sh_10,
             Expanded(
@@ -390,42 +401,12 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
                   ),
                   Text(
                     model.description,
-                    maxLines: 1,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.almarai(
                       fontSize: 13.0,
                       fontWeight: FontWeight.w400,
                       color: Colors.black54,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 3.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                        color: model.activityType == 'pending'
-                            ? Colors.yellow
-                            : model.activityType == 'accepted'
-                                ? Colors.green
-                                : Colors.red,
-                      ),
-                    ),
-                    child: Text(
-                      model.activityType,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.almarai(
-                        fontSize: 13.0,
-                        fontWeight: FontWeight.w400,
-                        color: model.activityType == 'pending'
-                            ? Colors.yellow
-                            : model.activityType == 'accepted'
-                                ? Colors.green
-                                : Colors.red,
-                      ),
                     ),
                   ),
                 ],
@@ -440,12 +421,10 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
   Widget _buildSuperCart(BuildContext context, SupervisorsModel superModel) {
     return InkWell(
       onTap: () {
-        BlocProvider.of<ParentCubit>(context)
-            .getMessages(receiverId: superModel.id);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ParentMessageTeacherScreen(
+            builder: (context) => ParentSchoolTeacherDetails(
               supervisorsModel: superModel,
             ),
           ),
@@ -471,9 +450,13 @@ class ParentSchoolsDetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundImage: NetworkImage(superModel.image),
+            Hero(
+              tag: superModel.id,
+              child: CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.grey.shade300,
+                backgroundImage: NetworkImage(superModel.image),
+              ),
             ),
             AppSize.sv_5,
             Text(

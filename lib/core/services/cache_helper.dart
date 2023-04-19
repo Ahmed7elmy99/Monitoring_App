@@ -21,6 +21,11 @@ class CacheHelper {
     }
   }
 
+  // remove data from SharedPreferences
+  static Future removeData({required String key}) async {
+    await sharedPreferences?.remove(key);
+  }
+
   /// Get data from SharedPreferences
   static dynamic getData({required String key}) {
     return sharedPreferences?.get(key);

@@ -693,13 +693,13 @@ class SchoolsCubit extends Cubit<SchoolsState> {
   }
 
   Future signOutSupervisor() async {
-    await FirebaseAuth.instance.signOut().then((value) {
-      CacheHelper.saveData(key: 'uid', value: '');
-      CacheHelper.saveData(key: 'schoolId', value: '');
-      CacheHelper.saveData(key: 'user', value: '');
+    await CacheHelper.saveData(key: 'uid', value: '');
+    await CacheHelper.saveData(key: 'schoolId', value: '');
+    await CacheHelper.removeData(key: 'user').then((value) {
       emit(SchoolSignOutSuccessState());
       _currentIndex = 0;
-    }).catchError((error) {
+    });
+    await FirebaseAuth.instance.signOut().catchError((error) {
       print('Sign Out Error: $error');
       emit(SchoolSignOutErrorState(error.toString()));
     });

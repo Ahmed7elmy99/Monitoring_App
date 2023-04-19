@@ -158,14 +158,16 @@ class ParentCubit extends Cubit<ParentState> {
   }
 
   Future<void> signOutParent() async {
-    await FirebaseAuth.instance.signOut().then((value) {
-      CacheHelper.saveData(key: 'uid', value: '');
-      CacheHelper.saveData(key: 'schoolId', value: '');
-      CacheHelper.saveData(key: 'user', value: '');
-      currentIndex = 0;
-      print('Sign Out Success🎉');
+    await CacheHelper.saveData(key: 'uid', value: '');
+    await CacheHelper.saveData(key: 'schoolId', value: '');
+    await CacheHelper.removeData(key: 'user').then((value) {
+      print('Remove User Data Success📌');
       emit(ParentSignOutSuccessState());
+      currentIndex = 0;
     }).catchError((error) {
+      print('Remove User Data Error: $error');
+    });
+    FirebaseAuth.instance.signOut().catchError((error) {
       print('Sign Out Error: $error');
       emit(ParentSignOutErrorState());
     });
@@ -327,14 +329,14 @@ class ParentCubit extends Cubit<ParentState> {
   List<SchoolModel> parentSchoolByLocationList = [];
   void getSchoolByLocation({required String location}) async {
     emit(ParentGetSchoolByLocationLoadingState());
-    await FirebaseFirestore.instance
-        .collection('schools')
-        .where('location', isGreaterThanOrEqualTo: location)
-        .get()
-        .then((value) {
+    await FirebaseFirestore.instance.collection('schools').get().then((value) {
       parentSchoolByLocationList = [];
       value.docs.forEach((element) {
-        parentSchoolByLocationList.add(SchoolModel.fromJson(element.data()));
+        if (location == '') {
+          parentSchoolByLocationList.clear();
+        }
+        if (element.data()['location'].toString().contains(location))
+          parentSchoolByLocationList.add(SchoolModel.fromJson(element.data()));
       });
       emit(ParentGetSchoolByLocationSuccessState());
     }).catchError((error) {
@@ -550,22 +552,28 @@ class ParentCubit extends Cubit<ParentState> {
     String? name,
     String? education,
     String? phone,
+    bool? isPhoneChanged = false,
     int? age,
     String? gender,
     String? certificate,
   }) async {
     emit(ParentUpdateProfileLoadingState());
-    if (phone != null) {
-      final phoneNumbers =
-          await FirebaseFirestore.instance.collection('phoneNumbers').get();
-      if (checkPhone(phone, phoneNumbers.docs)) {
-        emit(ParentUpdateProfileErrorState(
-            error: 'This phone number is already in use'));
-        return;
+    if (isPhoneChanged!) {
+      if (phone != null) {
+        final phoneNumbers =
+            await FirebaseFirestore.instance.collection('phoneNumbers').get();
+        if (checkPhone(phone, phoneNumbers.docs)) {
+          emit(ParentUpdateProfileErrorState(
+              error: 'This phone number is already in use'));
+          return;
+        }
+        await FirebaseFirestore.instance
+            .collection('phoneNumbers')
+            .doc(id)
+            .set({
+          'phone': phone,
+        });
       }
-      await FirebaseFirestore.instance.collection('phoneNumbers').doc(id).set({
-        'phone': phone,
-      });
     }
     await FirebaseFirestore.instance
         .collection('parents')

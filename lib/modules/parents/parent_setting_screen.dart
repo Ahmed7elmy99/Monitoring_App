@@ -27,7 +27,10 @@ class ParentSettingScreen extends StatelessWidget {
             toastColor: Colors.green,
           );
           Navigator.pushNamedAndRemoveUntil(
-              context, Routers.LOGIN, (route) => false);
+            context,
+            Routers.LOGIN,
+            (route) => false,
+          );
         }
         if (state is ParentSignOutErrorState) {
           showFlutterToast(
@@ -132,6 +135,18 @@ class ParentSettingScreen extends StatelessWidget {
                 title: 'School Requests',
                 leadingIcon: IconBroken.Document,
                 subtitle: 'show all requests to school',
+                onTap: () {
+                  parentCubit.getAllRequests();
+                  Navigator.pushNamed(
+                    context,
+                    Routers.PARENTS_SHOW_REQUESTS_SCREEN,
+                  );
+                },
+              ),
+              BuildListTitleWidget(
+                title: 'Activities Requests',
+                leadingIcon: IconBroken.Document,
+                subtitle: 'show all activities requests',
                 onTap: () {
                   parentCubit.getAllRequests();
                   Navigator.pushNamed(

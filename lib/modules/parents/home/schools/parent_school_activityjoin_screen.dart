@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../controller/layout/parents/parent_cubit.dart';
 import '../../../../core/utils/app_images.dart';
@@ -8,6 +9,7 @@ import '../../../../core/utils/screen_config.dart';
 import '../../../../models/children_model.dart';
 import '../../../../models/school_activities_model.dart';
 import '../../../admin/widgets/save_changes_bottom.dart';
+import '../../../widgets/build_cover_text.dart';
 import '../../../widgets/const_widget.dart';
 import '../../../widgets/show_flutter_toast.dart';
 
@@ -56,20 +58,52 @@ class _ParentSchoolActivityJoinScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      width: SizeConfig.screenWidth * 0.6,
-                      height: SizeConfig.screenHeight * 0.3,
-                      decoration: const BoxDecoration(
-                        //color: Colors.grey,
-                        image: DecorationImage(
-                          image: AssetImage(AppImages.schoolLogo),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                  Hero(
+                    tag: schoolActivitiesModel.id,
+                    flightShuttleBuilder: (
+                      BuildContext flightContext,
+                      Animation<double> animation,
+                      HeroFlightDirection flightDirection,
+                      BuildContext fromHeroContext,
+                      BuildContext toHeroContext,
+                    ) {
+                      final Hero toHero = toHeroContext.widget as Hero;
+                      return RotationTransition(
+                        turns: animation,
+                        child: toHero.child,
+                      );
+                    },
+                    child: Center(
+                      child: CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage(AppImages.activityIcon01)),
                     ),
                   ),
+                  Text(
+                    "Name",
+                    style: GoogleFonts.almarai(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  AppSize.sv_5,
+                  BuildCoverTextWidget(message: schoolActivitiesModel.name),
+                  AppSize.sv_15,
+                  Text(
+                    "Description",
+                    style: GoogleFonts.almarai(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black,
+                    ),
+                  ),
+                  AppSize.sv_5,
+                  BuildCoverTextWidget(
+                      message: schoolActivitiesModel.description),
+                  AppSize.sv_15,
                   const Text(
                     "Child Name",
                     style: TextStyle(
