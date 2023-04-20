@@ -6,10 +6,6 @@ Monitoring is an integrated system that allows school principals to supervise te
 
 Here are some screenshots of the Monitoring app:
 
-## Screenshots
-
-Here are some screenshots of the Monitoring app:
-
 ### Admin Panel:
 | Home Page | Schools page | School Details | School Details |
 | ----------- | ----------- | ----------- | ----------- |
