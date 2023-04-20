@@ -6,9 +6,13 @@ Monitoring is an integrated system that allows school principals to supervise te
 
 Here are some screenshots of the Monitoring app:
 
-<img src="assets\screenshots\Screenshot_1681977065.png" width="200" height="400" /> <img src="assets\screenshots\Screenshot_1681977065.png" width="200" height="400" /><img src="assets\screenshots\Screenshot_1681977065.png" width="200" height="400" />
+## Screenshots
 
-<img src="assets\screenshots\Screenshot_1681977065.png" width="200" height="400" /> <img src="assets\screenshots\Screenshot_1681977065.png" width="200" height="400" /><img src="assets\screenshots\Screenshot_1681977065.png" width="200" height="400" />
+Here are some screenshots of the Monitoring app:
+
+<img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /> <img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /><img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" />
+
+
 
 
 ## Table of Contents
