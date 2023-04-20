@@ -11,8 +11,7 @@ Here are some screenshots of the Monitoring app:
 Here are some screenshots of the Monitoring app:
 
 ### Admin Panel:
-| Home Page | Schools page | School Details | | Home Page | Schools page | School Details | Movies Page By Genres |
- |
+| Home Page | Schools page | School Details | School Details |
 | ----------- | ----------- | ----------- | ----------- |
 |<img src="assets/screenshots/1-admin/1.png" width="250">|<img src="assets/screenshots/1-admin/2.png" width="250">|<img src="assets/screenshots/1-admin/3.png" width="250">|<img src="assets/screenshots/1-admin/4.png" width="250">|
 
