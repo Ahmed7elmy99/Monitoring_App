@@ -10,7 +10,11 @@ Here are some screenshots of the Monitoring app:
 
 Here are some screenshots of the Monitoring app:
 
-<img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /> <img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /><img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px"  />
+### Admin Panel:
+| Home Page | Schools page | School Details | | Home Page | Schools page | School Details | Movies Page By Genres |
+ |
+| ----------- | ----------- | ----------- | ----------- |
+|<img src="assets/screenshots/1-admin/1.png" width="250">|<img src="assets/screenshots/1-admin/2.png" width="250">|<img src="assets/screenshots/1-admin/3.png" width="250">|<img src="assets/screenshots/1-admin/4.png" width="250">|
 
 
 
