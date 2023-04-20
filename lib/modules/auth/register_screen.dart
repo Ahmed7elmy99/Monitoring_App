@@ -6,19 +6,37 @@ import '../../core/routes/app_routes.dart';
 import '../../core/utils/app_images.dart';
 import '../../core/utils/app_size.dart';
 import '../../core/utils/screen_config.dart';
-import '../widgets/app_textformfiled_widget.dart';
 import '../admin/widgets/save_changes_bottom.dart';
+import '../widgets/app_textformfiled_widget.dart';
 import '../widgets/const_widget.dart';
 import '../widgets/show_flutter_toast.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController nameController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+
   TextEditingController phoneController = TextEditingController();
+
   TextEditingController genderController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    genderController.text = 'male';
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -162,17 +180,50 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                                 ),
                                 AppSize.sv_10,
-                                AppTextFormFiledWidget(
-                                  keyboardType: TextInputType.text,
-                                  controller: genderController,
-                                  hintText: "Enter your gender",
-                                  prefix: Icons.person,
-                                  validate: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Please Enter gender";
-                                    }
-                                    return null;
-                                  },
+                                Container(
+                                  width: SizeConfig.screenWidth * 0.4,
+                                  height: SizeConfig.screenHeight * 0.065,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.grey,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                      isExpanded: true,
+                                      hint: const Text(
+                                        "Select status",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      value: genderController.text,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          genderController.text =
+                                              value.toString();
+                                        });
+                                      },
+                                      items: ['male', 'female'].map((value) {
+                                        return DropdownMenuItem(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

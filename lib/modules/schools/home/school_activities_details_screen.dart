@@ -80,6 +80,49 @@ class SchoolActivitiesDetailsScreen extends StatelessWidget {
                   AppSize.sv_5,
                   BuildCoverTextWidget(
                       message: schoolActivitiesModel.description),
+                  AppSize.sv_15,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Price",
+                            style: GoogleFonts.almarai(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                          AppSize.sv_5,
+                          BuildCoverTextWidget(
+                            message: schoolActivitiesModel.price,
+                            width: SizeConfig.screenWidth * 0.4,
+                          ),
+                        ],
+                      ),
+                      AppSize.sh_15,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Discount",
+                            style: GoogleFonts.almarai(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                          AppSize.sv_5,
+                          BuildCoverTextWidget(
+                            message: schoolActivitiesModel.discount,
+                            width: SizeConfig.screenWidth * 0.4,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   if (schoolsCubit.activitiesJoinList.isNotEmpty) ...[
                     AppSize.sv_15,
                     Text(

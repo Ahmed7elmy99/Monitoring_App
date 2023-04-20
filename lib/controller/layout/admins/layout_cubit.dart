@@ -621,8 +621,10 @@ class LayoutCubit extends Cubit<LayoutState> {
       print('Sign Out Error: $error');
       emit(AuthAdminSignOutErrorState(error.toString()));
     });
-    FirebaseAuth.instance.signOut().catchError((error) {
+    await FirebaseAuth.instance.signOut().catchError((error) {
       emit(AuthAdminSignOutErrorState(error.toString()));
     });
+    print('user is :  ${CacheHelper.getData(key: 'user')}');
+    print('user id is :  ${CacheHelper.getData(key: 'uid')}');
   }
 }
