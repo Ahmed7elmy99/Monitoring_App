@@ -14,6 +14,10 @@ Here are some screenshots of the Monitoring app:
 | Home Page | Schools page | School Details | School Details |
 | ----------- | ----------- | ----------- | ----------- |
 |<img src="assets/screenshots/1-admin/1.png" width="250">|<img src="assets/screenshots/1-admin/2.png" width="250">|<img src="assets/screenshots/1-admin/3.png" width="250">|<img src="assets/screenshots/1-admin/4.png" width="250">|
+| Teacher | Child | Supervisor | Admins |
+|<img src="assets/screenshots/1-admin/5.png" width="250">|<img src="assets/screenshots/1-admin/6.png" width="250">|<img src="assets/screenshots/1-admin/7.png" width="250">|<img src="assets/screenshots/1-admin/8.png" width="250">|
+| Admin Details | Parents | Parent Details | Setting |
+|<img src="assets/screenshots/1-admin/9.png" width="250">|<img src="assets/screenshots/1-admin/10.png" width="250">|<img src="assets/screenshots/1-admin/11.png" width="250">|<img src="assets/screenshots/1-admin/12.png" width="250">|
 
 
 
