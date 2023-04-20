@@ -23,15 +23,18 @@ class AuthCubit extends Cubit<AuthState> {
 
   TokensModel? tokenModel;
   String userId = '';
-  void userMakLogin({required String email, required String password}) async {
+  void userMakLogin({
+    required String email,
+    required String password,
+  }) async {
     emit(AuthGetUserAfterLoginLoadingState());
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       userId = value.user!.uid;
+
       CacheHelper.saveData(key: 'uid', value: '${value.user!.uid}');
     }).catchError((error) {
-      //filter error
       if (error.code == 'user-not-found') {
         emit(AuthGetUserAfterLoginErrorState(
             error: 'No user found for that email.'));
@@ -54,28 +57,34 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       }
     });
-
-    FirebaseMessaging fcm = FirebaseMessaging.instance;
-    await fcm.getToken().then((value) {
-      tokenModel = TokensModel(id: userId, token: value!);
-    });
-    FirebaseFirestore.instance
-        .collection('tokens')
-        .doc(userId)
-        .set(tokenModel!.toMap());
-    if (await isAdmin(userId)) {
-      emit(AuthGetUserAfterLoginSuccessState(message: 'admin'));
-      print('User is an admin😎');
-    } else if (await isParent(userId)) {
-      emit(AuthGetUserAfterLoginSuccessState(message: 'parent'));
-      print('User is a parent😎');
-    } else if (await isTeacher(userId)) {
-      emit(AuthGetUserAfterLoginSuccessState(message: 'teacher'));
-      print('User is a teacher😎');
-    } else if (await isSupervisor(userId)) {
-      emit(AuthGetUserAfterLoginSuccessState(message: 'supervisor'));
-      print('User is a supervisor😎');
-    } else {}
+    if (userId != '') {
+      await FirebaseMessaging.instance.getToken().then((value) {
+        tokenModel = TokensModel(id: userId, token: value!);
+      });
+      await FirebaseFirestore.instance.collection('tokens').doc(userId).set(
+            tokenModel!.toMap(),
+          );
+      if (await isAdmin(userId)) {
+        emit(AuthGetUserAfterLoginSuccessState(message: 'admin'));
+        userId = '';
+        print('User is an admin😎');
+      } else if (await isParent(userId)) {
+        emit(AuthGetUserAfterLoginSuccessState(message: 'parent'));
+        userId = '';
+        print('User is a parent😎');
+      } else if (await isTeacher(userId)) {
+        emit(AuthGetUserAfterLoginSuccessState(message: 'teacher'));
+        userId = '';
+        print('User is a teacher😎');
+      } else if (await isSupervisor(userId)) {
+        emit(AuthGetUserAfterLoginSuccessState(message: 'supervisor'));
+        userId = '';
+        print('User is a supervisor😎');
+      }
+    } else {
+      userId = '';
+      print('User is not found😎');
+    }
   }
 
   Future<bool> isAdmin(String userId) async {
