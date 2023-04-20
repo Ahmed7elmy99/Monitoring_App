@@ -68,6 +68,15 @@ class LayoutAddSchoolLoadingState extends LayoutState {}
 
 class LayoutAddSchoolSuccessState extends LayoutState {}
 
+class LayoutCheckSchoolPhoneLoadingState extends LayoutState {}
+
+class LayoutCheckSchoolPhoneSuccessState extends LayoutState {}
+
+class LayoutCheckSchoolPhoneErrorState extends LayoutState {
+  final String error;
+  LayoutCheckSchoolPhoneErrorState(this.error);
+}
+
 class LayoutUpdateAdminsBanLoadingState extends LayoutState {}
 
 class LayoutUpdateAdminsBanSuccessState extends LayoutState {}

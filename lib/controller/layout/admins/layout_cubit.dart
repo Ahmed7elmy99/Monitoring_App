@@ -289,59 +289,41 @@ class LayoutCubit extends Cubit<LayoutState> {
     }
   }
 
-  String? schoolId;
-  void addSchoolInFirebase({
-    required SchoolModel schoolModel,
-    required String superName,
-    required String superEmail,
-    required String superPassword,
-    required String superPhone,
-    required String superAge,
-    required String superGender,
-  }) {
-    emit(LayoutAddSchoolLoadingState());
+  void checkNumberForSchool({required String phone}) {
+    emit(LayoutCheckSchoolPhoneLoadingState());
     FirebaseFirestore.instance
         .collection('phoneNumbers')
-        .where('phone', isEqualTo: schoolModel.phone)
+        .where('phone', isEqualTo: phone)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
-        emit(LayoutAddSchoolErrorState('Phone number already exists'));
+        emit(LayoutCheckSchoolPhoneErrorState('Phone number already exists'));
         return;
       } else {
-        FirebaseFirestore.instance
-            .collection('schools')
-            .add(schoolModel.toMap())
-            .then((value) {
-          FirebaseFirestore.instance
-              .collection('phoneNumbers')
-              .doc(value.id)
-              .set({
-            'phone': schoolModel.phone,
-          });
-          schoolId = value.id;
-          FirebaseFirestore.instance
-              .collection('schools')
-              .doc(value.id)
-              .update({
-            'id': value.id,
-          }).then((event) {
-            print('Success add school🎉');
-            createSuperVisorAccount(
-              name: superName,
-              email: superEmail,
-              password: superPassword,
-              phone: superPhone,
-              age: superAge,
-              gender: superGender,
-            );
-            emit(LayoutAddSchoolSuccessState());
-          });
-        }).catchError((error) {
-          print('Error add school: $error');
-          emit(LayoutAddSchoolErrorState(error.toString()));
-        });
+        emit(LayoutCheckSchoolPhoneSuccessState());
       }
+    });
+  }
+
+  String? schoolId;
+  Future<void> addSchoolInFirebase({required SchoolModel schoolsModel}) async {
+    emit(LayoutAddSchoolLoadingState());
+    await FirebaseFirestore.instance
+        .collection('schools')
+        .add(schoolsModel.toMap())
+        .then((value) {
+      FirebaseFirestore.instance.collection('phoneNumbers').doc(value.id).set({
+        'phone': schoolsModel.phone,
+      });
+      schoolId = value.id;
+      FirebaseFirestore.instance.collection('schools').doc(value.id).update({
+        'id': value.id,
+      }).then((event) {
+        emit(LayoutAddSchoolSuccessState());
+      });
+    }).catchError((error) {
+      print('Error add school: $error');
+      emit(LayoutAddSchoolErrorState(error.toString()));
     });
   }
 
@@ -397,16 +379,17 @@ class LayoutCubit extends Cubit<LayoutState> {
   }
 
   void createSuperVisorAccount({
-    required String name,
-    required String email,
-    required String password,
-    required String phone,
-    required String age,
-    required String gender,
+    required SchoolModel schoolModel,
+    required String superName,
+    required String superEmail,
+    required String superPassword,
+    required String superPhone,
+    required String superAge,
+    required String superGender,
   }) {
     FirebaseFirestore.instance
         .collection('phoneNumbers')
-        .where('phone', isEqualTo: phone)
+        .where('phone', isEqualTo: superPhone)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
@@ -416,25 +399,24 @@ class LayoutCubit extends Cubit<LayoutState> {
       } else {
         FirebaseAuth.instance
             .createUserWithEmailAndPassword(
-          email: email,
-          password: password,
+          email: superEmail,
+          password: superPassword,
         )
-            .then((value) {
+            .then((value) async {
+          await addSchoolInFirebase(schoolsModel: schoolModel);
           FirebaseFirestore.instance
               .collection('phoneNumbers')
               .doc(value.user!.uid)
-              .set({
-            'phone': phone,
-          });
+              .set({'phone': superPhone});
           if (value.user?.uid != null) {
             addSchoolSupervisor(
               supervisorId: value.user!.uid,
-              supervisorName: name,
-              supervisorEmail: email,
-              supervisorPassword: password,
-              supervisorPhone: phone,
-              supervisorAge: age,
-              supervisorGender: gender,
+              supervisorName: superName,
+              supervisorEmail: superEmail,
+              supervisorPassword: superPassword,
+              supervisorPhone: superPhone,
+              supervisorAge: superAge,
+              supervisorGender: superGender,
             );
           }
         }).catchError((error) {

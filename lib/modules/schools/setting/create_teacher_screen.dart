@@ -99,6 +99,7 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                     AppSize.sv_10,
                     AppTextFormFiledWidget(
                       controller: fullNameController,
+                      keyboardType: TextInputType.text,
                       hintText: "Enter teacher full name",
                       prefix: Icons.person,
                       validate: (value) {
@@ -108,7 +109,28 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
+                    const Text(
+                      "University",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSize.sv_10,
+                    AppTextFormFiledWidget(
+                      controller: universityController,
+                      keyboardType: TextInputType.text,
+                      hintText: "Enter your university",
+                      prefix: Icons.school,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Please Enter University";
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSize.sv_15,
                     const Text(
                       "Email",
                       style: TextStyle(
@@ -130,7 +152,7 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Password",
                       style: TextStyle(
@@ -152,7 +174,7 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Phone",
                       style: TextStyle(
@@ -176,7 +198,7 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     const Text(
                       "Location",
                       style: TextStyle(
@@ -197,8 +219,10 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                         return null;
                       },
                     ),
-                    AppSize.sv_20,
+                    AppSize.sv_15,
                     Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: Column(
@@ -223,7 +247,6 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                                   return null;
                                 },
                               ),
-                              AppSize.sv_20,
                             ],
                           ),
                         ),
@@ -285,7 +308,6 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
                                   ),
                                 ),
                               ),
-                              AppSize.sv_20,
                             ],
                           ),
                         )

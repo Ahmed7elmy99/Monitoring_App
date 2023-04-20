@@ -363,7 +363,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       email: teachEmail,
       password: teachPassword,
       university: teachUniversity,
-      subject: '',
+      subject: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       image: AppImages.defaultTeacher,
       phone: teachPhone,
       gender: teachGender,

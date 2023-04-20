@@ -23,14 +23,26 @@ class SchoolsScreen extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           LayoutCubit cubit = LayoutCubit.get(context);
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            itemCount: cubit.schoolModelsList.length,
-            itemBuilder: (context, index) {
-              SchoolModel request = cubit.schoolModelsList[index];
-              return _buildItemList(context, model: request);
-            },
-          );
+          return cubit.schoolModelsList.isNotEmpty
+              ? ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  itemCount: cubit.schoolModelsList.length,
+                  itemBuilder: (context, index) {
+                    SchoolModel request = cubit.schoolModelsList[index];
+                    return _buildItemList(context, model: request);
+                  },
+                )
+              : Center(
+                  child: Text(
+                    'No Schools Found !!',
+                    style: GoogleFonts.almarai(
+                      color: Colors.black45,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
         },
       ),
     );
