@@ -10,7 +10,7 @@ Here are some screenshots of the Monitoring app:
 
 Here are some screenshots of the Monitoring app:
 
-<img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /> <img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /><img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" />
+<img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /> <img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px" /><img src="assets/screenshots/Screenshot_1681977065.png" width="210" height="400" style="margin-right: 10px"  />
 
 
 
