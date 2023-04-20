@@ -23,14 +23,26 @@ class AdminsScreen extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           LayoutCubit cubit = LayoutCubit.get(context);
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            itemCount: cubit.adminModelsList.length,
-            itemBuilder: (context, index) {
-              AdminModels request = cubit.adminModelsList[index];
-              return _buildItemList(context, model: request);
-            },
-          );
+          return cubit.adminModelsList.isNotEmpty
+              ? ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  itemCount: cubit.adminModelsList.length,
+                  itemBuilder: (context, index) {
+                    AdminModels request = cubit.adminModelsList[index];
+                    return _buildItemList(context, model: request);
+                  },
+                )
+              : Center(
+                  child: Text(
+                    'No Admins Found !!',
+                    style: GoogleFonts.almarai(
+                      color: Colors.black45,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
         },
       ),
     );

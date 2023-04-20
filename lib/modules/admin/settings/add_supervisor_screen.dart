@@ -7,9 +7,9 @@ import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
 import '../../../models/school_model.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
-import '../../widgets/app_textformfiled_widget.dart';
 import '../widgets/save_changes_bottom.dart';
 
 class AddSupervisorScreen extends StatefulWidget {
@@ -71,9 +71,9 @@ class _AddSupervisorScreenState extends State<AddSupervisorScreen> {
         },
         builder: (context, state) {
           LayoutCubit layoutCubit = LayoutCubit.get(context);
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: SingleChildScrollView(
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -273,14 +273,14 @@ class _AddSupervisorScreenState extends State<AddSupervisorScreen> {
                       ],
                     ),
                     AppSize.sv_15,
-                    state is LayoutAddSchoolSupervisorLoadingState ||
-                            state is LayoutAddSchoolLoadingState
+                    state is LayoutAddSchoolLoadingState ||
+                            state is LayoutAddSchoolSupervisorLoadingState
                         ? const CircularProgressComponent()
                         : SaveChangesBottom(
                             textBottom: "Add School Supervisor",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                layoutCubit.addSchoolInFirebase(
+                                layoutCubit.createSuperVisorAccount(
                                   schoolModel: widget.schlModel,
                                   superName: fullNameController.text,
                                   superEmail: emailController.text,

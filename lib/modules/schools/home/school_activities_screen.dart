@@ -28,7 +28,7 @@ class SchoolActivitiesScreen extends StatelessWidget {
                 : schoolsCubit.schoolsActivitiesList.isEmpty
                     ? Center(
                         child: Text(
-                          'No Children Yet',
+                          'No Activities Found !!',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

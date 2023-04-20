@@ -31,7 +31,37 @@ class AddSchoolScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Add school')),
       body: BlocConsumer<LayoutCubit, LayoutState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is LayoutCheckSchoolPhoneErrorState) {
+            showFlutterToast(
+              message: state.error,
+              toastColor: Colors.red,
+            );
+          }
+          if (state is LayoutCheckSchoolPhoneSuccessState) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddSupervisorScreen(
+                  schlModel: SchoolModel(
+                    id: '',
+                    name: fullNameController.text,
+                    description: descriptionController.text,
+                    phone: phoneController.text,
+                    location: locationController.text.toLowerCase(),
+                    image: AppImages.defaultSchool,
+                    establishedIn: establishedInController.text,
+                    establishedBy: establishedByController.text,
+                    website: websiteController.text,
+                    ban: 'false',
+                    createdAt: DateTime.now().toString(),
+                  ),
+                ),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          }
+        },
         builder: (context, state) {
           LayoutCubit layoutCubit = LayoutCubit.get(context);
           return SingleChildScrollView(
@@ -228,44 +258,8 @@ class AddSchoolScreen extends StatelessWidget {
                                     toastColor: Colors.red,
                                   );
                                 } else {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AddSupervisorScreen(
-                                        schlModel: SchoolModel(
-                                          id: '',
-                                          name: fullNameController.text,
-                                          description:
-                                              descriptionController.text,
-                                          phone: phoneController.text,
-                                          location: locationController.text
-                                              .toLowerCase(),
-                                          image: AppImages.defaultSchool,
-                                          establishedIn:
-                                              establishedInController.text,
-                                          establishedBy:
-                                              establishedByController.text,
-                                          website: websiteController.text,
-                                          ban: 'false',
-                                          createdAt: DateTime.now().toString(),
-                                        ),
-                                      ),
-                                    ),
-                                    (Route<dynamic> route) => false,
-                                  );
-                                  // layoutCubit.addSchoolInFirebase(
-                                  //   schoolName: fullNameController.text,
-                                  //   schoolDescription:
-                                  //       descriptionController.text,
-                                  //   schoolPhone: phoneController.text,
-                                  //   schoolLocation:
-                                  //       locationController.text.toLowerCase(),
-                                  //   establishmentDate:
-                                  //       establishedInController.text,
-                                  //   establishmentType:
-                                  //       establishedByController.text,
-                                  //   schoolWebsite: websiteController.text,
-                                  // );
+                                  layoutCubit.checkNumberForSchool(
+                                      phone: phoneController.text);
                                 }
                               }
                             },

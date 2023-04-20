@@ -5,8 +5,8 @@ import '../../../controller/layout/parents/parent_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 
@@ -53,6 +53,7 @@ class _AddChildrenScreenState extends State<AddChildrenScreen> {
               message: 'Children Added Successfully',
               toastColor: Colors.green,
             );
+            Navigator.pop(context);
           }
           if (state is ParentAddChildrenErrorState) {
             showFlutterToast(
