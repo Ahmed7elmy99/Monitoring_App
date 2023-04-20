@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';
@@ -70,14 +71,13 @@ class _AddChildrenToClassState extends State<AddChildrenToClass> {
                         ),
                       ),
                     ),
-                    if (schoolsCubit.schoolsChildrenNotInClassList.isNotEmpty)
-                      const Text(
-                        "Child Name",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    const Text(
+                      "Child Name",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
                       ),
+                    ),
                     AppSize.sv_10,
                     schoolsCubit.schoolsChildrenNotInClassList.isNotEmpty
                         ? Container(
@@ -119,7 +119,16 @@ class _AddChildrenToClassState extends State<AddChildrenToClass> {
                               },
                             ),
                           )
-                        : Container(),
+                        : Center(
+                            child: Text(
+                              'No Children Found Yet !!',
+                              style: GoogleFonts.almarai(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
                     AppSize.sv_20,
                     const Text(
                       "Class Name",
@@ -168,7 +177,16 @@ class _AddChildrenToClassState extends State<AddChildrenToClass> {
                               },
                             ),
                           )
-                        : Container(),
+                        : Center(
+                            child: Text(
+                              'No Classes Found Yet',
+                              style: GoogleFonts.almarai(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
                     AppSize.sv_20,
                     state is SchoolsAddChildrenToClassLoadingState
                         ? CircularProgressComponent()

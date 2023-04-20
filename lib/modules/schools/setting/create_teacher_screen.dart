@@ -5,8 +5,8 @@ import '../../../controller/layout/schools/schools_cubit.dart';
 import '../../../core/utils/app_images.dart';
 import '../../../core/utils/app_size.dart';
 import '../../../core/utils/screen_config.dart';
-import '../../widgets/app_textformfiled_widget.dart';
 import '../../admin/widgets/save_changes_bottom.dart';
+import '../../widgets/app_textformfiled_widget.dart';
 import '../../widgets/const_widget.dart';
 import '../../widgets/show_flutter_toast.dart';
 
@@ -38,7 +38,6 @@ class _CreateTeacherScreenState extends State<CreateTeacherScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     genderController.text = 'male';
   }
