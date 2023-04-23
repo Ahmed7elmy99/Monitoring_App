@@ -46,21 +46,16 @@ class LayoutCubit extends Cubit<LayoutState> {
       required String phone,
       required String gender}) {
     emit(LayoutCreateAdminAccountLoadingState());
-
-    // Check if phone number has been used before
     FirebaseFirestore.instance
         .collection('phoneNumbers')
         .where('phone', isEqualTo: phone)
         .get()
         .then((querySnapshot) {
       if (querySnapshot.docs.isNotEmpty) {
-        // Phone number already exists in collection, so exit function
         emit(LayoutCreateAdminAccountErrorState(
             'Phone number has already been used'));
         return;
       }
-
-      // Phone number does not exist in collection, so create new admin account
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
@@ -105,7 +100,6 @@ class LayoutCubit extends Cubit<LayoutState> {
     required String adminGen,
     required String adminIsBan,
   }) {
-    //emit(LayoutAddAdminLoadingState());
     AdminModels adminModels = AdminModels(
       id: adminUid,
       name: adminName,
@@ -121,13 +115,8 @@ class LayoutCubit extends Cubit<LayoutState> {
         .collection('admins')
         .doc(adminUid)
         .set(adminModels.toMap())
-        .then((value) {
-      print('Admin Added Success🎉');
-      //emit(LayoutAddAdminSuccessState());
-    }).catchError((error) {
-      print('Admin Added Error: $error');
-      //emit(LayoutAddAdminErrorState(error.toString()));
-    });
+        .then((value) {})
+        .catchError((error) {});
   }
 
   Future<void> updateUserData(
@@ -139,15 +128,12 @@ class LayoutCubit extends Cubit<LayoutState> {
     User? user = FirebaseAuth.instance.currentUser;
     emit(LayoutUpdateUserDataLoadingState());
     if (emailAdmin != null && emailAdmin != ADMIN_MODEL?.email) {
-      // Check if the new email address is already in use
       List<String> signInMethods =
           await FirebaseAuth.instance.fetchSignInMethodsForEmail(emailAdmin);
       if (signInMethods.isNotEmpty) {
         emit(LayoutUpdateUserDataErrorState('This email is already in use'));
-        return; // Exit the function if the email address is already in use
+        return;
       }
-
-      // Update the email address if it's not already in use
       await user!.updateEmail(emailAdmin).then((value) {
         print('Success update email✨');
       }).catchError((error) {
@@ -190,8 +176,6 @@ class LayoutCubit extends Cubit<LayoutState> {
         }
       });
     }
-
-    // Update the user data
     await FirebaseFirestore.instance
         .collection('admins')
         .doc(ADMIN_MODEL?.id)
@@ -360,7 +344,6 @@ class LayoutCubit extends Cubit<LayoutState> {
       print('Success add school supervisor🎉');
       emit(LayoutAddSchoolSupervisorSuccessState());
     }).catchError((error) {
-      //fromat error from firebase
       print('Error add school supervisor: $error');
       if (error.code == 'permission-denied') {
         emit(LayoutAddSchoolSupervisorErrorState('Permission denied'));

@@ -216,14 +216,13 @@ class SchoolsCubit extends Cubit<SchoolsState> {
     }
   }
 
-  void updateSupervisorProfile({
-    String? superName,
-    String? email,
-    String? password,
-    String? superPhone,
-    String? superAge,
-    String? superGender,
-  }) async {
+  void updateSupervisorProfile(
+      {String? superName,
+      String? email,
+      String? password,
+      String? superPhone,
+      String? superAge,
+      String? superGender}) async {
     User? user = FirebaseAuth.instance.currentUser;
     emit(SchoolsUpdateSupervisorProfileLoadingState());
     if (email != null && email != SUPERVISOR_MODEL?.email) {
@@ -232,7 +231,7 @@ class SchoolsCubit extends Cubit<SchoolsState> {
       if (signInMethods.isNotEmpty) {
         emit(SchoolsUpdateSupervisorProfileErrorState(
             'This email is already in use'));
-        return; // Exit the function if the email address is already in use
+        return;
       }
       await user!.updateEmail(email);
     }

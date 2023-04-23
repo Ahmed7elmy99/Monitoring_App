@@ -23,10 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   TokensModel? tokenModel;
   String userId = '';
-  void userMakLogin({
-    required String email,
-    required String password,
-  }) async {
+  void userMakLogin({required String email, required String password}) async {
     emit(AuthGetUserAfterLoginLoadingState());
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
